@@ -131,12 +131,21 @@ Fecha de auditoría: 2026-02-05
 - **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 10. Mensajería Directa
-- [ ] Entidades: Conversation, Message
-- [ ] Entre estudiante-instructor
-- [ ] Notificaciones de nuevos mensajes
-- [ ] Opcional: WebSockets para tiempo real
+- [x] Entidades: Conversation, Message
+- [x] Tipos de conversación: directa, soporte de curso, soporte admin
+- [x] Mensajes con archivos adjuntos (imagen, archivo)
+- [x] Estado de mensajes: enviado, entregado, leído
+- [x] Archivar/desarchivar conversaciones por usuario
+- [x] Contadores de mensajes no leídos (por conversación y total)
+- [x] Marcar mensajes como leídos
+- [x] Editar y eliminar mensajes propios
+- [x] Preview del último mensaje en lista de conversaciones
+- [x] Búsqueda por nombre de participante
+- [x] Filtros: tipo, archivadas, solo no leídos
+- [x] Eventos para notificaciones: messaging.message.sent
+- [ ] WebSockets para tiempo real (opcional, preparado con eventos)
 - **Estimado:** 3-4 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ---
 
@@ -193,6 +202,7 @@ Fecha de auditoría: 2026-02-05
 | Reviews | 2026-02 | ✅ Completo |
 | Forums | 2026-02 | ✅ Completo |
 | Instructors | 2026-02 | ✅ Completo |
+| Messaging | 2026-02 | ✅ Completo |
 
 ---
 

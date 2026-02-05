@@ -31,6 +31,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { ForumsModule } from './modules/forums/forums.module';
 import { InstructorsModule } from './modules/instructors/instructors.module';
+import { MessagingModule } from './modules/messaging/messaging.module';
 
 // Importación condicional de módulos opcionales
 let EmailModule: any = null;
@@ -78,6 +79,7 @@ if (existsSync(emailModulePath + '.ts') || existsSync(emailModulePath + '.js')) 
     ReviewsModule,
     ForumsModule,
     InstructorsModule,
+    MessagingModule,
     // Módulos opcionales
     ...(EmailModule ? [EmailModule] : []),
   ],
@@ -122,6 +124,7 @@ export class AppModule {
     AppModule.logger.log('ReviewsModule integrado - Reviews y calificaciones de cursos');
     AppModule.logger.log('ForumsModule integrado - Foros de comunidad y cursos');
     AppModule.logger.log('InstructorsModule integrado - Perfiles publicos de instructores');
+    AppModule.logger.log('MessagingModule integrado - Mensajeria directa entre usuarios');
 
     // Log módulos opcionales
     if (EmailModule) {
