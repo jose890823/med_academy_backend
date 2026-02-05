@@ -26,6 +26,7 @@ import { ProgressModule } from './modules/progress/progress.module';
 import { WorkshopsModule } from './modules/workshops/workshops.module';
 import { CertificatesModule } from './modules/certificates/certificates.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { MaterialsModule } from './modules/materials/materials.module';
 
 // Importación condicional de módulos opcionales
 let EmailModule: any = null;
@@ -68,6 +69,7 @@ if (existsSync(emailModulePath + '.ts') || existsSync(emailModulePath + '.js')) 
     WorkshopsModule,
     CertificatesModule,
     NotificationsModule,
+    MaterialsModule,
     // Módulos opcionales
     ...(EmailModule ? [EmailModule] : []),
   ],
@@ -107,6 +109,7 @@ export class AppModule {
     AppModule.logger.log('WorkshopsModule integrado - Talleres presenciales, Sesiones e Inscripciones');
     AppModule.logger.log('CertificatesModule integrado - Generacion y verificacion de certificados PDF');
     AppModule.logger.log('NotificationsModule integrado - Sistema de notificaciones con Bull queue');
+    AppModule.logger.log('MaterialsModule integrado - Gestion de archivos y materiales de cursos');
 
     // Log módulos opcionales
     if (EmailModule) {

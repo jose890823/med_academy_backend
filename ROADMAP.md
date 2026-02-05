@@ -1,7 +1,8 @@
 # ROADMAP BACKEND - Ultrasound MedAcademy
 
-## Estado Actual: 7.5/10
+## Estado Actual: 9/10
 Fecha de auditoría: 2026-02-05
+Última actualización: 2026-02-05
 
 ---
 
@@ -52,14 +53,17 @@ Fecha de auditoría: 2026-02-05
 - **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 5. Gestión de Archivos/Materiales
-- [ ] Servicio de upload a S3/CloudStorage
-- [ ] Entidad Material (vinculada a CourseModule)
-- [ ] Tipos: video, pdf, document, image, audio
-- [ ] Endpoint de upload para admin
-- [ ] Endpoint de descarga para estudiantes inscritos
-- [ ] Validación de acceso (solo inscritos activos)
+- [x] Entidad Material (vinculada a Course y CourseModule)
+- [x] Tipos: video, pdf, document, image, audio, presentation, spreadsheet, archive
+- [x] Soporte para múltiples proveedores: local, S3, GCS, Cloudinary, Vimeo, YouTube
+- [x] Endpoints CRUD admin (crear, listar, actualizar, eliminar, reordenar)
+- [x] Endpoint de descarga para estudiantes inscritos
+- [x] Materiales públicos (sin autenticación)
+- [x] Control de acceso (isPublic, allowDownload)
+- [x] Estadísticas de descargas
+- [ ] Integración real con S3/CloudStorage (preparado, falta configurar)
 - **Estimado:** 3-4 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ---
 
@@ -156,6 +160,7 @@ Fecha de auditoría: 2026-02-05
 | Workshops | 2026-02 | ✅ Completo |
 | Certificates | 2026-02 | ✅ Completo |
 | Notifications | 2026-02 | ✅ Completo |
+| Materials | 2026-02 | ✅ Completo |
 
 ---
 
