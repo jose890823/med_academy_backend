@@ -29,6 +29,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { MaterialsModule } from './modules/materials/materials.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { ForumsModule } from './modules/forums/forums.module';
 
 // Importación condicional de módulos opcionales
 let EmailModule: any = null;
@@ -74,6 +75,7 @@ if (existsSync(emailModulePath + '.ts') || existsSync(emailModulePath + '.js')) 
     MaterialsModule,
     AnalyticsModule,
     ReviewsModule,
+    ForumsModule,
     // Módulos opcionales
     ...(EmailModule ? [EmailModule] : []),
   ],
@@ -116,6 +118,7 @@ export class AppModule {
     AppModule.logger.log('MaterialsModule integrado - Gestion de archivos y materiales de cursos');
     AppModule.logger.log('AnalyticsModule integrado - Dashboard de metricas y reportes');
     AppModule.logger.log('ReviewsModule integrado - Reviews y calificaciones de cursos');
+    AppModule.logger.log('ForumsModule integrado - Foros de comunidad y cursos');
 
     // Log módulos opcionales
     if (EmailModule) {

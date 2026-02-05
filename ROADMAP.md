@@ -82,12 +82,22 @@ Fecha de auditoría: 2026-02-05
 - **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 7. Foros/Comunidad
-- [ ] Entidades: Discussion, Post, Reply
-- [ ] Por curso y general
-- [ ] Moderación
-- [ ] Notificaciones de respuestas
+- [x] Entidades: Discussion, Post, PostLike, DiscussionSubscription
+- [x] Tipos de discusión: pregunta, discusión, anuncio, encuesta
+- [x] Foro general y foros por curso
+- [x] Respuestas anidadas (estructura de árbol con closure table)
+- [x] Sistema de likes/votos
+- [x] Marcar respuesta aceptada
+- [x] Discusiones fijadas (pinned)
+- [x] Estados: open, closed, locked, archived
+- [x] Suscripción a discusiones para notificaciones
+- [x] Búsqueda por tags y contenido
+- [x] Historial de ediciones de posts
+- [x] Moderación: cerrar, bloquear, archivar, ocultar posts
+- [x] Solo estudiantes inscritos pueden participar en foros de curso
+- [x] Contadores: vistas, posts, likes
 - **Estimado:** 4-5 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 8. Reviews y Ratings
 - [x] Entidad Review con rating (1-5), título, comentario
@@ -175,6 +185,7 @@ Fecha de auditoría: 2026-02-05
 | Materials | 2026-02 | ✅ Completo |
 | Analytics | 2026-02 | ✅ Completo |
 | Reviews | 2026-02 | ✅ Completo |
+| Forums | 2026-02 | ✅ Completo |
 
 ---
 
