@@ -30,19 +30,16 @@ Fecha de auditoría: 2026-02-05
 - **Estado:** ⏳ PENDIENTE
 
 ### 3. Sistema de Notificaciones
-- [ ] Módulo de notificaciones (entity, service, controller)
-- [ ] Cola de emails con Bull/Redis
-- [ ] Plantillas de email:
-  - [ ] Confirmación de inscripción
-  - [ ] Certificado emitido
-  - [ ] Recordatorio de workshop
-  - [ ] Calificación disponible
-  - [ ] Deadline de evaluación
-  - [ ] Pago exitoso/fallido
-- [ ] Notificaciones in-app (opcional WebSockets)
-- [ ] Preferencias de notificación del usuario
+- [x] Módulo de notificaciones (entity, service, controller)
+- [x] Cola de emails con Bull/Redis
+- [x] Eventos automáticos (enrollment, certificate, payment, etc.)
+- [x] Notificaciones in-app
+- [x] Preferencias de notificación del usuario (por categoría y canal)
+- [x] Broadcast masivo para admin
+- [x] Digest emails (instant, daily, weekly)
+- [ ] Plantillas HTML personalizadas (requiere EmailModule)
 - **Estimado:** 2-3 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 4. Calificación Manual de Evaluaciones
 - [ ] Endpoint para instructor calificar intento
@@ -157,6 +154,7 @@ Fecha de auditoría: 2026-02-05
 | Progress | 2026-02 | ✅ Completo |
 | Workshops | 2026-02 | ✅ Completo |
 | Certificates | 2026-02 | ✅ Completo |
+| Notifications | 2026-02 | ✅ Completo |
 
 ---
 
