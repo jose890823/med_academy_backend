@@ -117,12 +117,18 @@ Fecha de auditoría: 2026-02-05
 - **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 9. Perfiles de Instructores
-- [ ] Entidad InstructorProfile
-- [ ] Bio, foto, especialidades
-- [ ] Página pública del instructor
-- [ ] Cursos del instructor
+- [x] Entidad InstructorProfile con información completa
+- [x] Bio corta/larga, foto, video de presentación
+- [x] Especialidades y certificaciones (enums)
+- [x] Educación y experiencia laboral (JSONB)
+- [x] Redes sociales: LinkedIn, Twitter, sitio web
+- [x] Estadísticas: cursos, estudiantes, rating promedio, reviews
+- [x] Instructores destacados
+- [x] Slug URL-friendly para página pública
+- [x] Endpoints públicos: listar, ver perfil, cursos del instructor
+- [x] Endpoints admin: CRUD completo, destacar, actualizar estadísticas
 - **Estimado:** 2-3 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 10. Mensajería Directa
 - [ ] Entidades: Conversation, Message
@@ -186,6 +192,7 @@ Fecha de auditoría: 2026-02-05
 | Analytics | 2026-02 | ✅ Completo |
 | Reviews | 2026-02 | ✅ Completo |
 | Forums | 2026-02 | ✅ Completo |
+| Instructors | 2026-02 | ✅ Completo |
 
 ---
 

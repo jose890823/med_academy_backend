@@ -298,6 +298,10 @@ export const ErrorCodes = {
   FORUM_DISCUSSION_LOCKED: 'FORUM_DISCUSSION_LOCKED',
   FORUM_ACCESS_DENIED: 'FORUM_ACCESS_DENIED',
   FORUM_NOT_OWNER: 'FORUM_NOT_OWNER',
+
+  // INSTRUCTOR - Perfiles de Instructores
+  INSTRUCTOR_NOT_FOUND: 'INSTRUCTOR_NOT_FOUND',
+  INSTRUCTOR_PROFILE_EXISTS: 'INSTRUCTOR_PROFILE_EXISTS',
 } as const;
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
