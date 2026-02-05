@@ -42,13 +42,14 @@ Fecha de auditoría: 2026-02-05
 - **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 4. Calificación Manual de Evaluaciones
-- [ ] Endpoint para instructor calificar intento
-- [ ] Estados de intento: pending_review, graded
-- [ ] Campo de feedback personalizado
-- [ ] Notificación al estudiante cuando califican
-- [ ] Dashboard de intentos pendientes por calificar
+- [x] Endpoint para instructor calificar intento (POST /v1/admin/grading/:id/grade)
+- [x] Calificación rápida (POST /v1/admin/grading/:id/quick-grade)
+- [x] Estados de intento: in_progress, submitted, graded
+- [x] Campo de feedback personalizado (por respuesta y general)
+- [x] Notificación al estudiante cuando califican (evento evaluation.graded)
+- [x] Dashboard de intentos pendientes por calificar (GET /v1/admin/grading/pending)
 - **Estimado:** 2-3 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 5. Gestión de Archivos/Materiales
 - [ ] Servicio de upload a S3/CloudStorage
@@ -149,7 +150,7 @@ Fecha de auditoría: 2026-02-05
 | Contact | 2026-01 | ✅ Básico |
 | Courses | 2026-02 | ✅ Completo |
 | Enrollments | 2026-02 | ✅ Completo |
-| Evaluations | 2026-02 | ✅ Completo (falta manual grading) |
+| Evaluations | 2026-02 | ✅ Completo (con calificación manual) |
 | Referrals | 2026-02 | ✅ Completo |
 | Progress | 2026-02 | ✅ Completo |
 | Workshops | 2026-02 | ✅ Completo |

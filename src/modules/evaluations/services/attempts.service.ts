@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EvaluationAttempt, AttemptStatus } from '../entities/evaluation-attempt.entity';
 import { Answer } from '../entities/answer.entity';
 import { Question, QuestionType } from '../entities/question.entity';
@@ -33,6 +34,7 @@ export class AttemptsService {
     private readonly answerRepository: Repository<Answer>,
     private readonly evaluationsService: EvaluationsService,
     private readonly questionsService: QuestionsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -268,6 +270,21 @@ export class AttemptsService {
       `Intento calificado: ${attemptId} - Score: ${totalScore}/${attempt.totalPoints} (${passed ? 'Aprobado' : 'Reprobado'})`,
     );
 
+    // Emitir evento para notificar al estudiante
+    this.eventEmitter.emit('evaluation.graded', {
+      attempt: {
+        id: updated.id,
+        evaluationId: updated.evaluationId,
+        userId: attempt.enrollment?.studentId,
+      },
+      evaluation: {
+        id: evaluation.id,
+        title: evaluation.title,
+        passingScore: evaluation.passingScore,
+      },
+      score: percentage,
+    });
+
     return updated;
   }
 
@@ -315,6 +332,21 @@ export class AttemptsService {
     this.logger.log(
       `Intento calificado (rápido): ${attemptId} - Score: ${dto.score}/${attempt.totalPoints}`,
     );
+
+    // Emitir evento para notificar al estudiante
+    this.eventEmitter.emit('evaluation.graded', {
+      attempt: {
+        id: updated.id,
+        evaluationId: updated.evaluationId,
+        userId: attempt.enrollment?.studentId,
+      },
+      evaluation: {
+        id: evaluation.id,
+        title: evaluation.title,
+        passingScore: evaluation.passingScore,
+      },
+      score: percentage,
+    });
 
     return updated;
   }
