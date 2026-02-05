@@ -90,13 +90,21 @@ Fecha de auditoría: 2026-02-05
 - **Estado:** ⏳ PENDIENTE
 
 ### 8. Reviews y Ratings
-- [ ] Entidad CourseReview
-- [ ] Rating 1-5 estrellas
-- [ ] Comentario opcional
-- [ ] Promedio en curso
-- [ ] Solo estudiantes que completaron pueden dejar review
+- [x] Entidad Review con rating (1-5), título, comentario
+- [x] Estados: pending, approved, rejected, hidden
+- [x] Marca de compra verificada (isVerifiedPurchase)
+- [x] Solo estudiantes inscritos (ACTIVE/COMPLETED) pueden dejar review
+- [x] Un review por estudiante por curso
+- [x] Respuesta del instructor (instructorResponse)
+- [x] Sistema de moderación (aprobar, rechazar, ocultar)
+- [x] Reviews destacados (isFeatured)
+- [x] Votos de utilidad (helpfulCount)
+- [x] Estadísticas: promedio, distribución por rating
+- [x] Endpoints públicos: ver reviews de curso, resumen de reviews
+- [x] Endpoints autenticados: crear, actualizar, eliminar mi review
+- [x] Endpoints admin: listar todos, moderar, responder, destacar
 - **Estimado:** 2-3 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 9. Perfiles de Instructores
 - [ ] Entidad InstructorProfile
@@ -166,6 +174,7 @@ Fecha de auditoría: 2026-02-05
 | Notifications | 2026-02 | ✅ Completo |
 | Materials | 2026-02 | ✅ Completo |
 | Analytics | 2026-02 | ✅ Completo |
+| Reviews | 2026-02 | ✅ Completo |
 
 ---
 
