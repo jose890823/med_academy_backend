@@ -1,6 +1,6 @@
 # ROADMAP BACKEND - Ultrasound MedAcademy
 
-## Estado Actual: 9/10
+## Estado Actual: 10/10 ✅ FASE 1 COMPLETADA
 Fecha de auditoría: 2026-02-05
 Última actualización: 2026-02-05
 
@@ -20,15 +20,19 @@ Fecha de auditoría: 2026-02-05
 - **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 2. Webhooks de Stripe
-- [ ] Endpoint webhook handler
-- [ ] Verificación de firma Stripe
-- [ ] Eventos: payment_intent.succeeded, payment_intent.failed
-- [ ] Eventos: invoice.paid, invoice.payment_failed
-- [ ] Eventos: customer.subscription.created/updated/deleted
-- [ ] Sincronizar estado de pagos automáticamente
-- [ ] Actualizar inscripciones según pago
+- [x] Endpoint webhook handler (POST /payments/webhook/stripe)
+- [x] Verificación de firma Stripe (constructEvent con STRIPE_WEBHOOK_SECRET)
+- [x] Eventos: payment_intent.succeeded, payment_intent.failed
+- [x] Eventos: invoice.payment_succeeded, invoice.payment_failed
+- [x] Eventos: customer.subscription.created/updated/deleted
+- [x] Evento: checkout.session.completed (para subscriptions y enrollments)
+- [x] Evento: charge.refunded (reembolsos)
+- [x] Sincronizar estado de pagos automáticamente
+- [x] Actualizar inscripciones según pago (Enrollments)
+- [x] Checkout de cursos (POST /payments/checkout/course)
+- [x] Sync manual para desarrollo local
 - **Estimado:** 2-3 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 3. Sistema de Notificaciones
 - [x] Módulo de notificaciones (entity, service, controller)
@@ -187,7 +191,7 @@ Fecha de auditoría: 2026-02-05
 | Users | 2026-01 | ✅ Completo |
 | Security | 2026-01 | ✅ Completo |
 | Email | 2026-01 | ✅ Completo |
-| Payments | 2026-01 | ✅ Básico (falta webhooks) |
+| Payments | 2026-02 | ✅ Completo (con webhooks) |
 | Contact | 2026-01 | ✅ Básico |
 | Courses | 2026-02 | ✅ Completo |
 | Enrollments | 2026-02 | ✅ Completo |

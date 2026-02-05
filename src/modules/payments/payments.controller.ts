@@ -28,8 +28,18 @@ import {
 } from '@nestjs/swagger';
 import { SubscriptionsService } from './subscriptions.service';
 import { StripeService } from './stripe.service';
-import { CreateCheckoutSessionDto, CancelSubscriptionDto } from './dto';
-import { Subscription, SubscriptionStatus, SubscriptionPlan } from './entities/subscription.entity';
+import { WebhookService } from './services/webhook.service';
+import { CourseCheckoutService } from './services/course-checkout.service';
+import {
+  CreateCheckoutSessionDto,
+  CancelSubscriptionDto,
+  CreateCourseCheckoutDto,
+} from './dto';
+import {
+  Subscription,
+  SubscriptionStatus,
+  SubscriptionPlan,
+} from './entities/subscription.entity';
 import { Payment } from './entities/payment.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -43,6 +53,8 @@ export class PaymentsController {
   constructor(
     private readonly subscriptionsService: SubscriptionsService,
     private readonly stripeService: StripeService,
+    private readonly webhookService: WebhookService,
+    private readonly courseCheckoutService: CourseCheckoutService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -55,7 +67,8 @@ export class PaymentsController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Create Stripe Checkout Session',
-    description: 'Creates a new Stripe checkout session for subscription payment',
+    description:
+      'Creates a new Stripe checkout session for subscription payment',
   })
   @ApiResponse({
     status: 201,
@@ -117,7 +130,8 @@ export class PaymentsController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Create PublishSparks Subscription Checkout',
-    description: 'Creates a Stripe checkout session for PublishSparks $7/month subscription',
+    description:
+      'Creates a Stripe checkout session for PublishSparks $7/month subscription',
   })
   @ApiResponse({
     status: 201,
@@ -153,7 +167,8 @@ export class PaymentsController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Sync Checkout Session Status (Dev)',
-    description: 'Manually sync checkout session status with Stripe. Useful for local development without webhooks.',
+    description:
+      'Manually sync checkout session status with Stripe. Useful for local development without webhooks.',
   })
   @ApiResponse({
     status: 200,
@@ -170,7 +185,8 @@ export class PaymentsController {
     },
   })
   async syncCheckoutSession(@Param('sessionId') sessionId: string) {
-    const result = await this.subscriptionsService.syncCheckoutSession(sessionId);
+    const result =
+      await this.subscriptionsService.syncCheckoutSession(sessionId);
 
     return {
       message: result.message,
@@ -187,7 +203,8 @@ export class PaymentsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Stripe Webhook Handler',
-    description: 'Handles incoming webhook events from Stripe',
+    description:
+      'Handles incoming webhook events from Stripe (subscriptions and course payments)',
   })
   @ApiHeader({
     name: 'stripe-signature',
@@ -197,6 +214,12 @@ export class PaymentsController {
   @ApiResponse({
     status: 200,
     description: 'Webhook processed successfully',
+    schema: {
+      example: { received: true, processed: 'checkout.session.completed' },
+    },
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid signature or webhook error',
   })
   async handleStripeWebhook(
     @Req() req: RawBodyRequest<Request>,
@@ -206,29 +229,135 @@ export class PaymentsController {
       throw new BadRequestException('Missing stripe-signature header');
     }
 
-    const webhookSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET');
-    if (!webhookSecret) {
-      throw new BadRequestException('Stripe webhook secret not configured');
-    }
-
     const rawBody = req.rawBody;
     if (!rawBody) {
       throw new BadRequestException('Missing request body');
     }
 
-    try {
-      const event = this.stripeService.constructWebhookEvent(
-        rawBody,
-        signature,
-        webhookSecret,
-      );
+    // Construir y verificar evento
+    const event = this.webhookService.constructEvent(rawBody, signature);
 
-      await this.subscriptionsService.handleWebhook(event);
+    // Procesar evento
+    const result = await this.webhookService.handleEvent(event);
 
-      return { received: true };
-    } catch (error) {
-      throw new BadRequestException(`Webhook error: ${error.message}`);
-    }
+    return result;
+  }
+
+  // ============================================
+  // COURSE CHECKOUT ENDPOINTS
+  // ============================================
+
+  @Post('checkout/course')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Create Course Checkout Session',
+    description:
+      'Creates a Stripe checkout session for course enrollment payment',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Checkout session created successfully',
+    schema: {
+      example: {
+        message: 'Sesión de checkout creada exitosamente',
+        data: {
+          sessionId: 'cs_test_xxx',
+          sessionUrl: 'https://checkout.stripe.com/xxx',
+          amount: 265.0,
+          enrollment: {},
+        },
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description:
+      'Invalid data, payment already completed, or Stripe not configured',
+  })
+  @ApiNotFoundResponse({
+    description: 'Enrollment not found',
+  })
+  async createCourseCheckout(
+    @CurrentUser() user: User,
+    @Body() dto: CreateCourseCheckoutDto,
+  ) {
+    const result = await this.courseCheckoutService.createCheckoutSession(
+      dto,
+      user.id,
+    );
+
+    return {
+      message: 'Sesión de checkout creada exitosamente',
+      data: result,
+    };
+  }
+
+  @Get('checkout/course/sync/:sessionId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Sync Course Checkout Session Status (Dev)',
+    description:
+      'Manually sync checkout session status with Stripe. Useful for local development without webhooks.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Sync result',
+    schema: {
+      example: {
+        message: 'Pago sincronizado: $265 registrado',
+        data: {
+          synced: true,
+          stripeStatus: 'paid',
+          enrollment: {},
+        },
+      },
+    },
+  })
+  async syncCourseCheckoutSession(@Param('sessionId') sessionId: string) {
+    const result =
+      await this.courseCheckoutService.syncCheckoutSession(sessionId);
+
+    return {
+      message: result.message,
+      data: result,
+    };
+  }
+
+  @Get('checkout/course/info/:enrollmentId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get Course Payment Info',
+    description: 'Returns payment information for an enrollment',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Payment information',
+    schema: {
+      example: {
+        message: 'Información de pago obtenida',
+        data: {
+          totalPrice: 295.0,
+          discount: 30.0,
+          alreadyPaid: 0,
+          remainingAmount: 265.0,
+          paymentStatus: 'pending',
+          canPay: true,
+        },
+      },
+    },
+  })
+  async getCoursePaymentInfo(
+    @Param('enrollmentId', ParseUUIDPipe) enrollmentId: string,
+  ) {
+    const result =
+      await this.courseCheckoutService.getPaymentInfo(enrollmentId);
+
+    return {
+      message: 'Información de pago obtenida',
+      data: result,
+    };
   }
 
   // ============================================
@@ -269,7 +398,9 @@ export class PaymentsController {
     type: Subscription,
   })
   async getMyActiveSubscription(@CurrentUser() user: User) {
-    const subscription = await this.subscriptionsService.findActiveByUserId(user.id);
+    const subscription = await this.subscriptionsService.findActiveByUserId(
+      user.id,
+    );
 
     return {
       message: subscription
@@ -303,7 +434,10 @@ export class PaymentsController {
       throw new BadRequestException('No tienes una suscripción');
     }
 
-    const cancelled = await this.subscriptionsService.cancel(subscription.id, dto);
+    const cancelled = await this.subscriptionsService.cancel(
+      subscription.id,
+      dto,
+    );
 
     return {
       message: 'Suscripción cancelada exitosamente',
@@ -439,11 +573,12 @@ export class PaymentsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: { contractUrl: string; envelopeId?: string },
   ) {
-    const subscription = await this.subscriptionsService.activateAfterContractSigned(
-      id,
-      body.contractUrl,
-      body.envelopeId,
-    );
+    const subscription =
+      await this.subscriptionsService.activateAfterContractSigned(
+        id,
+        body.contractUrl,
+        body.envelopeId,
+      );
 
     return {
       message: 'Suscripción activada exitosamente',
