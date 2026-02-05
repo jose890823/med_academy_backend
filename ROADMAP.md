@@ -70,12 +70,16 @@ Fecha de auditoría: 2026-02-05
 ## 🟠 FASE 2: MUY IMPORTANTES (Post-MVP)
 
 ### 6. Dashboard Analytics
-- [ ] Módulo de reportes
-- [ ] Métricas: estudiantes activos, ingresos, certificados
-- [ ] Gráficos de tendencia
-- [ ] Exportación a Excel
+- [x] Módulo de analytics con métricas comparativas
+- [x] Métricas: usuarios, inscripciones, ingresos, certificados, evaluaciones
+- [x] Comparación con período anterior (cambio %)
+- [x] Datos de tendencia para gráficos (enrollments, revenue, users, certificates)
+- [x] Distribución por curso
+- [x] Analytics por curso individual
+- [x] Top performers (estudiantes destacados)
+- [x] Exportación a CSV
 - **Estimado:** 4-5 días
-- **Estado:** ⏳ PENDIENTE
+- **Estado:** ✅ COMPLETADO (2026-02-05)
 
 ### 7. Foros/Comunidad
 - [ ] Entidades: Discussion, Post, Reply
@@ -161,6 +165,7 @@ Fecha de auditoría: 2026-02-05
 | Certificates | 2026-02 | ✅ Completo |
 | Notifications | 2026-02 | ✅ Completo |
 | Materials | 2026-02 | ✅ Completo |
+| Analytics | 2026-02 | ✅ Completo |
 
 ---
 
