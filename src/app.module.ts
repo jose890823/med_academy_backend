@@ -32,6 +32,8 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { ForumsModule } from './modules/forums/forums.module';
 import { InstructorsModule } from './modules/instructors/instructors.module';
 import { MessagingModule } from './modules/messaging/messaging.module';
+import { StorageModule } from './modules/storage/storage.module';
+import { WebSocketModule } from './modules/websocket/websocket.module';
 
 // Importación condicional de módulos opcionales
 let EmailModule: any = null;
@@ -83,6 +85,8 @@ if (
     ForumsModule,
     InstructorsModule,
     MessagingModule,
+    StorageModule,
+    WebSocketModule,
     // Módulos opcionales
     ...(EmailModule ? [EmailModule] : []),
   ],
@@ -159,6 +163,12 @@ export class AppModule {
     );
     AppModule.logger.log(
       'MessagingModule integrado - Mensajeria directa entre usuarios',
+    );
+    AppModule.logger.log(
+      'StorageModule integrado - Almacenamiento modular (Local, S3, GCS, Cloudinary)',
+    );
+    AppModule.logger.log(
+      'WebSocketModule integrado - Tiempo real para notificaciones y mensajeria',
     );
 
     // Log módulos opcionales

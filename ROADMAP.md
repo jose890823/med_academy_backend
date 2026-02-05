@@ -13,7 +13,7 @@ Fecha de auditoría: 2026-02-05
 - [x] Templates de certificados por tipo de curso
 - [x] Número único verificable (CERT-YYYY-NNNNNN + código corto)
 - [x] QR code para validación online
-- [ ] Almacenamiento en S3/CloudStorage (pendiente integración)
+- [x] Almacenamiento en S3/CloudStorage (StorageModule modular)
 - [x] Endpoint para descargar certificado
 - [x] Endpoint público para verificar certificado
 - **Estimado:** 3-4 días
@@ -65,7 +65,7 @@ Fecha de auditoría: 2026-02-05
 - [x] Materiales públicos (sin autenticación)
 - [x] Control de acceso (isPublic, allowDownload)
 - [x] Estadísticas de descargas
-- [ ] Integración real con S3/CloudStorage (preparado, falta configurar)
+- [x] Integración real con S3/CloudStorage (StorageModule modular)
 - **Estimado:** 3-4 días
 - **Estado:** ✅ COMPLETADO (2026-02-05)
 
@@ -147,7 +147,7 @@ Fecha de auditoría: 2026-02-05
 - [x] Búsqueda por nombre de participante
 - [x] Filtros: tipo, archivadas, solo no leídos
 - [x] Eventos para notificaciones: messaging.message.sent
-- [ ] WebSockets para tiempo real (opcional, preparado con eventos)
+- [x] WebSockets para tiempo real (WebSocketModule completo)
 - **Estimado:** 3-4 días
 - **Estado:** ✅ COMPLETADO (2026-02-05)
 
@@ -155,28 +155,53 @@ Fecha de auditoría: 2026-02-05
 
 ## 🟡 FASE 3: MEJORAS (Futuro)
 
-### 11. Calendario de Eventos
+### 11. Sistema de Storage Modular
+- [x] Interface IStorageProvider con contrato común
+- [x] LocalStorageProvider (sistema de archivos)
+- [x] S3StorageProvider (Amazon S3 y compatibles)
+- [x] GCSStorageProvider (Google Cloud Storage)
+- [x] CloudinaryStorageProvider (imágenes/video optimizado)
+- [x] StorageConfigService con configuración en DB
+- [x] Encriptación de credenciales sensibles
+- [x] Cambio de proveedor dinámico desde admin
+- [x] Endpoints admin: listar, configurar, probar, activar proveedores
+- **Estimado:** 3-4 días
+- **Estado:** ✅ COMPLETADO (2026-02-05)
+
+### 12. WebSocket Server Modular
+- [x] NotificationsGateway (namespace /notifications)
+- [x] MessagingGateway (namespace /messaging)
+- [x] Autenticación JWT en handshake
+- [x] SocketConnectionService con cache Redis
+- [x] Rooms por usuario, conversación y rol
+- [x] Eventos: typing, read receipts, presencia
+- [x] RedisIoAdapter para escalabilidad horizontal
+- [x] Integración preparada con NotificationsModule y MessagingModule
+- **Estimado:** 3-4 días
+- **Estado:** ✅ COMPLETADO (2026-02-05)
+
+### 13. Calendario de Eventos
 - [ ] Deadlines de evaluaciones
 - [ ] Fechas de workshops
 - [ ] Integración Google Calendar
 - **Estado:** ⏳ PENDIENTE
 
-### 12. Tracking Asistencia Workshops
+### 14. Tracking Asistencia Workshops
 - [ ] QR codes para check-in
 - [ ] Lista de asistencia exportable
 - **Estado:** ⏳ PENDIENTE
 
-### 13. Exportación de Reportes
+### 15. Exportación de Reportes
 - [ ] Progreso del estudiante en PDF
 - [ ] Reportes admin en Excel
 - **Estado:** ⏳ PENDIENTE
 
-### 14. Two-Factor Authentication
+### 16. Two-Factor Authentication
 - [ ] TOTP (Google Authenticator)
 - [ ] SMS backup
 - **Estado:** ⏳ PENDIENTE
 
-### 15. Verificación Online de Certificados
+### 17. Verificación Online de Certificados
 - [ ] Página pública para verificar
 - [ ] Búsqueda por número de certificado
 - **Estado:** ⏳ PENDIENTE
@@ -207,6 +232,8 @@ Fecha de auditoría: 2026-02-05
 | Forums | 2026-02 | ✅ Completo |
 | Instructors | 2026-02 | ✅ Completo |
 | Messaging | 2026-02 | ✅ Completo |
+| Storage | 2026-02 | ✅ Completo (modular: Local, S3, GCS, Cloudinary) |
+| WebSocket | 2026-02 | ✅ Completo (notificaciones + mensajería tiempo real) |
 
 ---
 

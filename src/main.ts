@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as express from 'express';
 import helmet from 'helmet';
+import { createRedisIoAdapter } from './modules/websocket/adapters/redis-io.adapter';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -12,6 +13,21 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
   });
+
+  // ============================================
+  // WEBSOCKET - Redis Adapter para escalabilidad
+  // ============================================
+  try {
+    const redisIoAdapter = await createRedisIoAdapter(app);
+    app.useWebSocketAdapter(redisIoAdapter);
+    if (redisIoAdapter.isUsingRedis()) {
+      logger.log('WebSocket usando Redis adapter para escalabilidad');
+    } else {
+      logger.log('WebSocket usando adapter en memoria (single instance)');
+    }
+  } catch (error) {
+    logger.warn('No se pudo configurar WebSocket adapter, usando default');
+  }
 
   // ============================================
   // SEGURIDAD - Helmet (HTTP Headers)
@@ -125,6 +141,7 @@ async function bootstrap() {
 
   logger.log(`🚀 Aplicación corriendo en: http://localhost:${port}`);
   logger.log(`📚 Documentación Swagger en: http://localhost:${port}/api/docs`);
+  logger.log(`🔌 WebSocket disponible en: ws://localhost:${port}/notifications y ws://localhost:${port}/messaging`);
   logger.log(`🔒 Seguridad activada: Helmet, CORS, Rate Limiting`);
 }
 
