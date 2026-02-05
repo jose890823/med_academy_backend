@@ -28,7 +28,8 @@ export class CreateDiscussionDto {
   title: string;
 
   @ApiProperty({
-    example: 'Tengo dudas sobre cómo distinguir los artefactos de reverberación de los de espejo en estudios de carótida...',
+    example:
+      'Tengo dudas sobre cómo distinguir los artefactos de reverberación de los de espejo en estudios de carótida...',
     description: 'Contenido del primer post',
     minLength: 20,
   })

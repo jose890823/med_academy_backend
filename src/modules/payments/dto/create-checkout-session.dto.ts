@@ -8,7 +8,10 @@ import {
   IsNumber,
   Min,
 } from 'class-validator';
-import { SubscriptionPlan, InitialPaymentType } from '../entities/subscription.entity';
+import {
+  SubscriptionPlan,
+  InitialPaymentType,
+} from '../entities/subscription.entity';
 
 export class CreateCheckoutSessionDto {
   @ApiProperty({

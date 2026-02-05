@@ -40,14 +40,20 @@ export class ClassroomInstructor {
     description: 'Rol del instructor en el aula',
     enum: ClassroomInstructorRole,
   })
-  @Column({ type: 'enum', enum: ClassroomInstructorRole, default: ClassroomInstructorRole.ASSISTANT })
+  @Column({
+    type: 'enum',
+    enum: ClassroomInstructorRole,
+    default: ClassroomInstructorRole.ASSISTANT,
+  })
   role: ClassroomInstructorRole;
 
   // ============================================
   // RELACIONES
   // ============================================
 
-  @ManyToOne(() => Classroom, (classroom) => classroom.instructors, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Classroom, (classroom) => classroom.instructors, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'classroomId' })
   classroom: Classroom;
 

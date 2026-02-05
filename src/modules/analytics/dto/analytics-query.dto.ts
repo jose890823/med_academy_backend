@@ -1,10 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsOptional,
-  IsUUID,
-  IsEnum,
-  IsDateString,
-} from 'class-validator';
+import { IsOptional, IsUUID, IsEnum, IsDateString } from 'class-validator';
 
 /**
  * Período de tiempo para reportes
@@ -51,7 +46,10 @@ export class AnalyticsQueryDto {
     description: 'Fecha de inicio (solo para período CUSTOM)',
   })
   @IsOptional()
-  @IsDateString({}, { message: 'startDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'startDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   startDate?: string;
 
   @ApiPropertyOptional({
@@ -59,7 +57,10 @@ export class AnalyticsQueryDto {
     description: 'Fecha de fin (solo para período CUSTOM)',
   })
   @IsOptional()
-  @IsDateString({}, { message: 'endDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'endDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   endDate?: string;
 
   @ApiPropertyOptional({

@@ -73,7 +73,8 @@ export class CreateQuestionDto {
   questionType: QuestionType;
 
   @ApiPropertyOptional({
-    description: 'Opciones de respuesta (requerido para multiple_choice y true_false)',
+    description:
+      'Opciones de respuesta (requerido para multiple_choice y true_false)',
     type: [QuestionOptionDto],
     example: [
       { id: 'a', text: '1540 m/s', isCorrect: true },

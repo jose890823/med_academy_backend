@@ -32,10 +32,10 @@ export enum MaterialType {
  * Estado del material
  */
 export enum MaterialStatus {
-  PENDING = 'pending',      // Subiendo o procesando
-  ACTIVE = 'active',        // Disponible
-  ARCHIVED = 'archived',    // Archivado (no visible)
-  DELETED = 'deleted',      // Eliminado lógicamente
+  PENDING = 'pending', // Subiendo o procesando
+  ACTIVE = 'active', // Disponible
+  ARCHIVED = 'archived', // Archivado (no visible)
+  DELETED = 'deleted', // Eliminado lógicamente
 }
 
 /**
@@ -44,10 +44,10 @@ export enum MaterialStatus {
 export enum StorageProvider {
   LOCAL = 'local',
   S3 = 's3',
-  GCS = 'gcs',           // Google Cloud Storage
+  GCS = 'gcs', // Google Cloud Storage
   CLOUDINARY = 'cloudinary',
-  VIMEO = 'vimeo',       // Para videos
-  YOUTUBE = 'youtube',   // Para videos
+  VIMEO = 'vimeo', // Para videos
+  YOUTUBE = 'youtube', // Para videos
   EXTERNAL = 'external', // URL externa
 }
 
@@ -107,7 +107,11 @@ export class Material {
     description: 'Estado del material',
     enum: MaterialStatus,
   })
-  @Column({ type: 'enum', enum: MaterialStatus, default: MaterialStatus.ACTIVE })
+  @Column({
+    type: 'enum',
+    enum: MaterialStatus,
+    default: MaterialStatus.ACTIVE,
+  })
   status: MaterialStatus;
 
   @ApiProperty({
@@ -126,7 +130,11 @@ export class Material {
     description: 'Proveedor de almacenamiento',
     enum: StorageProvider,
   })
-  @Column({ type: 'enum', enum: StorageProvider, default: StorageProvider.LOCAL })
+  @Column({
+    type: 'enum',
+    enum: StorageProvider,
+    default: StorageProvider.LOCAL,
+  })
   storageProvider: StorageProvider;
 
   @ApiProperty({
@@ -187,7 +195,8 @@ export class Material {
   // ============================================
 
   @ApiPropertyOptional({
-    example: 'https://s3.amazonaws.com/bucket/thumbnails/doppler-guide-thumb.jpg',
+    example:
+      'https://s3.amazonaws.com/bucket/thumbnails/doppler-guide-thumb.jpg',
     description: 'URL de la miniatura/preview',
   })
   @Column({ type: 'text', nullable: true })

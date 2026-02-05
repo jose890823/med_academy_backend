@@ -102,7 +102,11 @@ export class Certificate {
     description: 'Estado del certificado',
     enum: CertificateStatus,
   })
-  @Column({ type: 'enum', enum: CertificateStatus, default: CertificateStatus.PENDING })
+  @Column({
+    type: 'enum',
+    enum: CertificateStatus,
+    default: CertificateStatus.PENDING,
+  })
   status: CertificateStatus;
 
   // ============================================

@@ -49,11 +49,7 @@ export class ContactAdminController {
     @Query('limit') limit?: number,
     @Query('status') status?: ContactMessageStatus,
   ) {
-    return this.contactService.findAll(
-      page || 1,
-      limit || 20,
-      status,
-    );
+    return this.contactService.findAll(page || 1, limit || 20, status);
   }
 
   @Get('stats')

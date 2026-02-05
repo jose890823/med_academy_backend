@@ -284,10 +284,7 @@ describe('AuthController', () => {
 
       authService.changePassword.mockResolvedValue(expectedResponse);
 
-      const result = await controller.changePassword(
-        userId,
-        changePasswordDto,
-      );
+      const result = await controller.changePassword(userId, changePasswordDto);
 
       expect(authService.changePassword).toHaveBeenCalledWith(
         userId,

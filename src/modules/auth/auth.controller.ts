@@ -64,7 +64,8 @@ export class AuthController {
     examples: {
       ejemplo_completo: {
         summary: 'Ejemplo completo con todos los campos requeridos',
-        description: 'Usa este ejemplo completo para registrar un usuario exitosamente',
+        description:
+          'Usa este ejemplo completo para registrar un usuario exitosamente',
         value: {
           email: 'juan.perez@example.com',
           password: 'P@ssw0rd123!',
@@ -142,8 +143,7 @@ export class AuthController {
         success: true,
         data: {
           success: true,
-          message:
-            'Email verificado exitosamente. Ya puedes iniciar sesión.',
+          message: 'Email verificado exitosamente. Ya puedes iniciar sesión.',
         },
         timestamp: '2025-01-01T00:00:00.000Z',
         path: '/api/auth/verify-email',
@@ -298,7 +298,8 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Cerrar sesión',
-    description: 'Invalida el refresh token del usuario y revoca la sesión activa',
+    description:
+      'Invalida el refresh token del usuario y revoca la sesión activa',
   })
   @ApiBody({
     schema: {
@@ -339,7 +340,12 @@ export class AuthController {
     @Headers('x-forwarded-for') forwardedFor?: string,
   ) {
     const ipAddress = forwardedFor || ip || 'unknown';
-    return this.authService.logout(userId, refreshToken, ipAddress, userAgent || 'unknown');
+    return this.authService.logout(
+      userId,
+      refreshToken,
+      ipAddress,
+      userAgent || 'unknown',
+    );
   }
 
   @Post('logout-all')
@@ -348,7 +354,8 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Cerrar todas las sesiones',
-    description: 'Invalida todas las sesiones activas del usuario en todos los dispositivos',
+    description:
+      'Invalida todas las sesiones activas del usuario en todos los dispositivos',
   })
   @ApiResponse({
     status: 200,
@@ -377,7 +384,11 @@ export class AuthController {
     @Headers('x-forwarded-for') forwardedFor?: string,
   ) {
     const ipAddress = forwardedFor || ip || 'unknown';
-    return this.authService.logoutAll(userId, ipAddress, userAgent || 'unknown');
+    return this.authService.logoutAll(
+      userId,
+      ipAddress,
+      userAgent || 'unknown',
+    );
   }
 
   @Get('sessions')
@@ -385,7 +396,8 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Obtener sesiones activas',
-    description: 'Lista todas las sesiones activas del usuario con información del dispositivo',
+    description:
+      'Lista todas las sesiones activas del usuario con información del dispositivo',
   })
   @ApiResponse({
     status: 200,

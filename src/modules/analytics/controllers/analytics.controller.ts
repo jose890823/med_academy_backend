@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Query,
-  Param,
-  UseGuards,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, Query, Param, UseGuards, Res } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -47,7 +40,8 @@ export class AnalyticsController {
   @Get('dashboard')
   @ApiOperation({
     summary: 'Métricas del dashboard',
-    description: 'Obtiene las métricas principales para el dashboard de administración',
+    description:
+      'Obtiene las métricas principales para el dashboard de administración',
   })
   @ApiResponse({
     status: 200,
@@ -67,7 +61,8 @@ export class AnalyticsController {
   @Get('trends/:metric')
   @ApiOperation({
     summary: 'Datos de tendencia',
-    description: 'Obtiene datos de tendencia para gráficos (enrollments, revenue, users, certificates)',
+    description:
+      'Obtiene datos de tendencia para gráficos (enrollments, revenue, users, certificates)',
   })
   @ApiParam({
     name: 'metric',
@@ -163,12 +158,18 @@ export class AnalyticsController {
     @Res() res: Response,
   ): Promise<void> {
     // Obtener datos
-    const metrics = await this.analyticsService.getDashboardMetrics(query as AnalyticsQueryDto);
+    const metrics = await this.analyticsService.getDashboardMetrics(
+      query as AnalyticsQueryDto,
+    );
     const courseAnalytics = await this.analyticsService.getCourseAnalytics();
     const topPerformers = await this.analyticsService.getTopPerformers(20);
 
     // Generar CSV simple (alternativa a Excel sin dependencias adicionales)
-    const csvData = this.generateCSVReport(metrics, courseAnalytics, topPerformers);
+    const csvData = this.generateCSVReport(
+      metrics,
+      courseAnalytics,
+      topPerformers,
+    );
 
     // Configurar respuesta
     res.setHeader('Content-Type', 'text/csv');
@@ -199,25 +200,49 @@ export class AnalyticsController {
     // Métricas principales
     lines.push('=== MAIN METRICS ===');
     lines.push('Metric,Value,Previous,Change %');
-    lines.push(`Total Users,${metrics.totalUsers.value},${metrics.totalUsers.previousValue || ''},${metrics.totalUsers.changePercent || ''}`);
+    lines.push(
+      `Total Users,${metrics.totalUsers.value},${metrics.totalUsers.previousValue || ''},${metrics.totalUsers.changePercent || ''}`,
+    );
     lines.push(`Active Users,${metrics.activeUsers.value},,`);
-    lines.push(`New Users,${metrics.newUsers.value},${metrics.newUsers.previousValue || ''},${metrics.newUsers.changePercent || ''}`);
+    lines.push(
+      `New Users,${metrics.newUsers.value},${metrics.newUsers.previousValue || ''},${metrics.newUsers.changePercent || ''}`,
+    );
     lines.push(`Active Enrollments,${metrics.activeEnrollments.value},,`);
-    lines.push(`New Enrollments,${metrics.newEnrollments.value},${metrics.newEnrollments.previousValue || ''},${metrics.newEnrollments.changePercent || ''}`);
-    lines.push(`Completed Enrollments,${metrics.completedEnrollments.value},${metrics.completedEnrollments.previousValue || ''},${metrics.completedEnrollments.changePercent || ''}`);
-    lines.push(`Total Revenue (USD),${metrics.totalRevenue.value},${metrics.totalRevenue.previousValue || ''},${metrics.totalRevenue.changePercent || ''}`);
-    lines.push(`Payments Count,${metrics.paymentsCount.value},${metrics.paymentsCount.previousValue || ''},${metrics.paymentsCount.changePercent || ''}`);
-    lines.push(`Average Ticket (USD),${metrics.averageTicket.value},${metrics.averageTicket.previousValue || ''},${metrics.averageTicket.changePercent || ''}`);
-    lines.push(`Certificates Issued,${metrics.certificatesIssued.value},${metrics.certificatesIssued.previousValue || ''},${metrics.certificatesIssued.changePercent || ''}`);
-    lines.push(`Evaluations Completed,${metrics.evaluationsCompleted.value},${metrics.evaluationsCompleted.previousValue || ''},${metrics.evaluationsCompleted.changePercent || ''}`);
-    lines.push(`Average Pass Rate (%),${metrics.averagePassRate.value},${metrics.averagePassRate.previousValue || ''},${metrics.averagePassRate.changePercent || ''}`);
+    lines.push(
+      `New Enrollments,${metrics.newEnrollments.value},${metrics.newEnrollments.previousValue || ''},${metrics.newEnrollments.changePercent || ''}`,
+    );
+    lines.push(
+      `Completed Enrollments,${metrics.completedEnrollments.value},${metrics.completedEnrollments.previousValue || ''},${metrics.completedEnrollments.changePercent || ''}`,
+    );
+    lines.push(
+      `Total Revenue (USD),${metrics.totalRevenue.value},${metrics.totalRevenue.previousValue || ''},${metrics.totalRevenue.changePercent || ''}`,
+    );
+    lines.push(
+      `Payments Count,${metrics.paymentsCount.value},${metrics.paymentsCount.previousValue || ''},${metrics.paymentsCount.changePercent || ''}`,
+    );
+    lines.push(
+      `Average Ticket (USD),${metrics.averageTicket.value},${metrics.averageTicket.previousValue || ''},${metrics.averageTicket.changePercent || ''}`,
+    );
+    lines.push(
+      `Certificates Issued,${metrics.certificatesIssued.value},${metrics.certificatesIssued.previousValue || ''},${metrics.certificatesIssued.changePercent || ''}`,
+    );
+    lines.push(
+      `Evaluations Completed,${metrics.evaluationsCompleted.value},${metrics.evaluationsCompleted.previousValue || ''},${metrics.evaluationsCompleted.changePercent || ''}`,
+    );
+    lines.push(
+      `Average Pass Rate (%),${metrics.averagePassRate.value},${metrics.averagePassRate.previousValue || ''},${metrics.averagePassRate.changePercent || ''}`,
+    );
     lines.push('');
 
     // Analytics por curso
     lines.push('=== COURSE ANALYTICS ===');
-    lines.push('Course,Active Enrollments,Total Enrollments,Completion Rate %,Revenue (USD)');
+    lines.push(
+      'Course,Active Enrollments,Total Enrollments,Completion Rate %,Revenue (USD)',
+    );
     for (const course of courseAnalytics) {
-      lines.push(`"${course.courseTitle}",${course.activeEnrollments},${course.totalEnrollments},${course.completionRate},${course.revenue}`);
+      lines.push(
+        `"${course.courseTitle}",${course.activeEnrollments},${course.totalEnrollments},${course.completionRate},${course.revenue}`,
+      );
     }
     lines.push('');
 
@@ -225,7 +250,9 @@ export class AnalyticsController {
     lines.push('=== TOP PERFORMERS ===');
     lines.push('Student,Email,Certificates Earned');
     for (const performer of topPerformers) {
-      lines.push(`"${performer.studentName}",${performer.email},${performer.certificatesEarned}`);
+      lines.push(
+        `"${performer.studentName}",${performer.email},${performer.certificatesEarned}`,
+      );
     }
 
     return lines.join('\n');

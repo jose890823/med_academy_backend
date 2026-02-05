@@ -97,7 +97,8 @@ export class Course {
   subtitle: string | null;
 
   @ApiProperty({
-    example: 'Programa completo de preparación para el examen de certificación vascular.',
+    example:
+      'Programa completo de preparación para el examen de certificación vascular.',
     description: 'Descripción corta para listados',
   })
   @Column({ type: 'varchar', length: 500 })
@@ -200,7 +201,11 @@ export class Course {
     description: 'Modalidad del curso',
     enum: CourseModality,
   })
-  @Column({ type: 'enum', enum: CourseModality, default: CourseModality.VIRTUAL })
+  @Column({
+    type: 'enum',
+    enum: CourseModality,
+    default: CourseModality.VIRTUAL,
+  })
   modality: CourseModality;
 
   @ApiProperty({
@@ -291,7 +296,10 @@ export class Course {
   // ============================================
 
   @ApiProperty({
-    example: ['Dominar técnicas de Doppler', 'Identificar patologías vasculares'],
+    example: [
+      'Dominar técnicas de Doppler',
+      'Identificar patologías vasculares',
+    ],
     description: 'Objetivos de aprendizaje',
     type: [String],
   })
@@ -476,7 +484,10 @@ export class Course {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ApiProperty({ description: 'Fecha de eliminación (soft delete)', required: false })
+  @ApiProperty({
+    description: 'Fecha de eliminación (soft delete)',
+    required: false,
+  })
   @DeleteDateColumn()
   deletedAt: Date | null;
 
@@ -511,7 +522,9 @@ export class Course {
    */
   get discountPercentage(): number {
     if (!this.hasDiscount) return 0;
-    return Math.round(((this.regularPrice - this.salePrice!) / this.regularPrice) * 100);
+    return Math.round(
+      ((this.regularPrice - this.salePrice!) / this.regularPrice) * 100,
+    );
   }
 
   /**

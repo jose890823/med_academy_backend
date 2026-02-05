@@ -39,7 +39,8 @@ export class IpBlockGuard implements CanActivate {
     if (isBlocked) {
       this.logger.warn(`Acceso denegado a IP bloqueada: ${ipAddress}`);
       throw new ForbiddenException({
-        message: 'Tu IP ha sido bloqueada temporalmente debido a actividad sospechosa.',
+        message:
+          'Tu IP ha sido bloqueada temporalmente debido a actividad sospechosa.',
         code: 'IP_BLOCKED',
       });
     }

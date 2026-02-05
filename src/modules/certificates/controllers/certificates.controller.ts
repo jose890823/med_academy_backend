@@ -36,7 +36,10 @@ export class CertificatesController {
     summary: 'Verificar certificado',
     description: 'Verifica la autenticidad de un certificado por su código',
   })
-  @ApiParam({ name: 'code', description: 'Código de verificación del certificado' })
+  @ApiParam({
+    name: 'code',
+    description: 'Código de verificación del certificado',
+  })
   @ApiResponse({
     status: 200,
     description: 'Resultado de la verificación',

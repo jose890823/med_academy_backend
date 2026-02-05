@@ -38,13 +38,13 @@ export enum WorkshopLevel {
  * Tipo de requisito
  */
 export enum RequirementType {
-  COURSE_COMPLETED = 'course_completed',       // Debe haber completado un curso
-  MODULE_COMPLETED = 'module_completed',       // Debe haber completado módulos específicos
-  EVALUATION_PASSED = 'evaluation_passed',     // Debe haber aprobado una evaluación
-  WORKSHOP_ATTENDED = 'workshop_attended',     // Debe haber asistido a otro workshop
-  CERTIFICATION = 'certification',             // Debe tener certificación externa
-  EXPERIENCE_YEARS = 'experience_years',       // Años de experiencia requeridos
-  CUSTOM = 'custom',                           // Requisito personalizado (texto libre)
+  COURSE_COMPLETED = 'course_completed', // Debe haber completado un curso
+  MODULE_COMPLETED = 'module_completed', // Debe haber completado módulos específicos
+  EVALUATION_PASSED = 'evaluation_passed', // Debe haber aprobado una evaluación
+  WORKSHOP_ATTENDED = 'workshop_attended', // Debe haber asistido a otro workshop
+  CERTIFICATION = 'certification', // Debe tener certificación externa
+  EXPERIENCE_YEARS = 'experience_years', // Años de experiencia requeridos
+  CUSTOM = 'custom', // Requisito personalizado (texto libre)
 }
 
 /**
@@ -52,9 +52,9 @@ export enum RequirementType {
  */
 export interface WorkshopRequirement {
   type: RequirementType;
-  value: string;           // ID del curso/módulo/evaluación, o texto descriptivo
-  label: string;           // Texto para mostrar en el frontend
-  isRequired: boolean;     // true = obligatorio, false = recomendado
+  value: string; // ID del curso/módulo/evaluación, o texto descriptivo
+  label: string; // Texto para mostrar en el frontend
+  isRequired: boolean; // true = obligatorio, false = recomendado
 }
 
 /**
@@ -100,7 +100,8 @@ export class Workshop {
   subtitle: string | null;
 
   @ApiProperty({
-    example: 'Taller práctico de técnicas de ultrasonido vascular con equipos reales.',
+    example:
+      'Taller práctico de técnicas de ultrasonido vascular con equipos reales.',
     description: 'Descripción corta para listados',
   })
   @Column({ type: 'varchar', length: 500 })
@@ -162,7 +163,8 @@ export class Workshop {
 
   @ApiProperty({
     example: true,
-    description: 'Indica si el workshop está incluido al comprar un curso asociado',
+    description:
+      'Indica si el workshop está incluido al comprar un curso asociado',
   })
   @Column({ type: 'boolean', default: false })
   includedWithCourse: boolean;
@@ -234,7 +236,10 @@ export class Workshop {
   // ============================================
 
   @ApiProperty({
-    example: ['Practicar técnicas de Doppler', 'Realizar mediciones en tiempo real'],
+    example: [
+      'Practicar técnicas de Doppler',
+      'Realizar mediciones en tiempo real',
+    ],
     description: 'Objetivos de aprendizaje',
     type: [String],
   })
@@ -242,7 +247,11 @@ export class Workshop {
   objectives: string[] | null;
 
   @ApiProperty({
-    example: ['Equipo de ultrasonido', 'Casos prácticos', 'Material de estudio'],
+    example: [
+      'Equipo de ultrasonido',
+      'Casos prácticos',
+      'Material de estudio',
+    ],
     description: 'Qué incluye el workshop',
     type: [String],
   })
@@ -285,7 +294,11 @@ export class Workshop {
     description: 'Nivel del workshop',
     enum: WorkshopLevel,
   })
-  @Column({ type: 'enum', enum: WorkshopLevel, default: WorkshopLevel.INTERMEDIATE })
+  @Column({
+    type: 'enum',
+    enum: WorkshopLevel,
+    default: WorkshopLevel.INTERMEDIATE,
+  })
   level: WorkshopLevel;
 
   @ApiProperty({
@@ -435,7 +448,9 @@ export class Workshop {
    */
   get discountPercentage(): number {
     if (!this.hasDiscount) return 0;
-    return Math.round(((this.regularPrice - this.salePrice!) / this.regularPrice) * 100);
+    return Math.round(
+      ((this.regularPrice - this.salePrice!) / this.regularPrice) * 100,
+    );
   }
 
   /**

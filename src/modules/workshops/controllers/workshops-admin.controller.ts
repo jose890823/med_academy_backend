@@ -30,7 +30,10 @@ import { WorkshopsService } from '../services/workshops.service';
 import { SessionsService } from '../services/sessions.service';
 import { RegistrationsService } from '../services/registrations.service';
 import { Workshop, WorkshopStatus } from '../entities/workshop.entity';
-import { WorkshopSession, SessionStatus } from '../entities/workshop-session.entity';
+import {
+  WorkshopSession,
+  SessionStatus,
+} from '../entities/workshop-session.entity';
 import { WorkshopRegistration } from '../entities/workshop-registration.entity';
 import {
   CreateWorkshopDto,
@@ -163,7 +166,9 @@ export class WorkshopsAdminController {
     description: 'Estado actualizado',
     type: Workshop,
   })
-  async toggleFeatured(@Param('id', ParseUUIDPipe) id: string): Promise<Workshop> {
+  async toggleFeatured(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Workshop> {
     return this.workshopsService.toggleFeatured(id);
   }
 
@@ -466,7 +471,8 @@ export class WorkshopsAdminController {
   })
   async confirmRegistration(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() body: {
+    @Body()
+    body: {
       amountPaid: number;
       stripePaymentIntentId?: string;
       discountApplied?: number;

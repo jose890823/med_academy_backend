@@ -50,13 +50,15 @@ export class Answer {
 
   @ApiPropertyOptional({
     example: 'a',
-    description: 'ID de la opción seleccionada (para multiple_choice/true_false)',
+    description:
+      'ID de la opción seleccionada (para multiple_choice/true_false)',
   })
   @Column({ type: 'varchar', length: 50, nullable: true })
   selectedOptionId: string | null;
 
   @ApiPropertyOptional({
-    example: 'La velocidad del sonido en tejido blando es aproximadamente 1540 m/s',
+    example:
+      'La velocidad del sonido en tejido blando es aproximadamente 1540 m/s',
     description: 'Texto de la respuesta (para short_answer/essay)',
   })
   @Column({ type: 'text', nullable: true })
@@ -118,6 +120,9 @@ export class Answer {
    * Verifica si tiene respuesta (algún valor)
    */
   get hasAnswer(): boolean {
-    return this.selectedOptionId !== null || (this.answerText !== null && this.answerText.trim() !== '');
+    return (
+      this.selectedOptionId !== null ||
+      (this.answerText !== null && this.answerText.trim() !== '')
+    );
   }
 }

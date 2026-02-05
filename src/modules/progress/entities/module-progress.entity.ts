@@ -64,7 +64,11 @@ export class ModuleProgress {
     description: 'Estado del progreso del módulo',
     enum: ModuleProgressStatus,
   })
-  @Column({ type: 'enum', enum: ModuleProgressStatus, default: ModuleProgressStatus.NOT_STARTED })
+  @Column({
+    type: 'enum',
+    enum: ModuleProgressStatus,
+    default: ModuleProgressStatus.NOT_STARTED,
+  })
   status: ModuleProgressStatus;
 
   // ============================================
@@ -231,7 +235,9 @@ export class ModuleProgress {
     const videoScore = this.videoWatched ? 100 : this.videoProgress;
     const materialsScore = this.materialsPercentage;
 
-    return Math.round(videoScore * videoWeight + materialsScore * materialsWeight);
+    return Math.round(
+      videoScore * videoWeight + materialsScore * materialsWeight,
+    );
   }
 
   /**

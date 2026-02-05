@@ -12,10 +12,7 @@ import {
   MaxLength,
   IsObject,
 } from 'class-validator';
-import {
-  MaterialType,
-  StorageProvider,
-} from '../entities/material.entity';
+import { MaterialType, StorageProvider } from '../entities/material.entity';
 
 /**
  * DTO para crear un material

@@ -1,16 +1,5 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Query,
-  ParseUUIDPipe,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-} from '@nestjs/swagger';
+import { Controller, Get, Param, Query, ParseUUIDPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { Public } from '../../auth/decorators/public.decorator';
 import { InstructorsService } from '../services/instructors.service';
 import { InstructorProfile } from '../entities/instructor-profile.entity';
@@ -84,9 +73,7 @@ export class InstructorsController {
     description: 'Perfil de instructor encontrado',
     type: InstructorProfile,
   })
-  async findBySlug(
-    @Param('slug') slug: string,
-  ): Promise<InstructorProfile> {
+  async findBySlug(@Param('slug') slug: string): Promise<InstructorProfile> {
     return this.instructorsService.findBySlug(slug);
   }
 
@@ -100,9 +87,7 @@ export class InstructorsController {
     status: 200,
     description: 'Cursos del instructor',
   })
-  async getInstructorCourses(
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
+  async getInstructorCourses(@Param('id', ParseUUIDPipe) id: string) {
     return this.instructorsService.getInstructorCourses(id);
   }
 }

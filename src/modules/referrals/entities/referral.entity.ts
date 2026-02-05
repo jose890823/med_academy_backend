@@ -16,21 +16,21 @@ import { ReferralCode } from './referral-code.entity';
  * Estado del referido
  */
 export enum ReferralStatus {
-  PENDING = 'pending',           // Referido registrado, pero no ha completado acción
-  COMPLETED = 'completed',       // Referido completó acción requerida (ej: primera compra)
-  REWARDED = 'rewarded',         // Recompensa entregada a ambos
-  EXPIRED = 'expired',           // Referido no completó en tiempo
-  CANCELLED = 'cancelled',       // Cancelado por admin
+  PENDING = 'pending', // Referido registrado, pero no ha completado acción
+  COMPLETED = 'completed', // Referido completó acción requerida (ej: primera compra)
+  REWARDED = 'rewarded', // Recompensa entregada a ambos
+  EXPIRED = 'expired', // Referido no completó en tiempo
+  CANCELLED = 'cancelled', // Cancelado por admin
 }
 
 /**
  * Tipo de recompensa
  */
 export enum RewardType {
-  DISCOUNT_PERCENT = 'discount_percent',  // Descuento porcentual
-  DISCOUNT_FIXED = 'discount_fixed',      // Descuento fijo en USD
-  CREDIT = 'credit',                      // Crédito en cuenta
-  FREE_ACCESS = 'free_access',            // Acceso gratuito a recurso
+  DISCOUNT_PERCENT = 'discount_percent', // Descuento porcentual
+  DISCOUNT_FIXED = 'discount_fixed', // Descuento fijo en USD
+  CREDIT = 'credit', // Crédito en cuenta
+  FREE_ACCESS = 'free_access', // Acceso gratuito a recurso
 }
 
 /**
@@ -80,7 +80,10 @@ export class Referral {
   // RELACIÓN - CÓDIGO USADO
   // ============================================
 
-  @ManyToOne(() => ReferralCode, (code) => code.referrals, { onDelete: 'SET NULL', nullable: true })
+  @ManyToOne(() => ReferralCode, (code) => code.referrals, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
   @JoinColumn({ name: 'referralCodeId' })
   referralCode: ReferralCode | null;
 
@@ -257,7 +260,9 @@ export class Referral {
    */
   get isExpired(): boolean {
     if (!this.expiresAt) return false;
-    return new Date() > this.expiresAt && this.status === ReferralStatus.PENDING;
+    return (
+      new Date() > this.expiresAt && this.status === ReferralStatus.PENDING
+    );
   }
 
   /**

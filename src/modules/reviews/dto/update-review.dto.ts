@@ -32,7 +32,8 @@ export class UpdateReviewDto {
   title?: string;
 
   @ApiPropertyOptional({
-    example: 'Después de completar todas las evaluaciones, puedo decir que es el mejor curso de física Doppler.',
+    example:
+      'Después de completar todas las evaluaciones, puedo decir que es el mejor curso de física Doppler.',
     description: 'Nuevo comentario',
   })
   @IsOptional()
@@ -46,7 +47,8 @@ export class UpdateReviewDto {
  */
 export class InstructorResponseDto {
   @ApiPropertyOptional({
-    example: 'Gracias por tu feedback, nos alegra que te haya gustado el curso!',
+    example:
+      'Gracias por tu feedback, nos alegra que te haya gustado el curso!',
     description: 'Respuesta del instructor',
   })
   @IsOptional()

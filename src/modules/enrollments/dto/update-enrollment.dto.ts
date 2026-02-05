@@ -28,7 +28,10 @@ export class UpdateEnrollmentDto {
     description: 'Fecha de inicio de acceso',
   })
   @IsOptional()
-  @IsDateString({}, { message: 'accessStartDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'accessStartDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   accessStartDate?: string;
 
   @ApiPropertyOptional({
@@ -36,7 +39,10 @@ export class UpdateEnrollmentDto {
     description: 'Fecha de fin de acceso (null = acceso de por vida)',
   })
   @IsOptional()
-  @IsDateString({}, { message: 'accessEndDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'accessEndDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   accessEndDate?: string;
 
   @ApiPropertyOptional({

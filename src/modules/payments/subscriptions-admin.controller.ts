@@ -22,7 +22,13 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../auth/entities/user.entity';
-import { Subscription, SubscriptionPlan, SubscriptionStatus, PLAN_PRICES, InitialPaymentStatus } from './entities/subscription.entity';
+import {
+  Subscription,
+  SubscriptionPlan,
+  SubscriptionStatus,
+  PLAN_PRICES,
+  InitialPaymentStatus,
+} from './entities/subscription.entity';
 import { User } from '../auth/entities/user.entity';
 import { AssignPlanDto, RemovePlanDto } from './dto/assign-plan.dto';
 
@@ -84,20 +90,21 @@ export class SubscriptionsAdminController {
   @ApiOperation({ summary: 'Obtener estadisticas de suscripciones' })
   @ApiResponse({ status: 200, description: 'Estadisticas de suscripciones' })
   async getStats() {
-    const [
-      total,
-      active,
-      cancelled,
-      byPlan,
-    ] = await Promise.all([
+    const [total, active, cancelled, byPlan] = await Promise.all([
       this.subscriptionRepository.count(),
-      this.subscriptionRepository.count({ where: { status: SubscriptionStatus.ACTIVE } }),
-      this.subscriptionRepository.count({ where: { status: SubscriptionStatus.CANCELLED } }),
+      this.subscriptionRepository.count({
+        where: { status: SubscriptionStatus.ACTIVE },
+      }),
+      this.subscriptionRepository.count({
+        where: { status: SubscriptionStatus.CANCELLED },
+      }),
       this.subscriptionRepository
         .createQueryBuilder('subscription')
         .select('subscription.planType', 'planType')
         .addSelect('COUNT(*)', 'count')
-        .where('subscription.status = :status', { status: SubscriptionStatus.ACTIVE })
+        .where('subscription.status = :status', {
+          status: SubscriptionStatus.ACTIVE,
+        })
         .groupBy('subscription.planType')
         .getRawMany(),
     ]);
@@ -107,10 +114,13 @@ export class SubscriptionsAdminController {
       active,
       cancelled,
       suspended: total - active - cancelled,
-      byPlan: byPlan.reduce((acc, item) => {
-        acc[item.planType] = parseInt(item.count);
-        return acc;
-      }, {} as Record<string, number>),
+      byPlan: byPlan.reduce(
+        (acc, item) => {
+          acc[item.planType] = parseInt(item.count);
+          return acc;
+        },
+        {} as Record<string, number>,
+      ),
     };
   }
 
@@ -132,7 +142,9 @@ export class SubscriptionsAdminController {
   @ApiResponse({ status: 400, description: 'Usuario ya tiene un plan activo' })
   async assignPlan(@Body() dto: AssignPlanDto) {
     // Verificar que el usuario existe
-    const user = await this.userRepository.findOne({ where: { id: dto.userId } });
+    const user = await this.userRepository.findOne({
+      where: { id: dto.userId },
+    });
     if (!user) {
       throw new Error('Usuario no encontrado');
     }
@@ -146,7 +158,8 @@ export class SubscriptionsAdminController {
       // Actualizar el plan existente
       existingSubscription.planType = dto.planType;
       existingSubscription.monthlyPrice = PLAN_PRICES[dto.planType];
-      existingSubscription.notes = dto.notes || `Plan actualizado a ${dto.planType} por admin`;
+      existingSubscription.notes =
+        dto.notes || `Plan actualizado a ${dto.planType} por admin`;
       existingSubscription.updatedAt = new Date();
 
       await this.subscriptionRepository.save(existingSubscription);
@@ -198,7 +211,8 @@ export class SubscriptionsAdminController {
 
     subscription.status = SubscriptionStatus.CANCELLED;
     subscription.cancelledAt = new Date();
-    subscription.cancellationReason = dto?.reason || 'Cancelado por administrador';
+    subscription.cancellationReason =
+      dto?.reason || 'Cancelado por administrador';
 
     await this.subscriptionRepository.save(subscription);
 

@@ -129,9 +129,7 @@ export class NotificationsController {
     status: 200,
     description: 'Notificaciones marcadas como leídas',
   })
-  async markAllAsRead(
-    @CurrentUser() user: User,
-  ): Promise<{ marked: number }> {
+  async markAllAsRead(@CurrentUser() user: User): Promise<{ marked: number }> {
     const marked = await this.notificationsService.markAllAsRead(user.id);
     return { marked };
   }
@@ -150,7 +148,10 @@ export class NotificationsController {
     @CurrentUser() user: User,
     @Body() body: { ids: string[] },
   ): Promise<{ marked: number }> {
-    const marked = await this.notificationsService.markManyAsRead(body.ids, user.id);
+    const marked = await this.notificationsService.markManyAsRead(
+      body.ids,
+      user.id,
+    );
     return { marked };
   }
 

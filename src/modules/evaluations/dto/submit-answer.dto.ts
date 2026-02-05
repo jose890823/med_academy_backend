@@ -23,14 +23,16 @@ export class AnswerDto {
 
   @ApiPropertyOptional({
     example: 'a',
-    description: 'ID de la opción seleccionada (para multiple_choice/true_false)',
+    description:
+      'ID de la opción seleccionada (para multiple_choice/true_false)',
   })
   @IsOptional()
   @IsString({ message: 'selectedOptionId debe ser texto' })
   selectedOptionId?: string;
 
   @ApiPropertyOptional({
-    example: 'La velocidad del sonido en tejido blando es aproximadamente 1540 m/s',
+    example:
+      'La velocidad del sonido en tejido blando es aproximadamente 1540 m/s',
     description: 'Texto de la respuesta (para short_answer/essay)',
   })
   @IsOptional()

@@ -45,7 +45,8 @@ export class SecurityConfigService implements OnModuleInit {
       key: 'auto_block_after_failed_logins',
       value: '10',
       valueType: 'number',
-      description: 'Bloquear IP automaticamente despues de X intentos de login fallidos',
+      description:
+        'Bloquear IP automaticamente despues de X intentos de login fallidos',
       category: 'blocking',
     },
     {
@@ -144,7 +145,9 @@ export class SecurityConfigService implements OnModuleInit {
     configs.forEach((config) => {
       this.configCache.set(config.key, config);
     });
-    this.logger.debug(`Cache de configuraciones actualizado: ${this.configCache.size} configs`);
+    this.logger.debug(
+      `Cache de configuraciones actualizado: ${this.configCache.size} configs`,
+    );
   }
 
   /**
@@ -155,7 +158,9 @@ export class SecurityConfigService implements OnModuleInit {
     let config: SecurityConfig | null | undefined = this.configCache.get(key);
 
     if (!config) {
-      const found = await this.securityConfigRepository.findOne({ where: { key } });
+      const found = await this.securityConfigRepository.findOne({
+        where: { key },
+      });
       if (found) {
         this.configCache.set(key, found);
         config = found;
@@ -177,7 +182,10 @@ export class SecurityConfigService implements OnModuleInit {
   /**
    * Obtener valor como booleano
    */
-  async getBooleanValue(key: string, defaultValue: boolean = false): Promise<boolean> {
+  async getBooleanValue(
+    key: string,
+    defaultValue: boolean = false,
+  ): Promise<boolean> {
     const value = await this.getValue(key, String(defaultValue));
     return value === 'true';
   }
@@ -199,8 +207,14 @@ export class SecurityConfigService implements OnModuleInit {
   /**
    * Actualizar valor de configuracion
    */
-  async updateValue(key: string, value: string, updatedById?: string): Promise<SecurityConfig | null> {
-    const config = await this.securityConfigRepository.findOne({ where: { key } });
+  async updateValue(
+    key: string,
+    value: string,
+    updatedById?: string,
+  ): Promise<SecurityConfig | null> {
+    const config = await this.securityConfigRepository.findOne({
+      where: { key },
+    });
     if (!config) return null;
 
     config.value = value;

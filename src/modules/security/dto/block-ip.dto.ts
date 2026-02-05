@@ -16,9 +16,12 @@ export class BlockIpDto {
   })
   @IsNotEmpty({ message: 'La IP es obligatoria' })
   @IsString()
-  @Matches(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^([a-fA-F0-9:]+)$/, {
-    message: 'Debe ser una direccion IP valida (IPv4 o IPv6)',
-  })
+  @Matches(
+    /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^([a-fA-F0-9:]+)$/,
+    {
+      message: 'Debe ser una direccion IP valida (IPv4 o IPv6)',
+    },
+  )
   ipAddress: string;
 
   @ApiProperty({

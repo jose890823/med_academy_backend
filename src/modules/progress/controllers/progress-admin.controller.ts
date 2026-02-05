@@ -56,9 +56,7 @@ export class ProgressAdminController {
     status: 200,
     description: 'Estadísticas del estudiante',
   })
-  async getStudentStats(
-    @Param('studentId', ParseUUIDPipe) studentId: string,
-  ) {
+  async getStudentStats(@Param('studentId', ParseUUIDPipe) studentId: string) {
     return this.enrollmentProgressService.getStudentStats(studentId);
   }
 
@@ -78,7 +76,10 @@ export class ProgressAdminController {
     @Param('studentId', ParseUUIDPipe) studentId: string,
     @Query('limit') limit?: number,
   ): Promise<EnrollmentProgress[]> {
-    return this.enrollmentProgressService.getRecentCourses(studentId, limit || 50);
+    return this.enrollmentProgressService.getRecentCourses(
+      studentId,
+      limit || 50,
+    );
   }
 
   @Get('enrollment/:enrollmentId')
@@ -247,7 +248,8 @@ export class ProgressAdminController {
     type: Achievement,
   })
   async grantAchievement(
-    @Body() body: {
+    @Body()
+    body: {
       userId: string;
       type: AchievementType;
       enrollmentId?: string;
@@ -274,7 +276,8 @@ export class ProgressAdminController {
     type: Achievement,
   })
   async grantCustomAchievement(
-    @Body() body: {
+    @Body()
+    body: {
       userId: string;
       title: string;
       description: string;

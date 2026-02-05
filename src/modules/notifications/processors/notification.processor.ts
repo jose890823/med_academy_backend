@@ -33,17 +33,19 @@ export class NotificationProcessor {
    * Procesa envío de email individual
    */
   @Process('send-email')
-  async handleSendEmail(job: Job<{
-    userId: string;
-    type: NotificationType;
-    title: string;
-    message: string;
-    actionUrl?: string;
-    actionText?: string;
-    referenceId?: string;
-    referenceType?: string;
-    metadata?: Record<string, any>;
-  }>): Promise<void> {
+  async handleSendEmail(
+    job: Job<{
+      userId: string;
+      type: NotificationType;
+      title: string;
+      message: string;
+      actionUrl?: string;
+      actionText?: string;
+      referenceId?: string;
+      referenceType?: string;
+      metadata?: Record<string, any>;
+    }>,
+  ): Promise<void> {
     const { data } = job;
     this.logger.debug(`Procesando email para usuario ${data.userId}`);
 
@@ -101,7 +103,9 @@ export class NotificationProcessor {
         // Si no hay servicio de email, marcar como enviado (simulado)
         notification.status = NotificationStatus.SENT;
         notification.sentAt = new Date();
-        this.logger.warn('EmailService no disponible, notificación marcada como enviada');
+        this.logger.warn(
+          'EmailService no disponible, notificación marcada como enviada',
+        );
       }
 
       await this.notificationRepository.save(notification);
@@ -115,17 +119,21 @@ export class NotificationProcessor {
    * Procesa broadcast masivo
    */
   @Process('broadcast')
-  async handleBroadcast(job: Job<{
-    userIds: string[];
-    title: string;
-    message: string;
-    priority: NotificationPriority;
-    actionUrl?: string;
-    actionText?: string;
-    sendEmail?: boolean;
-  }>): Promise<void> {
+  async handleBroadcast(
+    job: Job<{
+      userIds: string[];
+      title: string;
+      message: string;
+      priority: NotificationPriority;
+      actionUrl?: string;
+      actionText?: string;
+      sendEmail?: boolean;
+    }>,
+  ): Promise<void> {
     const { data } = job;
-    this.logger.log(`Procesando broadcast para ${data.userIds.length} usuarios`);
+    this.logger.log(
+      `Procesando broadcast para ${data.userIds.length} usuarios`,
+    );
 
     let processed = 0;
     let failed = 0;
@@ -164,23 +172,31 @@ export class NotificationProcessor {
         }
       } catch (error) {
         failed++;
-        this.logger.error(`Error en broadcast para usuario ${userId}: ${error.message}`);
+        this.logger.error(
+          `Error en broadcast para usuario ${userId}: ${error.message}`,
+        );
       }
     }
 
-    this.logger.log(`Broadcast completado: ${processed} exitosos, ${failed} fallidos`);
+    this.logger.log(
+      `Broadcast completado: ${processed} exitosos, ${failed} fallidos`,
+    );
   }
 
   /**
    * Agrega notificación al digest diario/semanal
    */
   @Process('add-to-digest')
-  async handleAddToDigest(job: Job<{
-    userId: string;
-    notification: any;
-  }>): Promise<void> {
+  async handleAddToDigest(
+    job: Job<{
+      userId: string;
+      notification: any;
+    }>,
+  ): Promise<void> {
     const { data } = job;
-    this.logger.debug(`Agregando notificación al digest de usuario ${data.userId}`);
+    this.logger.debug(
+      `Agregando notificación al digest de usuario ${data.userId}`,
+    );
 
     // Por ahora, simplemente guardamos la notificación con un flag de "pending digest"
     // El digest real se procesará con un cron job separado
@@ -209,12 +225,16 @@ export class NotificationProcessor {
    * Procesa envío de digest (llamado por cron)
    */
   @Process('send-digest')
-  async handleSendDigest(job: Job<{
-    userId: string;
-    frequency: 'daily' | 'weekly';
-  }>): Promise<void> {
+  async handleSendDigest(
+    job: Job<{
+      userId: string;
+      frequency: 'daily' | 'weekly';
+    }>,
+  ): Promise<void> {
     const { data } = job;
-    this.logger.log(`Procesando digest ${data.frequency} para usuario ${data.userId}`);
+    this.logger.log(
+      `Procesando digest ${data.frequency} para usuario ${data.userId}`,
+    );
 
     // Obtener notificaciones pendientes de digest
     const pendingNotifications = await this.notificationRepository.find({
@@ -227,7 +247,9 @@ export class NotificationProcessor {
     });
 
     if (pendingNotifications.length === 0) {
-      this.logger.debug(`No hay notificaciones pendientes para digest de ${data.userId}`);
+      this.logger.debug(
+        `No hay notificaciones pendientes para digest de ${data.userId}`,
+      );
       return;
     }
 
@@ -260,7 +282,9 @@ export class NotificationProcessor {
         }
 
         await this.notificationRepository.save(pendingNotifications);
-        this.logger.log(`Digest enviado a ${user.email} con ${pendingNotifications.length} notificaciones`);
+        this.logger.log(
+          `Digest enviado a ${user.email} con ${pendingNotifications.length} notificaciones`,
+        );
       } catch (error) {
         this.logger.error(`Error enviando digest: ${error.message}`);
       }

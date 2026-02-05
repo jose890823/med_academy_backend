@@ -43,7 +43,8 @@ export class CoursesController {
   @Public()
   @ApiOperation({
     summary: 'Obtener cursos publicados',
-    description: 'Retorna la lista de cursos publicados con filtros y paginación',
+    description:
+      'Retorna la lista de cursos publicados con filtros y paginación',
   })
   @ApiResponse({
     status: 200,

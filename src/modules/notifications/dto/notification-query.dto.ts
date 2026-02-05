@@ -1,7 +1,17 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsEnum, IsBoolean, IsInt, Min, Max } from 'class-validator';
+import {
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  IsInt,
+  Min,
+  Max,
+} from 'class-validator';
 import { Type, Transform } from 'class-transformer';
-import { NotificationType, NotificationStatus } from '../entities/notification.entity';
+import {
+  NotificationType,
+  NotificationStatus,
+} from '../entities/notification.entity';
 
 /**
  * DTO para filtrar notificaciones

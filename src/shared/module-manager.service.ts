@@ -138,7 +138,9 @@ export class ModuleManagerService implements OnModuleInit {
    */
   private logModuleStatus(): void {
     const available = this.getAvailableModules();
-    const unavailable = this.getAllModules().filter((m) => !m.exists || !m.enabled);
+    const unavailable = this.getAllModules().filter(
+      (m) => !m.exists || !m.enabled,
+    );
 
     this.logger.log(`📦 Módulos disponibles: ${available.length}`);
     available.forEach((m) => {

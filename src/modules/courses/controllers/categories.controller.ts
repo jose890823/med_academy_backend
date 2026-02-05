@@ -41,7 +41,8 @@ export class CategoriesController {
   @Public()
   @ApiOperation({
     summary: 'Obtener categorías activas',
-    description: 'Retorna la lista de categorías activas ordenadas por orden y nombre',
+    description:
+      'Retorna la lista de categorías activas ordenadas por orden y nombre',
   })
   @ApiResponse({
     status: 200,
@@ -122,7 +123,10 @@ export class CategoriesAdminController {
     description: 'Categoría creada exitosamente',
     type: Category,
   })
-  @ApiResponse({ status: 409, description: 'Ya existe una categoría con este slug' })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe una categoría con este slug',
+  })
   async create(@Body() dto: CreateCategoryDto): Promise<Category> {
     return this.categoriesService.create(dto);
   }
@@ -139,7 +143,10 @@ export class CategoriesAdminController {
     type: Category,
   })
   @ApiResponse({ status: 404, description: 'Categoría no encontrada' })
-  @ApiResponse({ status: 409, description: 'Ya existe una categoría con este slug' })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe una categoría con este slug',
+  })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateCategoryDto,

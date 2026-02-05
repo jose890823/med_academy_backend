@@ -7,7 +7,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Enrollment, EnrollmentStatus, PaymentStatus } from '../entities/enrollment.entity';
+import {
+  Enrollment,
+  EnrollmentStatus,
+  PaymentStatus,
+} from '../entities/enrollment.entity';
 import {
   CreateEnrollmentDto,
   UpdateEnrollmentDto,
@@ -102,7 +106,9 @@ export class EnrollmentsService {
       await this.classroomsService.incrementStudentCount(dto.classroomId);
     }
 
-    this.logger.log(`Inscripción creada: ${saved.id} (Estudiante: ${dto.studentId}, Convocatoria: ${dto.cohortId})`);
+    this.logger.log(
+      `Inscripción creada: ${saved.id} (Estudiante: ${dto.studentId}, Convocatoria: ${dto.cohortId})`,
+    );
     return saved;
   }
 
@@ -151,7 +157,9 @@ export class EnrollmentsService {
     }
 
     if (classroomId) {
-      queryBuilder.andWhere('enrollment.classroomId = :classroomId', { classroomId });
+      queryBuilder.andWhere('enrollment.classroomId = :classroomId', {
+        classroomId,
+      });
     }
 
     if (courseId) {
@@ -163,7 +171,9 @@ export class EnrollmentsService {
     }
 
     if (paymentStatus) {
-      queryBuilder.andWhere('enrollment.paymentStatus = :paymentStatus', { paymentStatus });
+      queryBuilder.andWhere('enrollment.paymentStatus = :paymentStatus', {
+        paymentStatus,
+      });
     }
 
     if (hasCertificate !== undefined) {
@@ -273,7 +283,9 @@ export class EnrollmentsService {
       .leftJoin('enrollment.cohort', 'cohort')
       .where('enrollment.studentId = :studentId', { studentId })
       .andWhere('cohort.courseId = :courseId', { courseId })
-      .andWhere('enrollment.status = :status', { status: EnrollmentStatus.ACTIVE })
+      .andWhere('enrollment.status = :status', {
+        status: EnrollmentStatus.ACTIVE,
+      })
       .andWhere('enrollment.paymentStatus IN (:...paymentStatuses)', {
         paymentStatuses: [PaymentStatus.COMPLETED, PaymentStatus.PARTIAL],
       })
@@ -294,7 +306,9 @@ export class EnrollmentsService {
 
     // Si se cambia el aula, validar
     if (dto.classroomId && dto.classroomId !== enrollment.classroomId) {
-      const newClassroom = await this.classroomsService.findById(dto.classroomId);
+      const newClassroom = await this.classroomsService.findById(
+        dto.classroomId,
+      );
 
       if (newClassroom.cohortId !== enrollment.cohortId) {
         throw new BadRequestException({
@@ -312,7 +326,9 @@ export class EnrollmentsService {
 
       // Decrementar contador del aula anterior si tenía
       if (enrollment.classroomId) {
-        await this.classroomsService.decrementStudentCount(enrollment.classroomId);
+        await this.classroomsService.decrementStudentCount(
+          enrollment.classroomId,
+        );
       }
 
       // Incrementar contador del aula nueva
@@ -329,7 +345,10 @@ export class EnrollmentsService {
   /**
    * Asignar un aula a una inscripción
    */
-  async assignClassroom(id: string, dto: AssignClassroomDto): Promise<Enrollment> {
+  async assignClassroom(
+    id: string,
+    dto: AssignClassroomDto,
+  ): Promise<Enrollment> {
     const enrollment = await this.findById(id);
 
     if (enrollment.classroomId === dto.classroomId) {
@@ -354,7 +373,9 @@ export class EnrollmentsService {
 
     // Decrementar contador del aula anterior si tenía
     if (enrollment.classroomId) {
-      await this.classroomsService.decrementStudentCount(enrollment.classroomId);
+      await this.classroomsService.decrementStudentCount(
+        enrollment.classroomId,
+      );
     }
 
     // Incrementar contador del aula nueva
@@ -363,21 +384,28 @@ export class EnrollmentsService {
     enrollment.classroomId = dto.classroomId;
     const updated = await this.enrollmentRepository.save(enrollment);
 
-    this.logger.log(`Aula asignada: Inscripción ${id} → Aula ${dto.classroomId}`);
+    this.logger.log(
+      `Aula asignada: Inscripción ${id} → Aula ${dto.classroomId}`,
+    );
     return updated;
   }
 
   /**
    * Cambiar estado de una inscripción
    */
-  async updateStatus(id: string, status: EnrollmentStatus): Promise<Enrollment> {
+  async updateStatus(
+    id: string,
+    status: EnrollmentStatus,
+  ): Promise<Enrollment> {
     const enrollment = await this.findById(id);
     const previousStatus = enrollment.status;
 
     enrollment.status = status;
     const updated = await this.enrollmentRepository.save(enrollment);
 
-    this.logger.log(`Inscripción ${id} cambiada de ${previousStatus} a ${status}`);
+    this.logger.log(
+      `Inscripción ${id} cambiada de ${previousStatus} a ${status}`,
+    );
     return updated;
   }
 
@@ -387,11 +415,14 @@ export class EnrollmentsService {
   async activate(id: string): Promise<Enrollment> {
     const enrollment = await this.findById(id);
 
-    if (enrollment.paymentStatus !== PaymentStatus.COMPLETED &&
-        enrollment.paymentStatus !== PaymentStatus.PARTIAL) {
+    if (
+      enrollment.paymentStatus !== PaymentStatus.COMPLETED &&
+      enrollment.paymentStatus !== PaymentStatus.PARTIAL
+    ) {
       throw new BadRequestException({
         code: ErrorCodes.PAYMENT_REQUIRED,
-        message: 'Se requiere al menos un pago parcial para activar la inscripción',
+        message:
+          'Se requiere al menos un pago parcial para activar la inscripción',
       });
     }
 
@@ -420,7 +451,9 @@ export class EnrollmentsService {
     // Decrementar contadores
     await this.cohortsService.decrementStudentCount(enrollment.cohortId);
     if (enrollment.classroomId) {
-      await this.classroomsService.decrementStudentCount(enrollment.classroomId);
+      await this.classroomsService.decrementStudentCount(
+        enrollment.classroomId,
+      );
     }
 
     this.logger.log(`Inscripción cancelada: ${id}`);
@@ -430,14 +463,20 @@ export class EnrollmentsService {
   /**
    * Emitir certificado
    */
-  async issueCertificate(id: string, dto: IssueCertificateDto): Promise<Enrollment> {
+  async issueCertificate(
+    id: string,
+    dto: IssueCertificateDto,
+  ): Promise<Enrollment> {
     const enrollment = await this.findById(id);
 
-    if (enrollment.status !== EnrollmentStatus.ACTIVE &&
-        enrollment.status !== EnrollmentStatus.COMPLETED) {
+    if (
+      enrollment.status !== EnrollmentStatus.ACTIVE &&
+      enrollment.status !== EnrollmentStatus.COMPLETED
+    ) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'Solo se puede emitir certificado a inscripciones activas o completadas',
+        message:
+          'Solo se puede emitir certificado a inscripciones activas o completadas',
       });
     }
 
@@ -468,7 +507,8 @@ export class EnrollmentsService {
     // Obtener precio del curso
     const cohort = await this.cohortsService.findById(enrollment.cohortId);
     const coursePrice = cohort.customPrice || cohort.course?.regularPrice || 0;
-    const finalPrice = Number(coursePrice) - Number(enrollment.discountApplied || 0);
+    const finalPrice =
+      Number(coursePrice) - Number(enrollment.discountApplied || 0);
 
     // Actualizar estado de pago
     if (enrollment.totalPaid >= finalPrice) {
@@ -479,7 +519,9 @@ export class EnrollmentsService {
 
     const updated = await this.enrollmentRepository.save(enrollment);
 
-    this.logger.log(`Pago registrado: Inscripción ${id}, Monto: ${amount}, Total: ${updated.totalPaid}`);
+    this.logger.log(
+      `Pago registrado: Inscripción ${id}, Monto: ${amount}, Total: ${updated.totalPaid}`,
+    );
     return updated;
   }
 

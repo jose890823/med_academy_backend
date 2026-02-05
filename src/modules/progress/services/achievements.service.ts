@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -204,7 +200,9 @@ export class AchievementsService {
 
     const saved = await this.achievementRepository.save(achievement);
 
-    this.logger.log(`Logro personalizado otorgado: ${title} a usuario ${userId}`);
+    this.logger.log(
+      `Logro personalizado otorgado: ${title} a usuario ${userId}`,
+    );
 
     this.eventEmitter.emit('achievement.earned', {
       achievement: saved,

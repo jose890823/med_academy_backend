@@ -1,11 +1,10 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { EnrollmentProgress, ProgressStatus } from '../entities/enrollment-progress.entity';
+import {
+  EnrollmentProgress,
+  ProgressStatus,
+} from '../entities/enrollment-progress.entity';
 import { ErrorCodes } from '../../../common/dto';
 
 @Injectable()
@@ -43,7 +42,11 @@ export class EnrollmentProgressService {
   async findByEnrollmentId(enrollmentId: string): Promise<EnrollmentProgress> {
     const progress = await this.progressRepository.findOne({
       where: { enrollmentId },
-      relations: ['enrollment', 'enrollment.cohort', 'enrollment.cohort.course'],
+      relations: [
+        'enrollment',
+        'enrollment.cohort',
+        'enrollment.cohort.course',
+      ],
     });
 
     if (!progress) {
@@ -62,7 +65,11 @@ export class EnrollmentProgressService {
   async findById(id: string): Promise<EnrollmentProgress> {
     const progress = await this.progressRepository.findOne({
       where: { id },
-      relations: ['enrollment', 'enrollment.cohort', 'enrollment.cohort.course'],
+      relations: [
+        'enrollment',
+        'enrollment.cohort',
+        'enrollment.cohort.course',
+      ],
     });
 
     if (!progress) {
@@ -121,7 +128,9 @@ export class EnrollmentProgressService {
   /**
    * Incrementar módulos completados
    */
-  async incrementCompletedModules(enrollmentId: string): Promise<EnrollmentProgress> {
+  async incrementCompletedModules(
+    enrollmentId: string,
+  ): Promise<EnrollmentProgress> {
     const progress = await this.getOrCreate(enrollmentId);
 
     progress.completedModulesCount += 1;
@@ -137,7 +146,9 @@ export class EnrollmentProgressService {
   /**
    * Incrementar evaluaciones aprobadas
    */
-  async incrementPassedEvaluations(enrollmentId: string): Promise<EnrollmentProgress> {
+  async incrementPassedEvaluations(
+    enrollmentId: string,
+  ): Promise<EnrollmentProgress> {
     const progress = await this.getOrCreate(enrollmentId);
 
     progress.passedEvaluationsCount += 1;
@@ -153,7 +164,10 @@ export class EnrollmentProgressService {
   /**
    * Actualizar promedio de calificaciones
    */
-  async updateAverageScore(enrollmentId: string, averageScore: number): Promise<EnrollmentProgress> {
+  async updateAverageScore(
+    enrollmentId: string,
+    averageScore: number,
+  ): Promise<EnrollmentProgress> {
     const progress = await this.getOrCreate(enrollmentId);
     progress.averageScore = averageScore;
     return this.progressRepository.save(progress);
@@ -162,7 +176,10 @@ export class EnrollmentProgressService {
   /**
    * Agregar tiempo dedicado
    */
-  async addTimeSpent(enrollmentId: string, minutes: number): Promise<EnrollmentProgress> {
+  async addTimeSpent(
+    enrollmentId: string,
+    minutes: number,
+  ): Promise<EnrollmentProgress> {
     const progress = await this.getOrCreate(enrollmentId);
     progress.totalTimeSpentMinutes += minutes;
     return this.progressRepository.save(progress);
@@ -186,7 +203,9 @@ export class EnrollmentProgressService {
   /**
    * Recalcular porcentaje de progreso
    */
-  private async recalculatePercentage(progress: EnrollmentProgress): Promise<void> {
+  private async recalculatePercentage(
+    progress: EnrollmentProgress,
+  ): Promise<void> {
     // Peso: 60% módulos, 40% evaluaciones
     const modulesWeight = 0.6;
     const evaluationsWeight = 0.4;
@@ -198,7 +217,8 @@ export class EnrollmentProgressService {
 
     const evaluationsPercentage =
       progress.totalEvaluationsCount > 0
-        ? (progress.passedEvaluationsCount / progress.totalEvaluationsCount) * 100
+        ? (progress.passedEvaluationsCount / progress.totalEvaluationsCount) *
+          100
         : 0;
 
     // Si no hay evaluaciones, todo el peso va a módulos
@@ -206,7 +226,8 @@ export class EnrollmentProgressService {
       progress.overallPercentage = modulesPercentage;
     } else {
       progress.overallPercentage =
-        modulesPercentage * modulesWeight + evaluationsPercentage * evaluationsWeight;
+        modulesPercentage * modulesWeight +
+        evaluationsPercentage * evaluationsWeight;
     }
 
     // Verificar si está completado
@@ -259,12 +280,19 @@ export class EnrollmentProgressService {
   /**
    * Obtener cursos recientes de un estudiante
    */
-  async getRecentCourses(studentId: string, limit = 5): Promise<EnrollmentProgress[]> {
+  async getRecentCourses(
+    studentId: string,
+    limit = 5,
+  ): Promise<EnrollmentProgress[]> {
     return this.progressRepository.find({
       where: {
         enrollment: { studentId },
       },
-      relations: ['enrollment', 'enrollment.cohort', 'enrollment.cohort.course'],
+      relations: [
+        'enrollment',
+        'enrollment.cohort',
+        'enrollment.cohort.course',
+      ],
       order: { lastAccessedAt: 'DESC' },
       take: limit,
     });

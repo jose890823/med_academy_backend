@@ -25,11 +25,7 @@ import { Public } from '../../auth/decorators/public.decorator';
 import { User } from '../../auth/entities/user.entity';
 import { ReviewsService } from '../services/reviews.service';
 import { Review } from '../entities/review.entity';
-import {
-  CreateReviewDto,
-  UpdateReviewDto,
-  ReviewQueryDto,
-} from '../dto';
+import { CreateReviewDto, UpdateReviewDto, ReviewQueryDto } from '../dto';
 
 /**
  * Controlador de Reviews para estudiantes
@@ -94,9 +90,7 @@ export class ReviewsController {
     description: 'Review encontrado',
     type: Review,
   })
-  async findById(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Review> {
+  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<Review> {
     return this.reviewsService.findById(id);
   }
 
@@ -118,7 +112,10 @@ export class ReviewsController {
     type: Review,
   })
   @ApiResponse({ status: 403, description: 'No tienes acceso a este curso' })
-  @ApiResponse({ status: 409, description: 'Ya dejaste un review para este curso' })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya dejaste un review para este curso',
+  })
   async create(
     @Body() dto: CreateReviewDto,
     @CurrentUser() user: User,
@@ -192,9 +189,7 @@ export class ReviewsController {
     description: 'Review marcado como útil',
     type: Review,
   })
-  async markAsHelpful(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Review> {
+  async markAsHelpful(@Param('id', ParseUUIDPipe) id: string): Promise<Review> {
     return this.reviewsService.markAsHelpful(id);
   }
 

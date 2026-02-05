@@ -72,7 +72,9 @@ export class WorkshopsService {
       });
     }
 
-    query.orderBy('workshop.sortOrder', 'ASC').addOrderBy('workshop.title', 'ASC');
+    query
+      .orderBy('workshop.sortOrder', 'ASC')
+      .addOrderBy('workshop.title', 'ASC');
 
     return query.getMany();
   }

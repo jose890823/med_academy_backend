@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, LessThan, FindOptionsWhere } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
@@ -52,7 +48,9 @@ export class NotificationsService {
     // Verificar si el usuario acepta este tipo de notificación
     const shouldSend = this.shouldSendNotification(dto, preferences);
     if (!shouldSend.inApp && !shouldSend.email) {
-      this.logger.debug(`Notificación omitida por preferencias del usuario ${dto.userId}`);
+      this.logger.debug(
+        `Notificación omitida por preferencias del usuario ${dto.userId}`,
+      );
       return null;
     }
 
@@ -216,7 +214,9 @@ export class NotificationsService {
       { isRead: true, readAt: new Date(), status: NotificationStatus.READ },
     );
 
-    this.logger.log(`${result.affected} notificaciones marcadas como leídas para usuario ${userId}`);
+    this.logger.log(
+      `${result.affected} notificaciones marcadas como leídas para usuario ${userId}`,
+    );
     return result.affected || 0;
   }
 
@@ -281,7 +281,9 @@ export class NotificationsService {
   /**
    * Obtener o crear preferencias
    */
-  async getOrCreatePreferences(userId: string): Promise<NotificationPreference> {
+  async getOrCreatePreferences(
+    userId: string,
+  ): Promise<NotificationPreference> {
     let preferences = await this.preferenceRepository.findOne({
       where: { userId },
     });
@@ -289,7 +291,9 @@ export class NotificationsService {
     if (!preferences) {
       preferences = this.preferenceRepository.create({ userId });
       preferences = await this.preferenceRepository.save(preferences);
-      this.logger.log(`Preferencias de notificación creadas para usuario ${userId}`);
+      this.logger.log(
+        `Preferencias de notificación creadas para usuario ${userId}`,
+      );
     }
 
     return preferences;
@@ -412,7 +416,10 @@ export class NotificationsService {
   /**
    * Obtiene preferencia in-app para una categoría
    */
-  private getInAppPreference(prefs: NotificationPreference, category: string): boolean {
+  private getInAppPreference(
+    prefs: NotificationPreference,
+    category: string,
+  ): boolean {
     const map: Record<string, boolean> = {
       enrollments: prefs.inAppEnrollments,
       payments: prefs.inAppPayments,
@@ -428,7 +435,10 @@ export class NotificationsService {
   /**
    * Obtiene preferencia email para una categoría
    */
-  private getEmailPreference(prefs: NotificationPreference, category: string): boolean {
+  private getEmailPreference(
+    prefs: NotificationPreference,
+    category: string,
+  ): boolean {
     const map: Record<string, boolean> = {
       enrollments: prefs.emailEnrollments,
       payments: prefs.emailPayments,

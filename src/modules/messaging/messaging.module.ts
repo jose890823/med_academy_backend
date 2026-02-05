@@ -21,17 +21,9 @@ import { MessagingController } from './controllers/messaging.controller';
  * - Eventos para notificaciones en tiempo real
  */
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Conversation, Message, User]),
-  ],
-  controllers: [
-    MessagingController,
-  ],
-  providers: [
-    MessagingService,
-  ],
-  exports: [
-    MessagingService,
-  ],
+  imports: [TypeOrmModule.forFeature([Conversation, Message, User])],
+  controllers: [MessagingController],
+  providers: [MessagingService],
+  exports: [MessagingService],
 })
 export class MessagingModule {}

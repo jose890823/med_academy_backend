@@ -28,9 +28,10 @@ import { ApiSuccessResponse } from '../dto/standard-response.dto';
  * 4. null/undefined - Retorna data: null
  */
 @Injectable()
-export class ResponseInterceptor<T>
-  implements NestInterceptor<T, ApiSuccessResponse<T>>
-{
+export class ResponseInterceptor<T> implements NestInterceptor<
+  T,
+  ApiSuccessResponse<T>
+> {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
@@ -67,7 +68,9 @@ export class ResponseInterceptor<T>
           return {
             success: true as const,
             data: responseData.data,
-            ...(responseData.pagination && { pagination: responseData.pagination }),
+            ...(responseData.pagination && {
+              pagination: responseData.pagination,
+            }),
             message: responseData.message || 'Operación realizada exitosamente',
             timestamp,
             path,
@@ -104,10 +107,7 @@ export class ResponseInterceptor<T>
    */
   private isPartiallyFormatted(data: any): boolean {
     return (
-      data &&
-      typeof data === 'object' &&
-      'data' in data &&
-      !('success' in data)
+      data && typeof data === 'object' && 'data' in data && !('success' in data)
     );
   }
 

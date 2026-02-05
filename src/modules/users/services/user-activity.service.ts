@@ -168,12 +168,18 @@ export class UserActivityService {
 
     // Calcular fechas para filtros
     const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfToday = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
     const startOfWeek = new Date(startOfToday);
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 
     // Encontrar último login
-    const lastLoginActivity = activities.find(a => a.activityType === ActivityType.LOGIN);
+    const lastLoginActivity = activities.find(
+      (a) => a.activityType === ActivityType.LOGIN,
+    );
 
     // Contar actividades de hoy y esta semana
     let today = 0;

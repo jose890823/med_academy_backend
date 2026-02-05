@@ -9,7 +9,10 @@ import {
   Max,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { InstructorSpecialty, InstructorCertification } from '../entities/instructor-profile.entity';
+import {
+  InstructorSpecialty,
+  InstructorCertification,
+} from '../entities/instructor-profile.entity';
 
 /**
  * DTO para consultar perfiles de instructores
@@ -86,7 +89,14 @@ export class InstructorQueryDto {
   @ApiPropertyOptional({
     example: 'sortOrder',
     description: 'Campo para ordenar',
-    enum: ['sortOrder', 'displayName', 'courseCount', 'studentCount', 'averageRating', 'createdAt'],
+    enum: [
+      'sortOrder',
+      'displayName',
+      'courseCount',
+      'studentCount',
+      'averageRating',
+      'createdAt',
+    ],
     default: 'sortOrder',
   })
   @IsOptional()

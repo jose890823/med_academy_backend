@@ -74,7 +74,9 @@ export class ActiveSessionService {
   /**
    * Encontrar sesion por refresh token
    */
-  async findByRefreshToken(refreshToken: string): Promise<ActiveSession | null> {
+  async findByRefreshToken(
+    refreshToken: string,
+  ): Promise<ActiveSession | null> {
     const hash = this.hashToken(refreshToken);
     return this.activeSessionRepository.findOne({
       where: { refreshTokenHash: hash, isActive: true },
@@ -138,7 +140,10 @@ export class ActiveSessionService {
   /**
    * Aplicar limite de sesiones (eliminar las mas antiguas)
    */
-  private async enforceSessionLimit(userId: string, maxSessions: number): Promise<void> {
+  private async enforceSessionLimit(
+    userId: string,
+    maxSessions: number,
+  ): Promise<void> {
     const sessions = await this.activeSessionRepository.find({
       where: { userId, isActive: true },
       order: { lastActivityAt: 'ASC' },
@@ -198,7 +203,8 @@ export class ActiveSessionService {
 
     const now = Date.now();
     sessions.forEach((session) => {
-      byDeviceType[session.deviceType] = (byDeviceType[session.deviceType] || 0) + 1;
+      byDeviceType[session.deviceType] =
+        (byDeviceType[session.deviceType] || 0) + 1;
       if (session.browser) {
         byBrowser[session.browser] = (byBrowser[session.browser] || 0) + 1;
       }
@@ -213,9 +219,10 @@ export class ActiveSessionService {
       byDeviceType,
       byBrowser,
       byOs,
-      avgSessionAge: sessions.length > 0
-        ? Math.round(totalAge / sessions.length / (1000 * 60 * 60)) // en horas
-        : 0,
+      avgSessionAge:
+        sessions.length > 0
+          ? Math.round(totalAge / sessions.length / (1000 * 60 * 60)) // en horas
+          : 0,
     };
   }
 

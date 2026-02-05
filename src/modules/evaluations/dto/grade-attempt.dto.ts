@@ -56,7 +56,8 @@ export class GradeAttemptDto {
   grades: GradeAnswerDto[];
 
   @ApiPropertyOptional({
-    example: 'Excelente trabajo en las preguntas de física Doppler. Revisa el tema de artefactos.',
+    example:
+      'Excelente trabajo en las preguntas de física Doppler. Revisa el tema de artefactos.',
     description: 'Retroalimentación general del instructor',
   })
   @IsOptional()

@@ -110,8 +110,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message = message || exception.message || 'Error en la solicitud';
 
       // Extraer detalles adicionales (excluir campos ya procesados)
-      const { code: _, message: __, error: ___, statusCode: ____, ...rest } =
-        responseObj;
+      const {
+        code: _,
+        message: __,
+        error: ___,
+        statusCode: ____,
+        ...rest
+      } = responseObj;
       const details = Object.keys(rest).length > 0 ? rest : null;
 
       return { status, code, message, details };
@@ -128,7 +133,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
             : 'Error interno del servidor',
         details:
           process.env.NODE_ENV === 'development'
-            ? { name: exception.name, stack: exception.stack?.split('\n').slice(0, 5) }
+            ? {
+                name: exception.name,
+                stack: exception.stack?.split('\n').slice(0, 5),
+              }
             : null,
       };
     }

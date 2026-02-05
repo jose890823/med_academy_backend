@@ -67,14 +67,18 @@ export class MessagingController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Iniciar conversación',
-    description: 'Inicia una nueva conversación o envía mensaje a una existente',
+    description:
+      'Inicia una nueva conversación o envía mensaje a una existente',
   })
   @ApiResponse({
     status: 201,
     description: 'Conversación creada/encontrada',
     type: Conversation,
   })
-  @ApiResponse({ status: 400, description: 'No puedes enviarte mensajes a ti mismo' })
+  @ApiResponse({
+    status: 400,
+    description: 'No puedes enviarte mensajes a ti mismo',
+  })
   @ApiResponse({ status: 404, description: 'Destinatario no encontrado' })
   async createConversation(
     @Body() dto: CreateConversationDto,
@@ -94,7 +98,10 @@ export class MessagingController {
     description: 'Conversación encontrada',
     type: Conversation,
   })
-  @ApiResponse({ status: 403, description: 'No tienes acceso a esta conversación' })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes acceso a esta conversación',
+  })
   async findConversationById(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: User,
@@ -171,7 +178,10 @@ export class MessagingController {
     description: 'Mensaje enviado',
     type: Message,
   })
-  @ApiResponse({ status: 403, description: 'No tienes acceso a esta conversación' })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes acceso a esta conversación',
+  })
   async sendMessage(
     @Body() dto: SendMessageDto,
     @CurrentUser() user: User,
@@ -219,7 +229,8 @@ export class MessagingController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Eliminar mensaje',
-    description: 'Elimina un mensaje propio (se muestra como "mensaje eliminado")',
+    description:
+      'Elimina un mensaje propio (se muestra como "mensaje eliminado")',
   })
   @ApiParam({ name: 'id', description: 'UUID del mensaje' })
   @ApiResponse({ status: 204, description: 'Mensaje eliminado' })

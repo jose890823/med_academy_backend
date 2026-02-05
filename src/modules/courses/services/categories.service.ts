@@ -67,7 +67,9 @@ export class CategoriesService {
     }
 
     // Ordenar por order y nombre
-    queryBuilder.orderBy('category.order', 'ASC').addOrderBy('category.name', 'ASC');
+    queryBuilder
+      .orderBy('category.order', 'ASC')
+      .addOrderBy('category.name', 'ASC');
 
     // Paginación
     const total = await queryBuilder.getCount();

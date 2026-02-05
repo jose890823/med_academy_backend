@@ -87,7 +87,8 @@ export class EvaluationsController {
   @Get(':id/questions')
   @ApiOperation({
     summary: 'Obtener preguntas de una evaluación',
-    description: 'Retorna las preguntas de una evaluación (sin respuestas correctas)',
+    description:
+      'Retorna las preguntas de una evaluación (sin respuestas correctas)',
   })
   @ApiParam({ name: 'id', description: 'UUID de la evaluación' })
   @ApiResponse({
@@ -153,7 +154,8 @@ export class EvaluationsAdminController {
   @Get('course/:courseId')
   @ApiOperation({
     summary: 'Obtener evaluaciones de un curso (Admin)',
-    description: 'Retorna todas las evaluaciones de un curso (publicadas y no publicadas)',
+    description:
+      'Retorna todas las evaluaciones de un curso (publicadas y no publicadas)',
   })
   @ApiParam({ name: 'courseId', description: 'UUID del curso' })
   @ApiResponse({
@@ -270,7 +272,10 @@ export class EvaluationsAdminController {
     description: 'Elimina una evaluación y todas sus preguntas',
   })
   @ApiParam({ name: 'id', description: 'UUID de la evaluación' })
-  @ApiResponse({ status: 204, description: 'Evaluación eliminada exitosamente' })
+  @ApiResponse({
+    status: 204,
+    description: 'Evaluación eliminada exitosamente',
+  })
   @ApiResponse({ status: 404, description: 'Evaluación no encontrada' })
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.evaluationsService.delete(id);

@@ -95,7 +95,8 @@ export class SecurityEventService {
     limit: number;
     totalPages: number;
   }> {
-    const queryBuilder = this.securityEventRepository.createQueryBuilder('event');
+    const queryBuilder =
+      this.securityEventRepository.createQueryBuilder('event');
 
     // Filtros
     if (filter.eventType) {

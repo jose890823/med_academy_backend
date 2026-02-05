@@ -8,7 +8,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { DiscussionStatus, DiscussionType } from '../entities/discussion.entity';
+import {
+  DiscussionStatus,
+  DiscussionType,
+} from '../entities/discussion.entity';
 
 /**
  * DTO para actualizar una discusión (autor)

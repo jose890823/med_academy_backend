@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsOptional, IsNumber, Min } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsNumber,
+  Min,
+} from 'class-validator';
 
 export class RequestRefundDto {
   @ApiProperty({
@@ -11,7 +17,8 @@ export class RequestRefundDto {
   reason: string;
 
   @ApiProperty({
-    description: 'Monto a reembolsar (opcional, si no se especifica se reembolsa el total)',
+    description:
+      'Monto a reembolsar (opcional, si no se especifica se reembolsa el total)',
     example: 29.0,
     required: false,
   })

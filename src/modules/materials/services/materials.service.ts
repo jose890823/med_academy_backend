@@ -12,11 +12,7 @@ import {
   MaterialStatus,
   MaterialType,
 } from '../entities/material.entity';
-import {
-  CreateMaterialDto,
-  UpdateMaterialDto,
-  MaterialQueryDto,
-} from '../dto';
+import { CreateMaterialDto, UpdateMaterialDto, MaterialQueryDto } from '../dto';
 import { ErrorCodes } from '../../../common/dto';
 
 /**
@@ -44,7 +40,10 @@ export class MaterialsService {
   /**
    * Crear un nuevo material
    */
-  async create(dto: CreateMaterialDto, uploadedById?: string): Promise<Material> {
+  async create(
+    dto: CreateMaterialDto,
+    uploadedById?: string,
+  ): Promise<Material> {
     const material = this.materialRepository.create({
       ...dto,
       uploadedById: uploadedById || null,
@@ -118,7 +117,13 @@ export class MaterialsService {
       where.status = MaterialStatus.ACTIVE;
     }
 
-    const validSortFields = ['order', 'name', 'createdAt', 'downloadCount', 'type'];
+    const validSortFields = [
+      'order',
+      'name',
+      'createdAt',
+      'downloadCount',
+      'type',
+    ];
     const sortField = validSortFields.includes(sortBy) ? sortBy : 'order';
 
     const [data, total] = await this.materialRepository.findAndCount({
@@ -219,10 +224,7 @@ export class MaterialsService {
   /**
    * Reordenar materiales de un módulo
    */
-  async reorder(
-    moduleId: string,
-    materialIds: string[],
-  ): Promise<Material[]> {
+  async reorder(moduleId: string, materialIds: string[]): Promise<Material[]> {
     const materials = await this.findByModule(moduleId);
 
     // Actualizar orden basado en la posición en el array

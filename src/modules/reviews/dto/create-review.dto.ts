@@ -44,7 +44,8 @@ export class CreateReviewDto {
   title?: string;
 
   @ApiPropertyOptional({
-    example: 'El curso es muy completo, cubre todos los temas de física Doppler con excelentes ejemplos prácticos.',
+    example:
+      'El curso es muy completo, cubre todos los temas de física Doppler con excelentes ejemplos prácticos.',
     description: 'Comentario detallado',
   })
   @IsOptional()

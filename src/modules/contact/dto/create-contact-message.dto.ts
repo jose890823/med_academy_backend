@@ -50,6 +50,8 @@ export class CreateContactMessageDto {
   @IsString()
   @IsNotEmpty({ message: 'El mensaje es requerido' })
   @MinLength(20, { message: 'El mensaje debe tener al menos 20 caracteres' })
-  @MaxLength(2000, { message: 'El mensaje no puede tener mas de 2000 caracteres' })
+  @MaxLength(2000, {
+    message: 'El mensaje no puede tener mas de 2000 caracteres',
+  })
   message: string;
 }

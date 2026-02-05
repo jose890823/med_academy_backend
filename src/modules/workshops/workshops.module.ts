@@ -18,10 +18,7 @@ import {
 } from './services';
 
 // Controllers
-import {
-  WorkshopsController,
-  WorkshopsAdminController,
-} from './controllers';
+import { WorkshopsController, WorkshopsAdminController } from './controllers';
 
 // Auth Module (para guards)
 import { AuthModule } from '../auth/auth.module';
@@ -37,19 +34,8 @@ import { AuthModule } from '../auth/auth.module';
     EventEmitterModule.forRoot(),
     forwardRef(() => AuthModule),
   ],
-  controllers: [
-    WorkshopsController,
-    WorkshopsAdminController,
-  ],
-  providers: [
-    WorkshopsService,
-    SessionsService,
-    RegistrationsService,
-  ],
-  exports: [
-    WorkshopsService,
-    SessionsService,
-    RegistrationsService,
-  ],
+  controllers: [WorkshopsController, WorkshopsAdminController],
+  providers: [WorkshopsService, SessionsService, RegistrationsService],
+  exports: [WorkshopsService, SessionsService, RegistrationsService],
 })
 export class WorkshopsModule {}

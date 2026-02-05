@@ -4,7 +4,9 @@ interface PasswordResetTemplateData {
   brandName?: string;
 }
 
-export function getPasswordResetTemplate(data: PasswordResetTemplateData): string {
+export function getPasswordResetTemplate(
+  data: PasswordResetTemplateData,
+): string {
   const brandName = data.brandName || 'PublishSparks';
 
   return `

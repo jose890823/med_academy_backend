@@ -139,7 +139,10 @@ export class ReferralCodesService {
 
     // Verificar que no sea auto-referido
     if (referredUserId && code.userId === referredUserId) {
-      return { valid: false, error: 'No puedes usar tu propio código de referido' };
+      return {
+        valid: false,
+        error: 'No puedes usar tu propio código de referido',
+      };
     }
 
     return {
@@ -156,7 +159,10 @@ export class ReferralCodesService {
   /**
    * Crear código de referido para un usuario
    */
-  async create(userId: string, dto: CreateReferralCodeDto): Promise<ReferralCode> {
+  async create(
+    userId: string,
+    dto: CreateReferralCodeDto,
+  ): Promise<ReferralCode> {
     const code = dto.code?.toUpperCase() || this.generateCode();
 
     // Verificar que el código no exista
@@ -179,7 +185,9 @@ export class ReferralCodesService {
     });
 
     const saved = await this.referralCodeRepository.save(referralCode);
-    this.logger.log(`Código de referido creado: ${code} para usuario ${userId}`);
+    this.logger.log(
+      `Código de referido creado: ${code} para usuario ${userId}`,
+    );
 
     return saved;
   }
@@ -211,7 +219,9 @@ export class ReferralCodesService {
     });
 
     const saved = await this.referralCodeRepository.save(referralCode);
-    this.logger.log(`Código de referido creado por admin: ${code} para usuario ${dto.userId}`);
+    this.logger.log(
+      `Código de referido creado por admin: ${code} para usuario ${dto.userId}`,
+    );
 
     return saved;
   }
@@ -312,7 +322,10 @@ export class ReferralCodesService {
   async getUserCodeStats(userId: string) {
     const codes = await this.findByUserId(userId);
 
-    const totalReferrals = codes.reduce((sum, code) => sum + code.usageCount, 0);
+    const totalReferrals = codes.reduce(
+      (sum, code) => sum + code.usageCount,
+      0,
+    );
     const activeCodes = codes.filter((c) => c.isValid).length;
 
     return {

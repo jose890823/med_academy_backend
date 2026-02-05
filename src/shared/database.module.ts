@@ -18,7 +18,8 @@ import { DataSource } from 'typeorm';
 
         try {
           // TYPEORM_SYNC permite forzar sincronización en producción (usar solo para crear tablas inicialmente)
-          const forceSync = configService.get('TYPEORM_SYNC', 'false') === 'true';
+          const forceSync =
+            configService.get('TYPEORM_SYNC', 'false') === 'true';
           const isProduction = configService.get('NODE_ENV') === 'production';
           const shouldSync = forceSync || !isProduction;
 
@@ -37,8 +38,12 @@ import { DataSource } from 'typeorm';
           };
 
           if (forceSync && isProduction) {
-            logger.warn('⚠️  TYPEORM_SYNC=true en producción - Las tablas se sincronizarán automáticamente');
-            logger.warn('⚠️  RECUERDA desactivar TYPEORM_SYNC después de crear las tablas');
+            logger.warn(
+              '⚠️  TYPEORM_SYNC=true en producción - Las tablas se sincronizarán automáticamente',
+            );
+            logger.warn(
+              '⚠️  RECUERDA desactivar TYPEORM_SYNC después de crear las tablas',
+            );
           }
 
           logger.log('🔄 Intentando conectar a PostgreSQL...');
@@ -86,7 +91,9 @@ export class DatabaseModule implements OnModuleInit {
       await this.dataSource.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
       DatabaseModule.logger.log('✅ Extensión uuid-ossp verificada/creada');
     } catch (error) {
-      DatabaseModule.logger.warn(`⚠️ No se pudo crear extensión uuid-ossp: ${error.message}`);
+      DatabaseModule.logger.warn(
+        `⚠️ No se pudo crear extensión uuid-ossp: ${error.message}`,
+      );
     }
   }
 }

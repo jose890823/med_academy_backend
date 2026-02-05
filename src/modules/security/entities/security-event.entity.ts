@@ -53,7 +53,10 @@ export class SecurityEvent {
   @Column({ type: 'varchar', length: 50 })
   eventType: SecurityEventType;
 
-  @ApiProperty({ description: 'Severidad del evento', enum: SecurityEventSeverity })
+  @ApiProperty({
+    description: 'Severidad del evento',
+    enum: SecurityEventSeverity,
+  })
   @Column({ type: 'varchar', length: 20 })
   severity: SecurityEventSeverity;
 

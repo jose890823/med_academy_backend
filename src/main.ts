@@ -75,7 +75,10 @@ async function bootstrap() {
       }
 
       // En desarrollo, permitir cualquier localhost
-      if (process.env.NODE_ENV === 'development' && origin.includes('localhost')) {
+      if (
+        process.env.NODE_ENV === 'development' &&
+        origin.includes('localhost')
+      ) {
         return callback(null, true);
       }
 
@@ -83,7 +86,12 @@ async function bootstrap() {
       callback(new Error('Not allowed by CORS'));
     },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'X-Requested-With',
+    ],
     credentials: true,
     maxAge: 86400, // 24 horas
   });
@@ -91,7 +99,9 @@ async function bootstrap() {
   // Configurar Swagger
   const config = new DocumentBuilder()
     .setTitle('Ultrasound MedAcademy API')
-    .setDescription('API de Ultrasound MedAcademy - Plataforma de educación en sonografía médica')
+    .setDescription(
+      'API de Ultrasound MedAcademy - Plataforma de educación en sonografía médica',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('Auth', 'Autenticación y autorización')

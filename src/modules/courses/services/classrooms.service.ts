@@ -100,7 +100,9 @@ export class ClassroomsService {
     classroom.isActive = !classroom.isActive;
     const updated = await this.classroomRepository.save(classroom);
 
-    this.logger.log(`Aula ${id} ${updated.isActive ? 'activada' : 'desactivada'}`);
+    this.logger.log(
+      `Aula ${id} ${updated.isActive ? 'activada' : 'desactivada'}`,
+    );
     return updated;
   }
 

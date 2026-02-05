@@ -11,7 +11,8 @@ export class CancelSubscriptionDto {
   reason: string;
 
   @ApiPropertyOptional({
-    description: 'Cancelar al final del período actual (true) o inmediatamente (false)',
+    description:
+      'Cancelar al final del período actual (true) o inmediatamente (false)',
     example: true,
     default: true,
   })

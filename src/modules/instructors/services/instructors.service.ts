@@ -7,7 +7,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
-import { InstructorProfile, InstructorSpecialty, InstructorCertification } from '../entities/instructor-profile.entity';
+import {
+  InstructorProfile,
+  InstructorSpecialty,
+  InstructorCertification,
+} from '../entities/instructor-profile.entity';
 import { User, UserRole } from '../../auth/entities/user.entity';
 import { Course, CourseStatus } from '../../courses/entities/course.entity';
 import { Review, ReviewStatus } from '../../reviews/entities/review.entity';
@@ -81,7 +85,9 @@ export class InstructorsService {
       // Los admins ya tienen todos los permisos
     }
 
-    this.logger.log(`Perfil de instructor creado: ${saved.id} - ${dto.displayName}`);
+    this.logger.log(
+      `Perfil de instructor creado: ${saved.id} - ${dto.displayName}`,
+    );
     return saved;
   }
 
@@ -125,11 +131,15 @@ export class InstructorsService {
     }
 
     if (specialty) {
-      queryBuilder.andWhere(':specialty = ANY(profile.specialties)', { specialty });
+      queryBuilder.andWhere(':specialty = ANY(profile.specialties)', {
+        specialty,
+      });
     }
 
     if (certification) {
-      queryBuilder.andWhere(':certification = ANY(profile.certifications)', { certification });
+      queryBuilder.andWhere(':certification = ANY(profile.certifications)', {
+        certification,
+      });
     }
 
     if (isFeatured !== undefined) {
@@ -144,7 +154,14 @@ export class InstructorsService {
     }
 
     // Ordenamiento
-    const validSortFields = ['sortOrder', 'displayName', 'courseCount', 'studentCount', 'averageRating', 'createdAt'];
+    const validSortFields = [
+      'sortOrder',
+      'displayName',
+      'courseCount',
+      'studentCount',
+      'averageRating',
+      'createdAt',
+    ];
     const sortField = validSortFields.includes(sortBy) ? sortBy : 'sortOrder';
     queryBuilder.orderBy(`profile.${sortField}`, sortOrder);
 
@@ -250,7 +267,10 @@ export class InstructorsService {
   /**
    * Actualizar perfil
    */
-  async update(id: string, dto: UpdateInstructorProfileDto): Promise<InstructorProfile> {
+  async update(
+    id: string,
+    dto: UpdateInstructorProfileDto,
+  ): Promise<InstructorProfile> {
     const profile = await this.findById(id);
 
     // Si cambia el nombre, regenerar slug
@@ -275,7 +295,9 @@ export class InstructorsService {
 
     const updated = await this.profileRepository.save(profile);
 
-    this.logger.log(`Instructor ${profile.isFeatured ? 'destacado' : 'no destacado'}: ${id}`);
+    this.logger.log(
+      `Instructor ${profile.isFeatured ? 'destacado' : 'no destacado'}: ${id}`,
+    );
     return updated;
   }
 
@@ -328,7 +350,8 @@ export class InstructorsService {
       .addSelect('COUNT(*)', 'count')
       .getRawOne();
 
-    const averageRating = Math.round(parseFloat(reviewStats?.average || '0') * 100) / 100;
+    const averageRating =
+      Math.round(parseFloat(reviewStats?.average || '0') * 100) / 100;
     const reviewCount = parseInt(reviewStats?.count || '0', 10);
 
     profile.updateReviewStats(averageRating, reviewCount);

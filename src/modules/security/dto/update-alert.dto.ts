@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsOptional, IsEnum, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsUUID,
+} from 'class-validator';
 import { SecurityAlertStatus } from '../entities/security-alert.entity';
 
 export class UpdateAlertStatusDto {

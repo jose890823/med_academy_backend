@@ -166,7 +166,9 @@ export class WorkshopsController {
     description: 'Lista de sesiones en la ciudad',
     type: [WorkshopSession],
   })
-  async getSessionsByCity(@Param('city') city: string): Promise<WorkshopSession[]> {
+  async getSessionsByCity(
+    @Param('city') city: string,
+  ): Promise<WorkshopSession[]> {
     return this.sessionsService.findByCity(city);
   }
 

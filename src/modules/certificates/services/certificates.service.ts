@@ -16,7 +16,10 @@ import {
   CertificateType,
   CertificateStatus,
 } from '../entities/certificate.entity';
-import { Enrollment, EnrollmentStatus } from '../../enrollments/entities/enrollment.entity';
+import {
+  Enrollment,
+  EnrollmentStatus,
+} from '../../enrollments/entities/enrollment.entity';
 import {
   IssueCertificateDto,
   IssueWorkshopCertificateDto,
@@ -103,7 +106,8 @@ export class CertificatesService {
     if (enrollment.status !== EnrollmentStatus.COMPLETED) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'Solo se pueden emitir certificados para inscripciones completadas',
+        message:
+          'Solo se pueden emitir certificados para inscripciones completadas',
       });
     }
 
@@ -149,7 +153,9 @@ export class CertificatesService {
       cmeCredits: dto.cmeCredits || null,
       // Calificación
       finalGrade: dto.finalGrade || null,
-      gradeLabel: dto.gradeLabel || (dto.finalGrade && dto.finalGrade >= 70 ? 'Pass' : null),
+      gradeLabel:
+        dto.gradeLabel ||
+        (dto.finalGrade && dto.finalGrade >= 70 ? 'Pass' : null),
       // Fechas
       issuedAt: new Date(),
       expiresAt: dto.expiresAt || null,
@@ -328,11 +334,14 @@ export class CertificatesService {
       }
 
       // Fecha de emisión
-      const issuedDate = new Date(certificate.issuedAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
+      const issuedDate = new Date(certificate.issuedAt).toLocaleDateString(
+        'en-US',
+        {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        },
+      );
 
       doc
         .fontSize(12)
@@ -344,7 +353,10 @@ export class CertificatesService {
         });
 
       // Certificaciones asociadas
-      if (certificate.associatedCertifications && certificate.associatedCertifications.length > 0) {
+      if (
+        certificate.associatedCertifications &&
+        certificate.associatedCertifications.length > 0
+      ) {
         doc
           .fontSize(10)
           .font('Helvetica')
@@ -371,10 +383,15 @@ export class CertificatesService {
         .fontSize(12)
         .font('Helvetica-Bold')
         .fillColor('#374151')
-        .text(certificate.authorizedSignatory || 'Authorized Signatory', 100, bottomY + 5, {
-          width: 200,
-          align: 'center',
-        });
+        .text(
+          certificate.authorizedSignatory || 'Authorized Signatory',
+          100,
+          bottomY + 5,
+          {
+            width: 200,
+            align: 'center',
+          },
+        );
 
       doc
         .fontSize(10)
@@ -393,10 +410,15 @@ export class CertificatesService {
         .fontSize(10)
         .font('Helvetica')
         .fillColor('#6b7280')
-        .text(`Certificate No: ${certificate.certificateNumber}`, pageWidth - 300, bottomY + 5, {
-          width: 200,
-          align: 'center',
-        });
+        .text(
+          `Certificate No: ${certificate.certificateNumber}`,
+          pageWidth - 300,
+          bottomY + 5,
+          {
+            width: 200,
+            align: 'center',
+          },
+        );
 
       doc
         .fontSize(10)
@@ -518,7 +540,15 @@ export class CertificatesService {
     limit: number;
     totalPages: number;
   }> {
-    const { studentId, enrollmentId, type, status, search, page = 1, limit = 20 } = query;
+    const {
+      studentId,
+      enrollmentId,
+      type,
+      status,
+      search,
+      page = 1,
+      limit = 20,
+    } = query;
 
     const where: FindOptionsWhere<Certificate> = {};
 
@@ -658,7 +688,10 @@ export class CertificatesService {
   /**
    * Actualizar URL del PDF después de subirlo
    */
-  async updatePdfUrl(certificateId: string, pdfUrl: string): Promise<Certificate> {
+  async updatePdfUrl(
+    certificateId: string,
+    pdfUrl: string,
+  ): Promise<Certificate> {
     const certificate = await this.findById(certificateId);
     certificate.pdfUrl = pdfUrl;
 

@@ -66,7 +66,8 @@ export class CertificatesAdminController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Regenerar PDF',
-    description: 'Regenera el PDF del certificado (útil si hay cambios en el diseño)',
+    description:
+      'Regenera el PDF del certificado (útil si hay cambios en el diseño)',
   })
   @ApiParam({ name: 'id', description: 'UUID del certificado' })
   @ApiResponse({
@@ -130,7 +131,10 @@ export class CertificatesAdminController {
     summary: 'Buscar por número de certificado',
     description: 'Busca un certificado por su número único',
   })
-  @ApiParam({ name: 'number', description: 'Número del certificado (ej: CERT-2026-000001)' })
+  @ApiParam({
+    name: 'number',
+    description: 'Número del certificado (ej: CERT-2026-000001)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Certificado encontrado',

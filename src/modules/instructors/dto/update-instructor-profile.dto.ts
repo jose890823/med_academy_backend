@@ -13,8 +13,14 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { InstructorSpecialty, InstructorCertification } from '../entities/instructor-profile.entity';
-import { EducationDto, WorkExperienceDto } from './create-instructor-profile.dto';
+import {
+  InstructorSpecialty,
+  InstructorCertification,
+} from '../entities/instructor-profile.entity';
+import {
+  EducationDto,
+  WorkExperienceDto,
+} from './create-instructor-profile.dto';
 
 /**
  * DTO para actualizar perfil de instructor
@@ -39,7 +45,8 @@ export class UpdateInstructorProfileDto {
   title?: string;
 
   @ApiPropertyOptional({
-    example: 'Vascular sonography specialist with 15+ years of clinical experience.',
+    example:
+      'Vascular sonography specialist with 15+ years of clinical experience.',
     description: 'Biografía corta',
   })
   @IsOptional()

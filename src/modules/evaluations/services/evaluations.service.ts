@@ -7,7 +7,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Evaluation } from '../entities/evaluation.entity';
-import { CreateEvaluationDto, UpdateEvaluationDto, EvaluationQueryDto } from '../dto';
+import {
+  CreateEvaluationDto,
+  UpdateEvaluationDto,
+  EvaluationQueryDto,
+} from '../dto';
 import { ErrorCodes } from '../../../common/dto';
 
 @Injectable()
@@ -30,7 +34,8 @@ export class EvaluationsService {
     if (passingScore > totalPoints) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'El puntaje para aprobar no puede ser mayor que los puntos totales',
+        message:
+          'El puntaje para aprobar no puede ser mayor que los puntos totales',
       });
     }
 
@@ -89,7 +94,9 @@ export class EvaluationsService {
     }
 
     if (isPublished !== undefined) {
-      queryBuilder.andWhere('evaluation.isPublished = :isPublished', { isPublished });
+      queryBuilder.andWhere('evaluation.isPublished = :isPublished', {
+        isPublished,
+      });
     }
 
     // Ordenamiento
@@ -121,7 +128,10 @@ export class EvaluationsService {
   /**
    * Obtener evaluaciones de un curso
    */
-  async findByCourse(courseId: string, onlyPublished = false): Promise<Evaluation[]> {
+  async findByCourse(
+    courseId: string,
+    onlyPublished = false,
+  ): Promise<Evaluation[]> {
     const where: any = { courseId };
     if (onlyPublished) {
       where.isPublished = true;
@@ -175,7 +185,8 @@ export class EvaluationsService {
     if (passingScore > totalPoints) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'El puntaje para aprobar no puede ser mayor que los puntos totales',
+        message:
+          'El puntaje para aprobar no puede ser mayor que los puntos totales',
       });
     }
 

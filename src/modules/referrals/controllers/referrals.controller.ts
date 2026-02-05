@@ -451,7 +451,10 @@ export class ReferralsAdminController {
   })
   @ApiParam({ name: 'id', description: 'UUID del código' })
   @ApiResponse({ status: 204, description: 'Código eliminado' })
-  @ApiResponse({ status: 400, description: 'No se puede eliminar un código usado' })
+  @ApiResponse({
+    status: 400,
+    description: 'No se puede eliminar un código usado',
+  })
   async deleteCode(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.referralCodesService.delete(id);
   }

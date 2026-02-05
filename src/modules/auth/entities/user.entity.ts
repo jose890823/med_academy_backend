@@ -87,7 +87,12 @@ export class User {
   get role(): UserRole {
     if (!this.roles || this.roles.length === 0) return UserRole.STUDENT;
     // Orden de jerarquía: super_admin > admin > teacher > student
-    const hierarchy = [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT];
+    const hierarchy = [
+      UserRole.SUPER_ADMIN,
+      UserRole.ADMIN,
+      UserRole.TEACHER,
+      UserRole.STUDENT,
+    ];
     for (const role of hierarchy) {
       if (this.roles.includes(role)) return role;
     }
@@ -117,7 +122,8 @@ export class User {
 
   @ApiProperty({
     example: false,
-    description: 'Indica si es un usuario del sistema (no se puede eliminar desde la UI)',
+    description:
+      'Indica si es un usuario del sistema (no se puede eliminar desde la UI)',
   })
   @Column({ type: 'boolean', default: false })
   isSystemUser: boolean;
@@ -309,7 +315,7 @@ export class User {
    * Método helper para verificar si el usuario tiene alguno de los roles especificados
    */
   hasAnyRole(roles: UserRole[]): boolean {
-    return roles.some(role => this.hasRole(role));
+    return roles.some((role) => this.hasRole(role));
   }
 
   /**
@@ -318,7 +324,6 @@ export class User {
   isAdmin(): boolean {
     return this.hasAnyRole([UserRole.ADMIN, UserRole.SUPER_ADMIN]);
   }
-
 
   /**
    * Método helper para verificar si el usuario es super administrador

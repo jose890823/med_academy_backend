@@ -15,9 +15,9 @@ import { Workshop } from './workshop.entity';
  * Rol del instructor en el workshop
  */
 export enum InstructorRole {
-  LEAD = 'lead',           // Instructor principal
+  LEAD = 'lead', // Instructor principal
   ASSISTANT = 'assistant', // Asistente
-  GUEST = 'guest',         // Instructor invitado
+  GUEST = 'guest', // Instructor invitado
 }
 
 /**
@@ -39,7 +39,9 @@ export class WorkshopInstructor {
   // RELACIONES
   // ============================================
 
-  @ManyToOne(() => Workshop, (workshop) => workshop.instructors, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Workshop, (workshop) => workshop.instructors, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'workshopId' })
   workshop: Workshop;
 
@@ -62,7 +64,11 @@ export class WorkshopInstructor {
     description: 'Rol del instructor',
     enum: InstructorRole,
   })
-  @Column({ type: 'enum', enum: InstructorRole, default: InstructorRole.ASSISTANT })
+  @Column({
+    type: 'enum',
+    enum: InstructorRole,
+    default: InstructorRole.ASSISTANT,
+  })
   role: InstructorRole;
 
   @ApiProperty({

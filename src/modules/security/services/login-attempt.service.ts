@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThanOrEqual } from 'typeorm';
-import { LoginAttempt, LoginFailureReason } from '../entities/login-attempt.entity';
+import {
+  LoginAttempt,
+  LoginFailureReason,
+} from '../entities/login-attempt.entity';
 import { BlockedIpService } from './blocked-ip.service';
 import { SecurityEventService } from './security-event.service';
 import {
@@ -198,7 +201,10 @@ export class LoginAttemptService {
   /**
    * Obtener intentos recientes para una IP
    */
-  async getRecentByIp(ipAddress: string, limit: number = 10): Promise<LoginAttempt[]> {
+  async getRecentByIp(
+    ipAddress: string,
+    limit: number = 10,
+  ): Promise<LoginAttempt[]> {
     return this.loginAttemptRepository.find({
       where: { ipAddress },
       order: { createdAt: 'DESC' },
@@ -210,7 +216,10 @@ export class LoginAttemptService {
   /**
    * Obtener intentos recientes para un email
    */
-  async getRecentByEmail(email: string, limit: number = 10): Promise<LoginAttempt[]> {
+  async getRecentByEmail(
+    email: string,
+    limit: number = 10,
+  ): Promise<LoginAttempt[]> {
     return this.loginAttemptRepository.find({
       where: { email },
       order: { createdAt: 'DESC' },
@@ -272,7 +281,8 @@ export class LoginAttemptService {
       total: attempts.length,
       successful,
       failed,
-      successRate: attempts.length > 0 ? (successful / attempts.length) * 100 : 0,
+      successRate:
+        attempts.length > 0 ? (successful / attempts.length) * 100 : 0,
       topFailedIps,
       topFailedEmails,
       failureReasons: reasonCounts,

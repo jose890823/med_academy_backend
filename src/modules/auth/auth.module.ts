@@ -22,7 +22,10 @@ let EmailService: any = null;
 const emailModulePath = join(__dirname, '../email/email.module');
 const emailServicePath = join(__dirname, '../email/email.service');
 
-if (existsSync(emailModulePath + '.ts') || existsSync(emailModulePath + '.js')) {
+if (
+  existsSync(emailModulePath + '.ts') ||
+  existsSync(emailModulePath + '.js')
+) {
   try {
     EmailModule = require('../email/email.module').EmailModule;
     EmailService = require('../email/email.service').EmailService;
@@ -94,11 +97,6 @@ if (existsSync(emailModulePath + '.ts') || existsSync(emailModulePath + '.js')) 
         ]
       : []),
   ],
-  exports: [
-    AuthService,
-    JwtAuthGuard,
-    JwtRefreshGuard,
-    RolesGuard,
-  ],
+  exports: [AuthService, JwtAuthGuard, JwtRefreshGuard, RolesGuard],
 })
 export class AuthModule {}

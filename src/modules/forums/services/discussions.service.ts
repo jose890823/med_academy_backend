@@ -8,9 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Discussion, DiscussionStatus, DiscussionType } from '../entities/discussion.entity';
+import {
+  Discussion,
+  DiscussionStatus,
+  DiscussionType,
+} from '../entities/discussion.entity';
 import { DiscussionSubscription } from '../entities/discussion-subscription.entity';
-import { Enrollment, EnrollmentStatus } from '../../enrollments/entities/enrollment.entity';
+import {
+  Enrollment,
+  EnrollmentStatus,
+} from '../../enrollments/entities/enrollment.entity';
 import {
   CreateDiscussionDto,
   UpdateDiscussionDto,
@@ -40,14 +47,18 @@ export class DiscussionsService {
   /**
    * Crear una nueva discusión
    */
-  async create(dto: CreateDiscussionDto, authorId: string): Promise<Discussion> {
+  async create(
+    dto: CreateDiscussionDto,
+    authorId: string,
+  ): Promise<Discussion> {
     // Si es foro de curso, verificar inscripción
     if (dto.courseId) {
       const hasAccess = await this.checkCourseAccess(dto.courseId, authorId);
       if (!hasAccess) {
         throw new ForbiddenException({
           code: ErrorCodes.FORBIDDEN,
-          message: 'Debes estar inscrito en el curso para participar en el foro',
+          message:
+            'Debes estar inscrito en el curso para participar en el foro',
         });
       }
     }
@@ -86,7 +97,10 @@ export class DiscussionsService {
   /**
    * Listar discusiones con filtros
    */
-  async findAll(query: DiscussionQueryDto, userId?: string): Promise<{
+  async findAll(
+    query: DiscussionQueryDto,
+    userId?: string,
+  ): Promise<{
     data: Discussion[];
     pagination: {
       page: number;
@@ -147,7 +161,9 @@ export class DiscussionsService {
     }
 
     if (isResolved !== undefined) {
-      queryBuilder.andWhere('discussion.isResolved = :isResolved', { isResolved });
+      queryBuilder.andWhere('discussion.isResolved = :isResolved', {
+        isResolved,
+      });
     }
 
     if (tag) {
@@ -162,8 +178,15 @@ export class DiscussionsService {
     }
 
     // Ordenamiento: pinned primero, luego por sortBy
-    const validSortFields = ['createdAt', 'lastActivityAt', 'postCount', 'viewCount'];
-    const sortField = validSortFields.includes(sortBy) ? sortBy : 'lastActivityAt';
+    const validSortFields = [
+      'createdAt',
+      'lastActivityAt',
+      'postCount',
+      'viewCount',
+    ];
+    const sortField = validSortFields.includes(sortBy)
+      ? sortBy
+      : 'lastActivityAt';
     queryBuilder
       .orderBy('discussion.isPinned', 'DESC')
       .addOrderBy(`discussion.${sortField}`, sortOrder);
@@ -192,7 +215,10 @@ export class DiscussionsService {
   /**
    * Obtener discusión por ID
    */
-  async findById(id: string, incrementViews: boolean = false): Promise<Discussion> {
+  async findById(
+    id: string,
+    incrementViews: boolean = false,
+  ): Promise<Discussion> {
     const discussion = await this.discussionRepository.findOne({
       where: { id },
       relations: ['author', 'course', 'moderatedBy'],
@@ -301,7 +327,9 @@ export class DiscussionsService {
 
     const updated = await this.discussionRepository.save(discussion);
 
-    this.logger.log(`Discusión moderada: ${id} - ${dto.status || 'pin toggled'}`);
+    this.logger.log(
+      `Discusión moderada: ${id} - ${dto.status || 'pin toggled'}`,
+    );
 
     // Emitir evento
     this.eventEmitter.emit('forum.discussion.moderated', {
@@ -352,7 +380,10 @@ export class DiscussionsService {
   /**
    * Suscribirse a una discusión
    */
-  async subscribe(discussionId: string, userId: string): Promise<DiscussionSubscription> {
+  async subscribe(
+    discussionId: string,
+    userId: string,
+  ): Promise<DiscussionSubscription> {
     const existing = await this.subscriptionRepository.findOne({
       where: { discussionId, userId },
     });
@@ -389,7 +420,9 @@ export class DiscussionsService {
   /**
    * Obtener suscriptores de una discusión
    */
-  async getSubscribers(discussionId: string): Promise<DiscussionSubscription[]> {
+  async getSubscribers(
+    discussionId: string,
+  ): Promise<DiscussionSubscription[]> {
     return this.subscriptionRepository.find({
       where: { discussionId },
       relations: ['user'],
@@ -403,7 +436,11 @@ export class DiscussionsService {
   /**
    * Eliminar discusión (soft delete)
    */
-  async delete(id: string, userId: string, isAdmin: boolean = false): Promise<void> {
+  async delete(
+    id: string,
+    userId: string,
+    isAdmin: boolean = false,
+  ): Promise<void> {
     const discussion = await this.findById(id);
 
     if (!isAdmin && discussion.authorId !== userId) {
@@ -425,7 +462,10 @@ export class DiscussionsService {
   /**
    * Verificar acceso a foro de curso
    */
-  private async checkCourseAccess(courseId: string, userId: string): Promise<boolean> {
+  private async checkCourseAccess(
+    courseId: string,
+    userId: string,
+  ): Promise<boolean> {
     const enrollment = await this.enrollmentRepository
       .createQueryBuilder('enrollment')
       .innerJoin('enrollment.cohort', 'cohort')
@@ -460,7 +500,10 @@ export class DiscussionsService {
   /**
    * Actualizar última actividad (llamado por PostsService)
    */
-  async updateLastActivity(discussionId: string, userId: string): Promise<void> {
+  async updateLastActivity(
+    discussionId: string,
+    userId: string,
+  ): Promise<void> {
     await this.discussionRepository.update(discussionId, {
       lastActivityAt: new Date(),
       lastPostById: userId,
@@ -471,13 +514,21 @@ export class DiscussionsService {
    * Incrementar contador de posts (llamado por PostsService)
    */
   async incrementPostCount(discussionId: string): Promise<void> {
-    await this.discussionRepository.increment({ id: discussionId }, 'postCount', 1);
+    await this.discussionRepository.increment(
+      { id: discussionId },
+      'postCount',
+      1,
+    );
   }
 
   /**
    * Decrementar contador de posts (llamado por PostsService)
    */
   async decrementPostCount(discussionId: string): Promise<void> {
-    await this.discussionRepository.decrement({ id: discussionId }, 'postCount', 1);
+    await this.discussionRepository.decrement(
+      { id: discussionId },
+      'postCount',
+      1,
+    );
   }
 }

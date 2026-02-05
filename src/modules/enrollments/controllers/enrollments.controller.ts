@@ -75,14 +75,17 @@ export class EnrollmentsController {
     description: 'Lista de inscripciones activas',
     type: [Enrollment],
   })
-  async getMyActiveEnrollments(@CurrentUser() user: User): Promise<Enrollment[]> {
+  async getMyActiveEnrollments(
+    @CurrentUser() user: User,
+  ): Promise<Enrollment[]> {
     return this.enrollmentsService.findActiveByStudent(user.id);
   }
 
   @Get('check-access/:courseId')
   @ApiOperation({
     summary: 'Verificar acceso a curso',
-    description: 'Verifica si el estudiante autenticado tiene acceso a un curso',
+    description:
+      'Verifica si el estudiante autenticado tiene acceso a un curso',
   })
   @ApiParam({ name: 'courseId', description: 'UUID del curso' })
   @ApiResponse({
@@ -93,7 +96,10 @@ export class EnrollmentsController {
     @CurrentUser() user: User,
     @Param('courseId', ParseUUIDPipe) courseId: string,
   ): Promise<{ hasAccess: boolean }> {
-    const hasAccess = await this.enrollmentsService.hasAccess(user.id, courseId);
+    const hasAccess = await this.enrollmentsService.hasAccess(
+      user.id,
+      courseId,
+    );
     return { hasAccess };
   }
 
@@ -243,7 +249,10 @@ export class EnrollmentsAdminController {
     type: Enrollment,
   })
   @ApiResponse({ status: 400, description: 'Convocatoria cerrada o sin cupo' })
-  @ApiResponse({ status: 404, description: 'Convocatoria o aula no encontrada' })
+  @ApiResponse({
+    status: 404,
+    description: 'Convocatoria o aula no encontrada',
+  })
   @ApiResponse({ status: 409, description: 'El estudiante ya está inscrito' })
   async create(@Body() dto: CreateEnrollmentDto): Promise<Enrollment> {
     return this.enrollmentsService.create(dto);
@@ -274,7 +283,11 @@ export class EnrollmentsAdminController {
     description: 'Cambia el estado de una inscripción',
   })
   @ApiParam({ name: 'id', description: 'UUID de la inscripción' })
-  @ApiQuery({ name: 'status', enum: EnrollmentStatus, description: 'Nuevo estado' })
+  @ApiQuery({
+    name: 'status',
+    enum: EnrollmentStatus,
+    description: 'Nuevo estado',
+  })
   @ApiResponse({
     status: 200,
     description: 'Estado actualizado exitosamente',
@@ -311,7 +324,11 @@ export class EnrollmentsAdminController {
     description: 'Cancela una inscripción',
   })
   @ApiParam({ name: 'id', description: 'UUID de la inscripción' })
-  @ApiQuery({ name: 'reason', required: false, description: 'Razón de cancelación' })
+  @ApiQuery({
+    name: 'reason',
+    required: false,
+    description: 'Razón de cancelación',
+  })
   @ApiResponse({
     status: 200,
     description: 'Inscripción cancelada exitosamente',
@@ -336,7 +353,10 @@ export class EnrollmentsAdminController {
     description: 'Aula asignada exitosamente',
     type: Enrollment,
   })
-  @ApiResponse({ status: 400, description: 'El aula no pertenece a la convocatoria o está llena' })
+  @ApiResponse({
+    status: 400,
+    description: 'El aula no pertenece a la convocatoria o está llena',
+  })
   @ApiResponse({ status: 404, description: 'Inscripción o aula no encontrada' })
   async assignClassroom(
     @Param('id', ParseUUIDPipe) id: string,
@@ -376,7 +396,10 @@ export class EnrollmentsAdminController {
     description: 'Certificado emitido exitosamente',
     type: Enrollment,
   })
-  @ApiResponse({ status: 400, description: 'La inscripción debe estar activa o completada' })
+  @ApiResponse({
+    status: 400,
+    description: 'La inscripción debe estar activa o completada',
+  })
   @ApiResponse({ status: 404, description: 'Inscripción no encontrada' })
   async issueCertificate(
     @Param('id', ParseUUIDPipe) id: string,

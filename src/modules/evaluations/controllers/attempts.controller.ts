@@ -57,7 +57,10 @@ export class AttemptsController {
     description: 'Intento iniciado exitosamente',
     type: EvaluationAttempt,
   })
-  @ApiResponse({ status: 400, description: 'Evaluación no disponible o límite de intentos alcanzado' })
+  @ApiResponse({
+    status: 400,
+    description: 'Evaluación no disponible o límite de intentos alcanzado',
+  })
   async startAttempt(@Body() dto: StartAttemptDto): Promise<EvaluationAttempt> {
     return this.attemptsService.startAttempt(dto);
   }
@@ -93,7 +96,10 @@ export class AttemptsController {
     description: 'Intento enviado exitosamente',
     type: EvaluationAttempt,
   })
-  @ApiResponse({ status: 400, description: 'El intento ya fue enviado o ha expirado' })
+  @ApiResponse({
+    status: 400,
+    description: 'El intento ya fue enviado o ha expirado',
+  })
   async submitAttempt(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: SubmitAnswersDto,
@@ -130,9 +136,7 @@ export class AttemptsController {
     description: 'Lista de respuestas',
     type: [Answer],
   })
-  async getAnswers(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Answer[]> {
+  async getAnswers(@Param('id', ParseUUIDPipe) id: string): Promise<Answer[]> {
     return this.attemptsService.getAnswers(id);
   }
 
@@ -146,7 +150,10 @@ export class AttemptsController {
     status: 200,
     description: 'Resultados del intento',
   })
-  @ApiResponse({ status: 400, description: 'El intento aún no ha sido calificado' })
+  @ApiResponse({
+    status: 400,
+    description: 'El intento aún no ha sido calificado',
+  })
   async getResults(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<{ attempt: EvaluationAttempt; answers: Answer[] }> {
@@ -163,7 +170,8 @@ export class AttemptsController {
   @Get('enrollment/:enrollmentId/evaluation/:evaluationId')
   @ApiOperation({
     summary: 'Obtener intentos por inscripción y evaluación',
-    description: 'Retorna todos los intentos de un estudiante para una evaluación',
+    description:
+      'Retorna todos los intentos de un estudiante para una evaluación',
   })
   @ApiParam({ name: 'enrollmentId', description: 'UUID de la inscripción' })
   @ApiParam({ name: 'evaluationId', description: 'UUID de la evaluación' })
@@ -198,7 +206,8 @@ export class GradingController {
   @Get('pending')
   @ApiOperation({
     summary: 'Obtener intentos pendientes de calificar',
-    description: 'Retorna los intentos enviados que aún no han sido calificados',
+    description:
+      'Retorna los intentos enviados que aún no han sido calificados',
   })
   @ApiResponse({
     status: 200,
@@ -254,7 +263,10 @@ export class GradingController {
     description: 'Intento calificado exitosamente',
     type: EvaluationAttempt,
   })
-  @ApiResponse({ status: 400, description: 'El intento debe ser enviado antes de calificar' })
+  @ApiResponse({
+    status: 400,
+    description: 'El intento debe ser enviado antes de calificar',
+  })
   async gradeAttempt(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: GradeAttemptDto,
@@ -267,7 +279,8 @@ export class GradingController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Calificación rápida',
-    description: 'Asigna un puntaje total sin calificar cada respuesta individualmente',
+    description:
+      'Asigna un puntaje total sin calificar cada respuesta individualmente',
   })
   @ApiParam({ name: 'id', description: 'UUID del intento' })
   @ApiResponse({
@@ -275,7 +288,10 @@ export class GradingController {
     description: 'Intento calificado exitosamente',
     type: EvaluationAttempt,
   })
-  @ApiResponse({ status: 400, description: 'El intento debe ser enviado antes de calificar' })
+  @ApiResponse({
+    status: 400,
+    description: 'El intento debe ser enviado antes de calificar',
+  })
   async quickGrade(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: QuickGradeDto,

@@ -34,7 +34,8 @@ export class CourseModule {
   title: string;
 
   @ApiProperty({
-    example: 'Fundamentos de la física del efecto Doppler aplicado a ultrasonido.',
+    example:
+      'Fundamentos de la física del efecto Doppler aplicado a ultrasonido.',
     description: 'Descripción del módulo',
     required: false,
   })

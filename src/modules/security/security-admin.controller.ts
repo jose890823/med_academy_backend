@@ -175,7 +175,10 @@ export class SecurityAdminController {
   @ApiResponse({ status: 200, description: 'IP desbloqueada' })
   async unblockIp(@Param('ip') ip: string, @CurrentUser() user: User) {
     const success = await this.blockedIpService.unblockIp(ip, user.id);
-    return { success, message: success ? 'IP desbloqueada' : 'IP no encontrada' };
+    return {
+      success,
+      message: success ? 'IP desbloqueada' : 'IP no encontrada',
+    };
   }
 
   @Get('blocked-ips/stats')
@@ -315,8 +318,16 @@ export class SecurityAdminController {
     summary: 'Listar alertas de seguridad',
     description: 'Lista todas las alertas de seguridad',
   })
-  @ApiQuery({ name: 'status', required: false, description: 'Filtrar por estado' })
-  @ApiQuery({ name: 'severity', required: false, description: 'Filtrar por severidad' })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    description: 'Filtrar por estado',
+  })
+  @ApiQuery({
+    name: 'severity',
+    required: false,
+    description: 'Filtrar por severidad',
+  })
   @ApiResponse({ status: 200, description: 'Lista de alertas' })
   async getAlerts(
     @Query('status') status?: string,
@@ -353,7 +364,8 @@ export class SecurityAdminController {
   @Patch('alerts/:id/status')
   @ApiOperation({
     summary: 'Actualizar estado de alerta',
-    description: 'Actualiza el estado de una alerta (resolver, descartar, etc.)',
+    description:
+      'Actualiza el estado de una alerta (resolver, descartar, etc.)',
   })
   @ApiParam({ name: 'id', description: 'ID de la alerta' })
   @ApiResponse({ status: 200, description: 'Alerta actualizada' })

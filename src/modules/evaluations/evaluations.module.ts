@@ -2,12 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Entities
-import {
-  Evaluation,
-  Question,
-  EvaluationAttempt,
-  Answer,
-} from './entities';
+import { Evaluation, Question, EvaluationAttempt, Answer } from './entities';
 
 // Services
 import {
@@ -28,12 +23,7 @@ import {
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Evaluation,
-      Question,
-      EvaluationAttempt,
-      Answer,
-    ]),
+    TypeOrmModule.forFeature([Evaluation, Question, EvaluationAttempt, Answer]),
   ],
   controllers: [
     // Public Controllers
@@ -43,15 +33,7 @@ import {
     EvaluationsAdminController,
     GradingController,
   ],
-  providers: [
-    EvaluationsService,
-    QuestionsService,
-    AttemptsService,
-  ],
-  exports: [
-    EvaluationsService,
-    QuestionsService,
-    AttemptsService,
-  ],
+  providers: [EvaluationsService, QuestionsService, AttemptsService],
+  exports: [EvaluationsService, QuestionsService, AttemptsService],
 })
 export class EvaluationsModule {}

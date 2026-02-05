@@ -108,7 +108,8 @@ export class Payment {
   provider: PaymentProvider;
 
   @ApiProperty({
-    description: 'ID de la transacción en el proveedor (Stripe Payment Intent ID)',
+    description:
+      'ID de la transacción en el proveedor (Stripe Payment Intent ID)',
     example: 'pi_1234567890abcdef',
     nullable: true,
   })

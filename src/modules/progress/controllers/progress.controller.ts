@@ -57,7 +57,8 @@ export class ProgressController {
   @Get('enrollment/:enrollmentId')
   @ApiOperation({
     summary: 'Obtener progreso de una inscripción',
-    description: 'Retorna el progreso general del estudiante en una inscripción',
+    description:
+      'Retorna el progreso general del estudiante en una inscripción',
   })
   @ApiParam({ name: 'enrollmentId', description: 'UUID de la inscripción' })
   @ApiResponse({
@@ -199,11 +200,15 @@ export class ProgressController {
     @Body() dto: UpdateVideoProgressDto,
     @CurrentUser() user: User,
   ): Promise<ModuleProgress> {
-    const progress = await this.moduleProgressService.updateVideoProgress(enrollmentId, dto);
+    const progress = await this.moduleProgressService.updateVideoProgress(
+      enrollmentId,
+      dto,
+    );
 
     // Verificar logros si el video se completó
     if (dto.videoCompleted) {
-      const enrollmentProgress = await this.enrollmentProgressService.findByEnrollmentId(enrollmentId);
+      const enrollmentProgress =
+        await this.enrollmentProgressService.findByEnrollmentId(enrollmentId);
       await this.achievementsService.checkProgressAchievements(
         user.id,
         enrollmentId,
@@ -260,13 +265,21 @@ export class ProgressController {
     @Body() dto: CompleteModuleDto,
     @CurrentUser() user: User,
   ): Promise<ModuleProgress> {
-    const progress = await this.moduleProgressService.markAsCompleted(enrollmentId, dto.moduleId);
+    const progress = await this.moduleProgressService.markAsCompleted(
+      enrollmentId,
+      dto.moduleId,
+    );
 
     // Registrar en activity log
-    await this.activityLogService.logModuleCompleted(user.id, enrollmentId, dto.moduleId);
+    await this.activityLogService.logModuleCompleted(
+      user.id,
+      enrollmentId,
+      dto.moduleId,
+    );
 
     // Verificar logros
-    const enrollmentProgress = await this.enrollmentProgressService.findByEnrollmentId(enrollmentId);
+    const enrollmentProgress =
+      await this.enrollmentProgressService.findByEnrollmentId(enrollmentId);
     await this.achievementsService.checkProgressAchievements(
       user.id,
       enrollmentId,
@@ -336,7 +349,9 @@ export class ProgressController {
     description: 'Logros no vistos',
     type: [Achievement],
   })
-  async getUnseenAchievements(@CurrentUser() user: User): Promise<Achievement[]> {
+  async getUnseenAchievements(
+    @CurrentUser() user: User,
+  ): Promise<Achievement[]> {
     return this.achievementsService.getUnseenAchievements(user.id);
   }
 
@@ -389,7 +404,9 @@ export class ProgressController {
     @CurrentUser() user: User,
     @Query('limit') limit?: number,
   ) {
-    return this.activityLogService.findByUserId(user.id, { limit: limit || 20 });
+    return this.activityLogService.findByUserId(user.id, {
+      limit: limit || 20,
+    });
   }
 
   @Get('activity/daily')

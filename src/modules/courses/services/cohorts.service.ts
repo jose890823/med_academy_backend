@@ -182,10 +182,17 @@ export class CohortsService {
     }
 
     // Validar fechas si se actualizan
-    if (dto.enrollmentStartDate || dto.enrollmentEndDate || dto.startDate || dto.endDate) {
+    if (
+      dto.enrollmentStartDate ||
+      dto.enrollmentEndDate ||
+      dto.startDate ||
+      dto.endDate
+    ) {
       const datesToValidate = {
-        enrollmentStartDate: dto.enrollmentStartDate || cohort.enrollmentStartDate.toISOString(),
-        enrollmentEndDate: dto.enrollmentEndDate || cohort.enrollmentEndDate.toISOString(),
+        enrollmentStartDate:
+          dto.enrollmentStartDate || cohort.enrollmentStartDate.toISOString(),
+        enrollmentEndDate:
+          dto.enrollmentEndDate || cohort.enrollmentEndDate.toISOString(),
         startDate: dto.startDate || cohort.startDate.toISOString(),
         endDate: dto.endDate || cohort.endDate.toISOString(),
       };
@@ -195,7 +202,9 @@ export class CohortsService {
     Object.assign(cohort, dto);
     const updated = await this.cohortRepository.save(cohort);
 
-    this.logger.log(`Convocatoria actualizada: ${updated.name} (${updated.id})`);
+    this.logger.log(
+      `Convocatoria actualizada: ${updated.name} (${updated.id})`,
+    );
     return updated;
   }
 
@@ -217,7 +226,10 @@ export class CohortsService {
   async incrementStudentCount(id: string): Promise<void> {
     const cohort = await this.findById(id);
 
-    if (cohort.maxStudents !== null && cohort.currentStudents >= cohort.maxStudents) {
+    if (
+      cohort.maxStudents !== null &&
+      cohort.currentStudents >= cohort.maxStudents
+    ) {
       throw new BadRequestException({
         code: ErrorCodes.COHORT_FULL,
         message: 'La convocatoria no tiene cupos disponibles',
@@ -263,21 +275,24 @@ export class CohortsService {
     if (enrollmentStart >= enrollmentEnd) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'La fecha de inicio de inscripciones debe ser anterior a la fecha de fin',
+        message:
+          'La fecha de inicio de inscripciones debe ser anterior a la fecha de fin',
       });
     }
 
     if (courseStart >= courseEnd) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'La fecha de inicio del curso debe ser anterior a la fecha de fin',
+        message:
+          'La fecha de inicio del curso debe ser anterior a la fecha de fin',
       });
     }
 
     if (enrollmentEnd > courseStart) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'Las inscripciones deben cerrar antes o el mismo día que inicia el curso',
+        message:
+          'Las inscripciones deben cerrar antes o el mismo día que inicia el curso',
       });
     }
   }

@@ -250,20 +250,31 @@ export class UsersService {
 
     // Filter by role (busca usuarios que tengan este rol en su array de roles)
     if (filter.role) {
-      queryBuilder.andWhere('user.roles LIKE :role', { role: `%${filter.role}%` });
+      queryBuilder.andWhere('user.roles LIKE :role', {
+        role: `%${filter.role}%`,
+      });
     }
     if (filter.isActive !== undefined) {
-      queryBuilder.andWhere('user.isActive = :isActive', { isActive: filter.isActive });
+      queryBuilder.andWhere('user.isActive = :isActive', {
+        isActive: filter.isActive,
+      });
     }
     if (filter.emailVerified !== undefined) {
-      queryBuilder.andWhere('user.emailVerified = :emailVerified', { emailVerified: filter.emailVerified });
+      queryBuilder.andWhere('user.emailVerified = :emailVerified', {
+        emailVerified: filter.emailVerified,
+      });
     }
     if (filter.phoneVerified !== undefined) {
-      queryBuilder.andWhere('user.phoneVerified = :phoneVerified', { phoneVerified: filter.phoneVerified });
+      queryBuilder.andWhere('user.phoneVerified = :phoneVerified', {
+        phoneVerified: filter.phoneVerified,
+      });
     }
 
     // Sorting
-    queryBuilder.orderBy(`user.${filter.sortBy || 'createdAt'}`, filter.sortOrder || 'DESC');
+    queryBuilder.orderBy(
+      `user.${filter.sortBy || 'createdAt'}`,
+      filter.sortOrder || 'DESC',
+    );
 
     // Pagination
     const page = filter.page || 1;
@@ -290,8 +301,13 @@ export class UsersService {
     const user = await this.findById(userId);
 
     // Prevent removing super_admin from the last super admin
-    if (user.hasRole(UserRole.SUPER_ADMIN) && !roles.includes(UserRole.SUPER_ADMIN)) {
-      const superAdminCount = await this.countUsersWithRole(UserRole.SUPER_ADMIN);
+    if (
+      user.hasRole(UserRole.SUPER_ADMIN) &&
+      !roles.includes(UserRole.SUPER_ADMIN)
+    ) {
+      const superAdminCount = await this.countUsersWithRole(
+        UserRole.SUPER_ADMIN,
+      );
 
       if (superAdminCount <= 1) {
         throw new BadRequestException(
@@ -303,7 +319,9 @@ export class UsersService {
     user.roles = roles;
     const updated = await this.userRepository.save(user);
 
-    this.logger.log(`👤 Roles updated to [${roles.join(', ')}] for user ${userId}`);
+    this.logger.log(
+      `👤 Roles updated to [${roles.join(', ')}] for user ${userId}`,
+    );
 
     return updated;
   }
@@ -340,7 +358,9 @@ export class UsersService {
 
     // Prevent removing super_admin from the last super admin
     if (role === UserRole.SUPER_ADMIN && user.hasRole(UserRole.SUPER_ADMIN)) {
-      const superAdminCount = await this.countUsersWithRole(UserRole.SUPER_ADMIN);
+      const superAdminCount = await this.countUsersWithRole(
+        UserRole.SUPER_ADMIN,
+      );
 
       if (superAdminCount <= 1) {
         throw new BadRequestException(
@@ -354,7 +374,7 @@ export class UsersService {
       throw new BadRequestException('User must have at least one role');
     }
 
-    user.roles = user.roles.filter(r => r !== role);
+    user.roles = user.roles.filter((r) => r !== role);
     await this.userRepository.save(user);
     this.logger.log(`👤 Role ${role} removed from user ${userId}`);
 
@@ -400,7 +420,9 @@ export class UsersService {
 
     // Prevent deleting system users (created by seeder)
     if (user.isSystemUser) {
-      throw new BadRequestException('Cannot delete system user. This user can only be deleted directly in the database.');
+      throw new BadRequestException(
+        'Cannot delete system user. This user can only be deleted directly in the database.',
+      );
     }
 
     // Prevent deleting super admins
@@ -481,8 +503,13 @@ export class UsersService {
     // Update roles (with validation)
     if (updateDto.roles !== undefined && updateDto.roles.length > 0) {
       // Prevent removing super_admin from the last super admin
-      if (user.hasRole(UserRole.SUPER_ADMIN) && !updateDto.roles.includes(UserRole.SUPER_ADMIN)) {
-        const superAdminCount = await this.countUsersWithRole(UserRole.SUPER_ADMIN);
+      if (
+        user.hasRole(UserRole.SUPER_ADMIN) &&
+        !updateDto.roles.includes(UserRole.SUPER_ADMIN)
+      ) {
+        const superAdminCount = await this.countUsersWithRole(
+          UserRole.SUPER_ADMIN,
+        );
 
         if (superAdminCount <= 1) {
           throw new BadRequestException(
@@ -495,8 +522,13 @@ export class UsersService {
     // Soporte para el campo legacy 'role' (convierte a array)
     else if (updateDto.role !== undefined) {
       // Prevent demoting the last super admin
-      if (user.hasRole(UserRole.SUPER_ADMIN) && updateDto.role !== UserRole.SUPER_ADMIN) {
-        const superAdminCount = await this.countUsersWithRole(UserRole.SUPER_ADMIN);
+      if (
+        user.hasRole(UserRole.SUPER_ADMIN) &&
+        updateDto.role !== UserRole.SUPER_ADMIN
+      ) {
+        const superAdminCount = await this.countUsersWithRole(
+          UserRole.SUPER_ADMIN,
+        );
 
         if (superAdminCount <= 1) {
           throw new BadRequestException(
@@ -589,23 +621,24 @@ export class UsersService {
     const result = await this.findAll(filter);
 
     // Get active subscriptions for all users
-    const userIds = result.data.map(u => u.id);
-    const subscriptions = userIds.length > 0
-      ? await this.subscriptionRepository.find({
-          where: {
-            status: SubscriptionStatus.ACTIVE,
-          },
-        })
-      : [];
+    const userIds = result.data.map((u) => u.id);
+    const subscriptions =
+      userIds.length > 0
+        ? await this.subscriptionRepository.find({
+            where: {
+              status: SubscriptionStatus.ACTIVE,
+            },
+          })
+        : [];
 
     // Filter subscriptions for our user IDs
-    const filteredSubscriptions = subscriptions.filter(sub =>
-      userIds.includes(sub.userId)
+    const filteredSubscriptions = subscriptions.filter((sub) =>
+      userIds.includes(sub.userId),
     );
 
     // Create map of userId -> subscription
     const subscriptionMap = new Map<string, Subscription>();
-    filteredSubscriptions.forEach(sub => {
+    filteredSubscriptions.forEach((sub) => {
       subscriptionMap.set(sub.userId, sub);
     });
 
@@ -620,7 +653,7 @@ export class UsersService {
     const trialDays = 7;
 
     // Map users with plan info
-    const usersWithPlans = result.data.map(user => {
+    const usersWithPlans = result.data.map((user) => {
       const subscription = subscriptionMap.get(user.id);
 
       // Build subscription info
@@ -642,7 +675,7 @@ export class UsersService {
 
         const now = new Date();
         const trialDaysRemaining = Math.ceil(
-          (trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          (trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
         );
 
         if (trialDaysRemaining > 0) {
@@ -741,7 +774,10 @@ export class UsersService {
    * @param fullName - Full name to search (e.g., "Juan Pérez" or "laura ubeda")
    * @param limit - Maximum number of results
    */
-  async searchByFullName(fullName: string, limit: number = 10): Promise<User[]> {
+  async searchByFullName(
+    fullName: string,
+    limit: number = 10,
+  ): Promise<User[]> {
     // Normalizar búsqueda: quitar acentos y convertir a minúsculas para mejor matching
     const normalizedSearch = this.normalizeForSearch(fullName);
 

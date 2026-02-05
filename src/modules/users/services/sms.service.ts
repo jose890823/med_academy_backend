@@ -78,7 +78,10 @@ export class SmsService {
   /**
    * Send notification SMS
    */
-  async sendNotification(phoneNumber: string, notification: string): Promise<boolean> {
+  async sendNotification(
+    phoneNumber: string,
+    notification: string,
+  ): Promise<boolean> {
     return this.sendSms(phoneNumber, notification);
   }
 }

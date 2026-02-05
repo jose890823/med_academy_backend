@@ -36,7 +36,10 @@ import { MessagingModule } from './modules/messaging/messaging.module';
 // Importación condicional de módulos opcionales
 let EmailModule: any = null;
 const emailModulePath = join(__dirname, 'modules/email/email.module');
-if (existsSync(emailModulePath + '.ts') || existsSync(emailModulePath + '.js')) {
+if (
+  existsSync(emailModulePath + '.ts') ||
+  existsSync(emailModulePath + '.js')
+) {
   try {
     EmailModule = require('./modules/email/email.module').EmailModule;
   } catch (error) {
@@ -108,23 +111,55 @@ export class AppModule {
     AppModule.logger.log('AuthModule integrado - Autenticacion JWT completa');
     AppModule.logger.log('UsersModule integrado - Gestion de usuarios');
     AppModule.logger.log('PaymentsModule integrado - Pagos con Stripe');
-    AppModule.logger.log('SeederModule integrado - Creacion automatica de Super Admin');
+    AppModule.logger.log(
+      'SeederModule integrado - Creacion automatica de Super Admin',
+    );
     AppModule.logger.log('ContactModule integrado - Formulario de contacto');
-    AppModule.logger.log('SecurityModule integrado - Rate Limiting, IP Block, Alertas');
-    AppModule.logger.log('CoursesModule integrado - Cursos, Categorías, Convocatorias, Aulas');
-    AppModule.logger.log('EnrollmentsModule integrado - Inscripciones de estudiantes');
-    AppModule.logger.log('EvaluationsModule integrado - Evaluaciones, Preguntas e Intentos');
-    AppModule.logger.log('ReferralsModule integrado - Codigos de referido y recompensas');
-    AppModule.logger.log('ProgressModule integrado - Progreso, Logros y Actividad');
-    AppModule.logger.log('WorkshopsModule integrado - Talleres presenciales, Sesiones e Inscripciones');
-    AppModule.logger.log('CertificatesModule integrado - Generacion y verificacion de certificados PDF');
-    AppModule.logger.log('NotificationsModule integrado - Sistema de notificaciones con Bull queue');
-    AppModule.logger.log('MaterialsModule integrado - Gestion de archivos y materiales de cursos');
-    AppModule.logger.log('AnalyticsModule integrado - Dashboard de metricas y reportes');
-    AppModule.logger.log('ReviewsModule integrado - Reviews y calificaciones de cursos');
-    AppModule.logger.log('ForumsModule integrado - Foros de comunidad y cursos');
-    AppModule.logger.log('InstructorsModule integrado - Perfiles publicos de instructores');
-    AppModule.logger.log('MessagingModule integrado - Mensajeria directa entre usuarios');
+    AppModule.logger.log(
+      'SecurityModule integrado - Rate Limiting, IP Block, Alertas',
+    );
+    AppModule.logger.log(
+      'CoursesModule integrado - Cursos, Categorías, Convocatorias, Aulas',
+    );
+    AppModule.logger.log(
+      'EnrollmentsModule integrado - Inscripciones de estudiantes',
+    );
+    AppModule.logger.log(
+      'EvaluationsModule integrado - Evaluaciones, Preguntas e Intentos',
+    );
+    AppModule.logger.log(
+      'ReferralsModule integrado - Codigos de referido y recompensas',
+    );
+    AppModule.logger.log(
+      'ProgressModule integrado - Progreso, Logros y Actividad',
+    );
+    AppModule.logger.log(
+      'WorkshopsModule integrado - Talleres presenciales, Sesiones e Inscripciones',
+    );
+    AppModule.logger.log(
+      'CertificatesModule integrado - Generacion y verificacion de certificados PDF',
+    );
+    AppModule.logger.log(
+      'NotificationsModule integrado - Sistema de notificaciones con Bull queue',
+    );
+    AppModule.logger.log(
+      'MaterialsModule integrado - Gestion de archivos y materiales de cursos',
+    );
+    AppModule.logger.log(
+      'AnalyticsModule integrado - Dashboard de metricas y reportes',
+    );
+    AppModule.logger.log(
+      'ReviewsModule integrado - Reviews y calificaciones de cursos',
+    );
+    AppModule.logger.log(
+      'ForumsModule integrado - Foros de comunidad y cursos',
+    );
+    AppModule.logger.log(
+      'InstructorsModule integrado - Perfiles publicos de instructores',
+    );
+    AppModule.logger.log(
+      'MessagingModule integrado - Mensajeria directa entre usuarios',
+    );
 
     // Log módulos opcionales
     if (EmailModule) {

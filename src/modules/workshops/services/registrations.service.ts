@@ -72,7 +72,8 @@ export class RegistrationsService {
       sessionId: dto.sessionId,
       status,
       waitlistPosition,
-      waitlistAddedAt: status === RegistrationStatus.WAITLIST ? new Date() : null,
+      waitlistAddedAt:
+        status === RegistrationStatus.WAITLIST ? new Date() : null,
       contactEmail: dto.contactEmail,
       contactPhone: dto.contactPhone || null,
       firstName: dto.firstName,
@@ -159,12 +160,15 @@ export class RegistrationsService {
   /**
    * Confirmar inscripción (después del pago)
    */
-  async confirm(id: string, paymentDetails?: {
-    amountPaid: number;
-    stripePaymentIntentId?: string;
-    discountApplied?: number;
-    discountReason?: string;
-  }): Promise<WorkshopRegistration> {
+  async confirm(
+    id: string,
+    paymentDetails?: {
+      amountPaid: number;
+      stripePaymentIntentId?: string;
+      discountApplied?: number;
+      discountReason?: string;
+    },
+  ): Promise<WorkshopRegistration> {
     const registration = await this.findById(id);
 
     if (registration.status === RegistrationStatus.CONFIRMED) {
@@ -176,7 +180,8 @@ export class RegistrationsService {
 
     if (paymentDetails) {
       registration.amountPaid = paymentDetails.amountPaid;
-      registration.stripePaymentIntentId = paymentDetails.stripePaymentIntentId || null;
+      registration.stripePaymentIntentId =
+        paymentDetails.stripePaymentIntentId || null;
       registration.discountApplied = paymentDetails.discountApplied || 0;
       registration.discountReason = paymentDetails.discountReason || null;
     }
@@ -234,7 +239,10 @@ export class RegistrationsService {
   /**
    * Registrar check-in
    */
-  async checkIn(id: string, checkedInBy: string): Promise<WorkshopRegistration> {
+  async checkIn(
+    id: string,
+    checkedInBy: string,
+  ): Promise<WorkshopRegistration> {
     const registration = await this.findById(id);
 
     if (registration.status !== RegistrationStatus.CONFIRMED) {
@@ -334,7 +342,9 @@ export class RegistrationsService {
     // Decrementar contador
     await this.sessionsService.decrementParticipants(registration.sessionId);
 
-    this.logger.log(`Reembolso procesado para inscripción ${id}: $${refundAmount}`);
+    this.logger.log(
+      `Reembolso procesado para inscripción ${id}: $${refundAmount}`,
+    );
     return updated;
   }
 
@@ -411,12 +421,24 @@ export class RegistrationsService {
 
     return {
       total: registrations.length,
-      confirmed: registrations.filter((r) => r.status === RegistrationStatus.CONFIRMED).length,
-      pending: registrations.filter((r) => r.status === RegistrationStatus.PENDING).length,
-      waitlist: registrations.filter((r) => r.status === RegistrationStatus.WAITLIST).length,
-      cancelled: registrations.filter((r) => r.status === RegistrationStatus.CANCELLED).length,
-      attended: registrations.filter((r) => r.status === RegistrationStatus.ATTENDED).length,
-      noShow: registrations.filter((r) => r.status === RegistrationStatus.NO_SHOW).length,
+      confirmed: registrations.filter(
+        (r) => r.status === RegistrationStatus.CONFIRMED,
+      ).length,
+      pending: registrations.filter(
+        (r) => r.status === RegistrationStatus.PENDING,
+      ).length,
+      waitlist: registrations.filter(
+        (r) => r.status === RegistrationStatus.WAITLIST,
+      ).length,
+      cancelled: registrations.filter(
+        (r) => r.status === RegistrationStatus.CANCELLED,
+      ).length,
+      attended: registrations.filter(
+        (r) => r.status === RegistrationStatus.ATTENDED,
+      ).length,
+      noShow: registrations.filter(
+        (r) => r.status === RegistrationStatus.NO_SHOW,
+      ).length,
     };
   }
 }

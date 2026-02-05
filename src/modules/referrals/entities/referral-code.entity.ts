@@ -110,7 +110,8 @@ export class ReferralCode {
 
   @ApiProperty({
     example: 50,
-    description: 'Crédito en USD para el referidor por cada referido completado',
+    description:
+      'Crédito en USD para el referidor por cada referido completado',
   })
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 50 })
   referrerRewardAmount: number;

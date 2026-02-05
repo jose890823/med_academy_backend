@@ -1,10 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsString,
-  IsNotEmpty,
-  MinLength,
-  MaxLength,
-} from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
 
 export class ReplyContactMessageDto {
   @ApiProperty({
@@ -16,6 +11,8 @@ export class ReplyContactMessageDto {
   @IsString()
   @IsNotEmpty({ message: 'La respuesta es requerida' })
   @MinLength(10, { message: 'La respuesta debe tener al menos 10 caracteres' })
-  @MaxLength(5000, { message: 'La respuesta no puede tener mas de 5000 caracteres' })
+  @MaxLength(5000, {
+    message: 'La respuesta no puede tener mas de 5000 caracteres',
+  })
   reply: string;
 }

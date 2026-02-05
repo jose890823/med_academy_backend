@@ -20,18 +20,9 @@ import { ReviewsAdminController } from './controllers/reviews-admin.controller';
  * - Votos de utilidad
  */
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Review, Enrollment]),
-  ],
-  controllers: [
-    ReviewsController,
-    ReviewsAdminController,
-  ],
-  providers: [
-    ReviewsService,
-  ],
-  exports: [
-    ReviewsService,
-  ],
+  imports: [TypeOrmModule.forFeature([Review, Enrollment])],
+  controllers: [ReviewsController, ReviewsAdminController],
+  providers: [ReviewsService],
+  exports: [ReviewsService],
 })
 export class ReviewsModule {}

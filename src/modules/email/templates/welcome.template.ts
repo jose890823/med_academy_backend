@@ -6,7 +6,9 @@ interface WelcomeTemplateData {
 
 export function getWelcomeEmailTemplate(data: WelcomeTemplateData): string {
   const brandName = data.brandName || 'PublishSparks';
-  const fullName = data.lastName ? `${data.firstName} ${data.lastName}` : data.firstName;
+  const fullName = data.lastName
+    ? `${data.firstName} ${data.lastName}`
+    : data.firstName;
 
   return `
 <!DOCTYPE html>

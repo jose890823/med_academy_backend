@@ -14,13 +14,18 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { InstructorSpecialty, InstructorCertification } from '../entities/instructor-profile.entity';
+import {
+  InstructorSpecialty,
+  InstructorCertification,
+} from '../entities/instructor-profile.entity';
 
 /**
  * DTO para educación
  */
 export class EducationDto {
-  @ApiProperty({ example: 'Bachelor of Science in Diagnostic Medical Sonography' })
+  @ApiProperty({
+    example: 'Bachelor of Science in Diagnostic Medical Sonography',
+  })
   @IsString()
   degree: string;
 
@@ -92,16 +97,20 @@ export class CreateInstructorProfileDto {
   title?: string;
 
   @ApiPropertyOptional({
-    example: 'Vascular sonography specialist with 15+ years of clinical experience.',
+    example:
+      'Vascular sonography specialist with 15+ years of clinical experience.',
     description: 'Biografía corta (resumen)',
   })
   @IsOptional()
   @IsString()
-  @MaxLength(500, { message: 'La biografía corta no debe exceder 500 caracteres' })
+  @MaxLength(500, {
+    message: 'La biografía corta no debe exceder 500 caracteres',
+  })
   shortBio?: string;
 
   @ApiPropertyOptional({
-    example: 'Dr. Sarah Johnson es una experta reconocida en ecografía vascular...',
+    example:
+      'Dr. Sarah Johnson es una experta reconocida en ecografía vascular...',
     description: 'Biografía completa',
   })
   @IsOptional()

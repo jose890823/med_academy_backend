@@ -17,13 +17,13 @@ import { WorkshopRegistration } from './workshop-registration.entity';
  * Estado de la sesión
  */
 export enum SessionStatus {
-  SCHEDULED = 'scheduled',     // Programada, aceptando inscripciones
-  CONFIRMED = 'confirmed',     // Confirmada (mínimo alcanzado)
-  FULL = 'full',               // Llena
+  SCHEDULED = 'scheduled', // Programada, aceptando inscripciones
+  CONFIRMED = 'confirmed', // Confirmada (mínimo alcanzado)
+  FULL = 'full', // Llena
   IN_PROGRESS = 'in_progress', // En curso
-  COMPLETED = 'completed',     // Finalizada
-  CANCELLED = 'cancelled',     // Cancelada
-  POSTPONED = 'postponed',     // Pospuesta
+  COMPLETED = 'completed', // Finalizada
+  CANCELLED = 'cancelled', // Cancelada
+  POSTPONED = 'postponed', // Pospuesta
 }
 
 /**
@@ -46,7 +46,9 @@ export class WorkshopSession {
   // RELACIÓN CON WORKSHOP
   // ============================================
 
-  @ManyToOne(() => Workshop, (workshop) => workshop.sessions, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Workshop, (workshop) => workshop.sessions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'workshopId' })
   workshop: Workshop;
 
@@ -175,7 +177,11 @@ export class WorkshopSession {
     description: 'Estado de la sesión',
     enum: SessionStatus,
   })
-  @Column({ type: 'enum', enum: SessionStatus, default: SessionStatus.SCHEDULED })
+  @Column({
+    type: 'enum',
+    enum: SessionStatus,
+    default: SessionStatus.SCHEDULED,
+  })
   status: SessionStatus;
 
   @ApiProperty({
@@ -199,7 +205,8 @@ export class WorkshopSession {
 
   @ApiProperty({
     example: 350.0,
-    description: 'Precio específico de esta sesión (null = usa precio del workshop)',
+    description:
+      'Precio específico de esta sesión (null = usa precio del workshop)',
     required: false,
   })
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
@@ -296,7 +303,8 @@ export class WorkshopSession {
     if (this.isFull) return false;
     if (this.status === SessionStatus.CANCELLED) return false;
     if (this.status === SessionStatus.COMPLETED) return false;
-    if (this.registrationDeadline && new Date() > this.registrationDeadline) return false;
+    if (this.registrationDeadline && new Date() > this.registrationDeadline)
+      return false;
     return true;
   }
 

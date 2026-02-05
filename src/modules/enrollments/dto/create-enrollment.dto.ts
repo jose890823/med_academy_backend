@@ -40,10 +40,14 @@ export class CreateEnrollmentDto {
 
   @ApiPropertyOptional({
     example: '2026-03-01',
-    description: 'Fecha de inicio de acceso (default: fecha de inicio de la convocatoria)',
+    description:
+      'Fecha de inicio de acceso (default: fecha de inicio de la convocatoria)',
   })
   @IsOptional()
-  @IsDateString({}, { message: 'accessStartDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'accessStartDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   accessStartDate?: string;
 
   @ApiPropertyOptional({
@@ -51,7 +55,10 @@ export class CreateEnrollmentDto {
     description: 'Fecha de fin de acceso (null = acceso de por vida)',
   })
   @IsOptional()
-  @IsDateString({}, { message: 'accessEndDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'accessEndDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   accessEndDate?: string;
 
   @ApiPropertyOptional({

@@ -20,7 +20,8 @@ import { Type } from 'class-transformer';
 export class CreateReferralCodeDto {
   @ApiPropertyOptional({
     example: 'JOHN2024',
-    description: 'Código personalizado (si no se provee, se genera automáticamente)',
+    description:
+      'Código personalizado (si no se provee, se genera automáticamente)',
     minLength: 4,
     maxLength: 20,
   })
@@ -73,7 +74,8 @@ export class CreateReferralCodeDto {
 
   @ApiPropertyOptional({
     example: 50,
-    description: 'Crédito en USD para el referidor por cada referido completado',
+    description:
+      'Crédito en USD para el referidor por cada referido completado',
     default: 50,
   })
   @IsOptional()

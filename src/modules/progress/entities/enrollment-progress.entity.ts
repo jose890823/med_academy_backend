@@ -117,7 +117,11 @@ export class EnrollmentProgress {
     description: 'Estado del progreso',
     enum: ProgressStatus,
   })
-  @Column({ type: 'enum', enum: ProgressStatus, default: ProgressStatus.NOT_STARTED })
+  @Column({
+    type: 'enum',
+    enum: ProgressStatus,
+    default: ProgressStatus.NOT_STARTED,
+  })
   status: ProgressStatus;
 
   @ApiProperty({
@@ -188,7 +192,9 @@ export class EnrollmentProgress {
    */
   get modulesPercentage(): number {
     if (this.totalModulesCount === 0) return 0;
-    return Math.round((this.completedModulesCount / this.totalModulesCount) * 100);
+    return Math.round(
+      (this.completedModulesCount / this.totalModulesCount) * 100,
+    );
   }
 
   /**
@@ -196,7 +202,9 @@ export class EnrollmentProgress {
    */
   get evaluationsPercentage(): number {
     if (this.totalEvaluationsCount === 0) return 0;
-    return Math.round((this.passedEvaluationsCount / this.totalEvaluationsCount) * 100);
+    return Math.round(
+      (this.passedEvaluationsCount / this.totalEvaluationsCount) * 100,
+    );
   }
 
   /**

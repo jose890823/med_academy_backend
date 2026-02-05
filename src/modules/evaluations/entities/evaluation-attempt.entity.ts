@@ -106,7 +106,11 @@ export class EvaluationAttempt {
     description: 'Estado del intento',
     enum: AttemptStatus,
   })
-  @Column({ type: 'enum', enum: AttemptStatus, default: AttemptStatus.IN_PROGRESS })
+  @Column({
+    type: 'enum',
+    enum: AttemptStatus,
+    default: AttemptStatus.IN_PROGRESS,
+  })
   status: AttemptStatus;
 
   @ApiProperty({
@@ -153,7 +157,8 @@ export class EvaluationAttempt {
   // ============================================
 
   @ApiPropertyOptional({
-    example: 'Excelente trabajo en las preguntas de física Doppler. Revisa el tema de artefactos.',
+    example:
+      'Excelente trabajo en las preguntas de física Doppler. Revisa el tema de artefactos.',
     description: 'Retroalimentación del instructor',
   })
   @Column({ type: 'text', nullable: true })
@@ -190,7 +195,10 @@ export class EvaluationAttempt {
    * Verifica si el intento fue enviado
    */
   get isSubmitted(): boolean {
-    return this.status === AttemptStatus.SUBMITTED || this.status === AttemptStatus.GRADED;
+    return (
+      this.status === AttemptStatus.SUBMITTED ||
+      this.status === AttemptStatus.GRADED
+    );
   }
 
   /**

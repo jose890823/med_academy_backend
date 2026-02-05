@@ -10,7 +10,10 @@ import {
   IsDateString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { SecurityEventType, SecurityEventSeverity } from '../entities/security-event.entity';
+import {
+  SecurityEventType,
+  SecurityEventSeverity,
+} from '../entities/security-event.entity';
 
 export class SecurityEventFilterDto {
   @ApiProperty({

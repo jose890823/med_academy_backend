@@ -138,7 +138,11 @@ export class Notification {
     description: 'Canal de entrega',
     enum: NotificationChannel,
   })
-  @Column({ type: 'enum', enum: NotificationChannel, default: NotificationChannel.IN_APP })
+  @Column({
+    type: 'enum',
+    enum: NotificationChannel,
+    default: NotificationChannel.IN_APP,
+  })
   channel: NotificationChannel;
 
   @ApiProperty({
@@ -146,7 +150,11 @@ export class Notification {
     description: 'Prioridad',
     enum: NotificationPriority,
   })
-  @Column({ type: 'enum', enum: NotificationPriority, default: NotificationPriority.NORMAL })
+  @Column({
+    type: 'enum',
+    enum: NotificationPriority,
+    default: NotificationPriority.NORMAL,
+  })
   priority: NotificationPriority;
 
   @ApiProperty({
@@ -154,7 +162,11 @@ export class Notification {
     description: 'Estado de la notificación',
     enum: NotificationStatus,
   })
-  @Column({ type: 'enum', enum: NotificationStatus, default: NotificationStatus.PENDING })
+  @Column({
+    type: 'enum',
+    enum: NotificationStatus,
+    default: NotificationStatus.PENDING,
+  })
   status: NotificationStatus;
 
   // ============================================

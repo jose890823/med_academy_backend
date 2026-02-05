@@ -59,7 +59,10 @@ export class CreateCohortDto {
     description: 'Fecha de inicio de inscripciones (YYYY-MM-DD)',
   })
   @IsNotEmpty({ message: 'La fecha de inicio de inscripciones es obligatoria' })
-  @IsDateString({}, { message: 'enrollmentStartDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'enrollmentStartDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   enrollmentStartDate: string;
 
   @ApiProperty({
@@ -67,7 +70,10 @@ export class CreateCohortDto {
     description: 'Fecha de fin de inscripciones (YYYY-MM-DD)',
   })
   @IsNotEmpty({ message: 'La fecha de fin de inscripciones es obligatoria' })
-  @IsDateString({}, { message: 'enrollmentEndDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'enrollmentEndDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   enrollmentEndDate: string;
 
   @ApiProperty({
@@ -75,7 +81,10 @@ export class CreateCohortDto {
     description: 'Fecha de inicio del curso (YYYY-MM-DD)',
   })
   @IsNotEmpty({ message: 'La fecha de inicio del curso es obligatoria' })
-  @IsDateString({}, { message: 'startDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'startDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   startDate: string;
 
   @ApiProperty({
@@ -83,7 +92,10 @@ export class CreateCohortDto {
     description: 'Fecha de fin del curso (YYYY-MM-DD)',
   })
   @IsNotEmpty({ message: 'La fecha de fin del curso es obligatoria' })
-  @IsDateString({}, { message: 'endDate debe ser una fecha válida (YYYY-MM-DD)' })
+  @IsDateString(
+    {},
+    { message: 'endDate debe ser una fecha válida (YYYY-MM-DD)' },
+  )
   endDate: string;
 
   // ============================================

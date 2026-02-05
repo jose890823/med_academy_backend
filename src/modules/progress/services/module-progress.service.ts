@@ -1,11 +1,10 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ModuleProgress, ModuleProgressStatus } from '../entities/module-progress.entity';
+import {
+  ModuleProgress,
+  ModuleProgressStatus,
+} from '../entities/module-progress.entity';
 import { EnrollmentProgressService } from './enrollment-progress.service';
 import { ErrorCodes } from '../../../common/dto';
 import {
@@ -27,7 +26,10 @@ export class ModuleProgressService {
   /**
    * Crear o obtener progreso de módulo
    */
-  async getOrCreate(enrollmentId: string, moduleId: string): Promise<ModuleProgress> {
+  async getOrCreate(
+    enrollmentId: string,
+    moduleId: string,
+  ): Promise<ModuleProgress> {
     let progress = await this.moduleProgressRepository.findOne({
       where: { enrollmentId, moduleId },
     });
@@ -39,7 +41,9 @@ export class ModuleProgressService {
         status: ModuleProgressStatus.NOT_STARTED,
       });
       progress = await this.moduleProgressRepository.save(progress);
-      this.logger.log(`Progreso de módulo creado: enrollment ${enrollmentId}, module ${moduleId}`);
+      this.logger.log(
+        `Progreso de módulo creado: enrollment ${enrollmentId}, module ${moduleId}`,
+      );
     }
 
     return progress;
@@ -48,7 +52,10 @@ export class ModuleProgressService {
   /**
    * Obtener progreso de un módulo
    */
-  async findByEnrollmentAndModule(enrollmentId: string, moduleId: string): Promise<ModuleProgress> {
+  async findByEnrollmentAndModule(
+    enrollmentId: string,
+    moduleId: string,
+  ): Promise<ModuleProgress> {
     const progress = await this.moduleProgressRepository.findOne({
       where: { enrollmentId, moduleId },
       relations: ['module'],
@@ -78,7 +85,10 @@ export class ModuleProgressService {
   /**
    * Registrar acceso al módulo
    */
-  async recordAccess(enrollmentId: string, moduleId: string): Promise<ModuleProgress> {
+  async recordAccess(
+    enrollmentId: string,
+    moduleId: string,
+  ): Promise<ModuleProgress> {
     const progress = await this.getOrCreate(enrollmentId, moduleId);
     const now = new Date();
 
@@ -92,7 +102,11 @@ export class ModuleProgressService {
     progress.accessCount += 1;
 
     // Registrar acceso en enrollment progress
-    await this.enrollmentProgressService.recordAccess(enrollmentId, 'module', moduleId);
+    await this.enrollmentProgressService.recordAccess(
+      enrollmentId,
+      'module',
+      moduleId,
+    );
 
     return this.moduleProgressRepository.save(progress);
   }
@@ -198,7 +212,10 @@ export class ModuleProgressService {
   /**
    * Marcar módulo como completado manualmente
    */
-  async markAsCompleted(enrollmentId: string, moduleId: string): Promise<ModuleProgress> {
+  async markAsCompleted(
+    enrollmentId: string,
+    moduleId: string,
+  ): Promise<ModuleProgress> {
     const progress = await this.getOrCreate(enrollmentId, moduleId);
 
     if (progress.status !== ModuleProgressStatus.COMPLETED) {
@@ -210,9 +227,13 @@ export class ModuleProgressService {
       await this.moduleProgressRepository.save(progress);
 
       // Incrementar contador en enrollment progress
-      await this.enrollmentProgressService.incrementCompletedModules(enrollmentId);
+      await this.enrollmentProgressService.incrementCompletedModules(
+        enrollmentId,
+      );
 
-      this.logger.log(`Módulo ${moduleId} completado para enrollment ${enrollmentId}`);
+      this.logger.log(
+        `Módulo ${moduleId} completado para enrollment ${enrollmentId}`,
+      );
     }
 
     return progress;
@@ -221,7 +242,11 @@ export class ModuleProgressService {
   /**
    * Agregar tiempo dedicado al módulo
    */
-  async addTimeSpent(enrollmentId: string, moduleId: string, minutes: number): Promise<ModuleProgress> {
+  async addTimeSpent(
+    enrollmentId: string,
+    moduleId: string,
+    minutes: number,
+  ): Promise<ModuleProgress> {
     const progress = await this.getOrCreate(enrollmentId, moduleId);
 
     progress.timeSpentMinutes += minutes;
@@ -246,16 +271,24 @@ export class ModuleProgressService {
       progress.totalMaterials === 0 ||
       (progress.materialsViewed?.length || 0) >= progress.totalMaterials;
 
-    if (videoComplete && materialsComplete && progress.status !== ModuleProgressStatus.COMPLETED) {
+    if (
+      videoComplete &&
+      materialsComplete &&
+      progress.status !== ModuleProgressStatus.COMPLETED
+    ) {
       progress.status = ModuleProgressStatus.COMPLETED;
       progress.completedAt = new Date();
 
       await this.moduleProgressRepository.save(progress);
 
       // Incrementar contador en enrollment progress
-      await this.enrollmentProgressService.incrementCompletedModules(progress.enrollmentId);
+      await this.enrollmentProgressService.incrementCompletedModules(
+        progress.enrollmentId,
+      );
 
-      this.logger.log(`Módulo ${progress.moduleId} auto-completado para enrollment ${progress.enrollmentId}`);
+      this.logger.log(
+        `Módulo ${progress.moduleId} auto-completado para enrollment ${progress.enrollmentId}`,
+      );
     }
   }
 
@@ -272,9 +305,15 @@ export class ModuleProgressService {
 
     return {
       total: modules.length,
-      completed: modules.filter((m) => m.status === ModuleProgressStatus.COMPLETED).length,
-      inProgress: modules.filter((m) => m.status === ModuleProgressStatus.IN_PROGRESS).length,
-      notStarted: modules.filter((m) => m.status === ModuleProgressStatus.NOT_STARTED).length,
+      completed: modules.filter(
+        (m) => m.status === ModuleProgressStatus.COMPLETED,
+      ).length,
+      inProgress: modules.filter(
+        (m) => m.status === ModuleProgressStatus.IN_PROGRESS,
+      ).length,
+      notStarted: modules.filter(
+        (m) => m.status === ModuleProgressStatus.NOT_STARTED,
+      ).length,
     };
   }
 

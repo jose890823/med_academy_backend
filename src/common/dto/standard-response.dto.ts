@@ -125,7 +125,8 @@ export class PaginatedResponseDto<T = any> {
 export class ErrorDetailDto {
   @ApiProperty({
     example: 'COURSE_NOT_FOUND',
-    description: 'Código único del error (prefijo por dominio: AUTH_, USER_, COURSE_, etc.)',
+    description:
+      'Código único del error (prefijo por dominio: AUTH_, USER_, COURSE_, etc.)',
   })
   code: string;
 

@@ -92,10 +92,7 @@ export class UsersAdminController {
     description: 'Search results',
     type: [User],
   })
-  async searchUsers(
-    @Query('q') query: string,
-    @Query('limit') limit?: number,
-  ) {
+  async searchUsers(@Query('q') query: string, @Query('limit') limit?: number) {
     return this.usersService.searchUsers(query, limit);
   }
 

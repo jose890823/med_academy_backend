@@ -25,11 +25,7 @@ import { Public } from '../../auth/decorators/public.decorator';
 import { User } from '../../auth/entities/user.entity';
 import { PostsService } from '../services/posts.service';
 import { Post as ForumPost } from '../entities/post.entity';
-import {
-  CreatePostDto,
-  UpdatePostDto,
-  PostQueryDto,
-} from '../dto';
+import { CreatePostDto, UpdatePostDto, PostQueryDto } from '../dto';
 
 /**
  * Controlador de Posts (respuestas) para usuarios
@@ -73,9 +69,7 @@ export class PostsController {
     description: 'Post encontrado',
     type: ForumPost,
   })
-  async findById(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<ForumPost> {
+  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<ForumPost> {
     return this.postsService.findById(id);
   }
 
@@ -153,7 +147,8 @@ export class PostsController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Aceptar como respuesta',
-    description: 'Marca un post como la respuesta aceptada (solo autor de la discusión)',
+    description:
+      'Marca un post como la respuesta aceptada (solo autor de la discusión)',
   })
   @ApiParam({ name: 'id', description: 'UUID del post' })
   @ApiResponse({
@@ -161,7 +156,10 @@ export class PostsController {
     description: 'Post aceptado como respuesta',
     type: ForumPost,
   })
-  @ApiResponse({ status: 403, description: 'Solo el autor de la discusión puede aceptar' })
+  @ApiResponse({
+    status: 403,
+    description: 'Solo el autor de la discusión puede aceptar',
+  })
   async acceptAsAnswer(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: User,

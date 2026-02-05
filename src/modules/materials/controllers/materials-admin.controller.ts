@@ -26,11 +26,7 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { User, UserRole } from '../../auth/entities/user.entity';
 import { MaterialsService } from '../services/materials.service';
 import { Material } from '../entities/material.entity';
-import {
-  CreateMaterialDto,
-  UpdateMaterialDto,
-  MaterialQueryDto,
-} from '../dto';
+import { CreateMaterialDto, UpdateMaterialDto, MaterialQueryDto } from '../dto';
 
 /**
  * Controlador de materiales para administradores
@@ -160,9 +156,7 @@ export class MaterialsAdminController {
     type: Material,
   })
   @ApiResponse({ status: 404, description: 'Material no encontrado' })
-  async findById(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Material> {
+  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<Material> {
     return this.materialsService.findById(id);
   }
 
@@ -222,9 +216,7 @@ export class MaterialsAdminController {
     description: 'Material archivado',
     type: Material,
   })
-  async archive(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Material> {
+  async archive(@Param('id', ParseUUIDPipe) id: string): Promise<Material> {
     return this.materialsService.archive(id);
   }
 
@@ -237,9 +229,7 @@ export class MaterialsAdminController {
   @ApiParam({ name: 'id', description: 'UUID del material' })
   @ApiResponse({ status: 204, description: 'Material eliminado' })
   @ApiResponse({ status: 404, description: 'Material no encontrado' })
-  async delete(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.materialsService.delete(id);
   }
 
@@ -251,10 +241,11 @@ export class MaterialsAdminController {
     description: 'Elimina un material de forma permanente (solo Super Admin)',
   })
   @ApiParam({ name: 'id', description: 'UUID del material' })
-  @ApiResponse({ status: 204, description: 'Material eliminado permanentemente' })
-  async hardDelete(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  @ApiResponse({
+    status: 204,
+    description: 'Material eliminado permanentemente',
+  })
+  async hardDelete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.materialsService.hardDelete(id);
   }
 }

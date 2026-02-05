@@ -8,8 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Conversation, ConversationStatus, ConversationType } from '../entities/conversation.entity';
-import { Message, MessageStatus, MessageType } from '../entities/message.entity';
+import {
+  Conversation,
+  ConversationStatus,
+  ConversationType,
+} from '../entities/conversation.entity';
+import {
+  Message,
+  MessageStatus,
+  MessageType,
+} from '../entities/message.entity';
 import { User } from '../../auth/entities/user.entity';
 import {
   CreateConversationDto,
@@ -148,13 +156,15 @@ export class MessagingService {
         '(conversation.participant1Id = :userId OR conversation.participant2Id = :userId)',
         { userId },
       )
-      .andWhere('conversation.status = :status', { status: ConversationStatus.ACTIVE });
+      .andWhere('conversation.status = :status', {
+        status: ConversationStatus.ACTIVE,
+      });
 
     // Filtrar archivadas
     if (!includeArchived) {
       queryBuilder.andWhere(
         '((conversation.participant1Id = :userId AND conversation.archivedByParticipant1 = false) OR ' +
-        '(conversation.participant2Id = :userId AND conversation.archivedByParticipant2 = false))',
+          '(conversation.participant2Id = :userId AND conversation.archivedByParticipant2 = false))',
         { userId },
       );
     }
@@ -168,7 +178,7 @@ export class MessagingService {
     if (unreadOnly) {
       queryBuilder.andWhere(
         '((conversation.participant1Id = :userId AND conversation.unreadCountParticipant1 > 0) OR ' +
-        '(conversation.participant2Id = :userId AND conversation.unreadCountParticipant2 > 0))',
+          '(conversation.participant2Id = :userId AND conversation.unreadCountParticipant2 > 0))',
         { userId },
       );
     }
@@ -177,9 +187,9 @@ export class MessagingService {
     if (search) {
       queryBuilder.andWhere(
         '((conversation.participant1Id = :userId AND ' +
-        "(participant2.firstName ILIKE :search OR participant2.lastName ILIKE :search)) OR " +
-        '(conversation.participant2Id = :userId AND ' +
-        "(participant1.firstName ILIKE :search OR participant1.lastName ILIKE :search)))",
+          '(participant2.firstName ILIKE :search OR participant2.lastName ILIKE :search)) OR ' +
+          '(conversation.participant2Id = :userId AND ' +
+          '(participant1.firstName ILIKE :search OR participant1.lastName ILIKE :search)))',
         { userId, search: `%${search}%` },
       );
     }
@@ -200,10 +210,12 @@ export class MessagingService {
       .createQueryBuilder('c')
       .select(
         'SUM(CASE WHEN c.participant1Id = :userId THEN c.unreadCountParticipant1 ' +
-        'WHEN c.participant2Id = :userId THEN c.unreadCountParticipant2 ELSE 0 END)',
+          'WHEN c.participant2Id = :userId THEN c.unreadCountParticipant2 ELSE 0 END)',
         'total',
       )
-      .where('(c.participant1Id = :userId OR c.participant2Id = :userId)', { userId })
+      .where('(c.participant1Id = :userId OR c.participant2Id = :userId)', {
+        userId,
+      })
       .andWhere('c.status = :status', { status: ConversationStatus.ACTIVE })
       .getRawOne();
 
@@ -226,7 +238,10 @@ export class MessagingService {
   /**
    * Obtener conversación por ID
    */
-  async findConversationById(id: string, userId: string): Promise<Conversation> {
+  async findConversationById(
+    id: string,
+    userId: string,
+  ): Promise<Conversation> {
     const conversation = await this.conversationRepository.findOne({
       where: { id },
       relations: ['participant1', 'participant2', 'course'],
@@ -261,7 +276,10 @@ export class MessagingService {
   /**
    * Desarchivar conversación
    */
-  async unarchiveConversation(id: string, userId: string): Promise<Conversation> {
+  async unarchiveConversation(
+    id: string,
+    userId: string,
+  ): Promise<Conversation> {
     const conversation = await this.findConversationById(id, userId);
     conversation.unarchive(userId);
     return this.conversationRepository.save(conversation);
@@ -275,7 +293,10 @@ export class MessagingService {
    * Enviar mensaje
    */
   async sendMessage(dto: SendMessageDto, senderId: string): Promise<Message> {
-    const conversation = await this.findConversationById(dto.conversationId, senderId);
+    const conversation = await this.findConversationById(
+      dto.conversationId,
+      senderId,
+    );
 
     if (conversation.status !== ConversationStatus.ACTIVE) {
       throw new BadRequestException({
@@ -305,7 +326,9 @@ export class MessagingService {
     }
     await this.conversationRepository.save(conversation);
 
-    this.logger.log(`Mensaje enviado: ${saved.id} en conversación ${dto.conversationId}`);
+    this.logger.log(
+      `Mensaje enviado: ${saved.id} en conversación ${dto.conversationId}`,
+    );
 
     // Emitir evento para notificaciones
     this.eventEmitter.emit('messaging.message.sent', {
@@ -345,7 +368,9 @@ export class MessagingService {
       .createQueryBuilder('message')
       .leftJoinAndSelect('message.sender', 'sender')
       .where('message.conversationId = :conversationId', { conversationId })
-      .andWhere('message.status != :deletedStatus', { deletedStatus: MessageStatus.DELETED })
+      .andWhere('message.status != :deletedStatus', {
+        deletedStatus: MessageStatus.DELETED,
+      })
       .orderBy('message.createdAt', order);
 
     // Paginación
@@ -373,7 +398,10 @@ export class MessagingService {
    * Marcar mensajes como leídos
    */
   async markAsRead(conversationId: string, userId: string): Promise<void> {
-    const conversation = await this.findConversationById(conversationId, userId);
+    const conversation = await this.findConversationById(
+      conversationId,
+      userId,
+    );
 
     // Marcar todos los mensajes del otro usuario como leídos
     await this.messageRepository
@@ -389,7 +417,9 @@ export class MessagingService {
     conversation.markAsRead(userId);
     await this.conversationRepository.save(conversation);
 
-    this.logger.log(`Mensajes marcados como leídos: conversación ${conversationId}`);
+    this.logger.log(
+      `Mensajes marcados como leídos: conversación ${conversationId}`,
+    );
   }
 
   /**
@@ -462,10 +492,12 @@ export class MessagingService {
       .createQueryBuilder('c')
       .select(
         'SUM(CASE WHEN c.participant1Id = :userId THEN c.unreadCountParticipant1 ' +
-        'WHEN c.participant2Id = :userId THEN c.unreadCountParticipant2 ELSE 0 END)',
+          'WHEN c.participant2Id = :userId THEN c.unreadCountParticipant2 ELSE 0 END)',
         'total',
       )
-      .where('(c.participant1Id = :userId OR c.participant2Id = :userId)', { userId })
+      .where('(c.participant1Id = :userId OR c.participant2Id = :userId)', {
+        userId,
+      })
       .andWhere('c.status = :status', { status: ConversationStatus.ACTIVE })
       .getRawOne();
 

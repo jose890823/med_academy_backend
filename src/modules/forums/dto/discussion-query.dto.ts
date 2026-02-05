@@ -10,7 +10,10 @@ import {
   Max,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { DiscussionStatus, DiscussionType } from '../entities/discussion.entity';
+import {
+  DiscussionStatus,
+  DiscussionType,
+} from '../entities/discussion.entity';
 
 /**
  * DTO para consultar discusiones

@@ -11,20 +11,9 @@ import { ReferralCodesService, ReferralsService } from './services';
 import { ReferralsController, ReferralsAdminController } from './controllers';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ReferralCode, Referral]),
-  ],
-  controllers: [
-    ReferralsController,
-    ReferralsAdminController,
-  ],
-  providers: [
-    ReferralCodesService,
-    ReferralsService,
-  ],
-  exports: [
-    ReferralCodesService,
-    ReferralsService,
-  ],
+  imports: [TypeOrmModule.forFeature([ReferralCode, Referral])],
+  controllers: [ReferralsController, ReferralsAdminController],
+  providers: [ReferralCodesService, ReferralsService],
+  exports: [ReferralCodesService, ReferralsService],
 })
 export class ReferralsModule {}

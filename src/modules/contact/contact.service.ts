@@ -78,7 +78,9 @@ export class ContactService {
   /**
    * Verifica si un email puede enviar mensaje (para el frontend)
    */
-  async checkCanSend(email: string): Promise<{ canSend: boolean; nextAvailableAt?: Date }> {
+  async checkCanSend(
+    email: string,
+  ): Promise<{ canSend: boolean; nextAvailableAt?: Date }> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 

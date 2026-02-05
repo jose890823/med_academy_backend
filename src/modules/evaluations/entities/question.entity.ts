@@ -71,7 +71,11 @@ export class Question {
     description: 'Tipo de pregunta',
     enum: QuestionType,
   })
-  @Column({ type: 'enum', enum: QuestionType, default: QuestionType.MULTIPLE_CHOICE })
+  @Column({
+    type: 'enum',
+    enum: QuestionType,
+    default: QuestionType.MULTIPLE_CHOICE,
+  })
   questionType: QuestionType;
 
   // ============================================
@@ -121,7 +125,8 @@ export class Question {
 
   @ApiPropertyOptional({
     example: 'La velocidad promedio del sonido en tejido blando es 1540 m/s',
-    description: 'Explicación de la respuesta correcta (mostrada después de calificar)',
+    description:
+      'Explicación de la respuesta correcta (mostrada después de calificar)',
   })
   @Column({ type: 'text', nullable: true })
   explanation: string | null;
@@ -204,8 +209,10 @@ export class Question {
    * Verifica si una respuesta es correcta (para auto-calificación)
    */
   isAnswerCorrect(selectedOptionId: string): boolean {
-    if (this.questionType === QuestionType.TRUE_FALSE ||
-        this.questionType === QuestionType.MULTIPLE_CHOICE) {
+    if (
+      this.questionType === QuestionType.TRUE_FALSE ||
+      this.questionType === QuestionType.MULTIPLE_CHOICE
+    ) {
       const correctOpt = this.correctOption;
       return correctOpt ? correctOpt.id === selectedOptionId : false;
     }

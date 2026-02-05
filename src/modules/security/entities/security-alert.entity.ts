@@ -79,7 +79,10 @@ export class SecurityAlert {
   @Column({ type: 'simple-array', nullable: true })
   relatedEventIds: string[] | null;
 
-  @ApiProperty({ description: 'Estado de la alerta', enum: SecurityAlertStatus })
+  @ApiProperty({
+    description: 'Estado de la alerta',
+    enum: SecurityAlertStatus,
+  })
   @Column({ type: 'varchar', length: 20, default: SecurityAlertStatus.ACTIVE })
   status: SecurityAlertStatus;
 

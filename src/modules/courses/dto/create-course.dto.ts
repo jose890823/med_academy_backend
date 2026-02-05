@@ -13,7 +13,12 @@ import {
   MaxLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CourseModality, CourseLevel, CourseLanguage, CourseStatus } from '../entities/course.entity';
+import {
+  CourseModality,
+  CourseLevel,
+  CourseLanguage,
+  CourseStatus,
+} from '../entities/course.entity';
 
 /**
  * DTO para crear un curso
@@ -54,13 +59,16 @@ export class CreateCourseDto {
   subtitle?: string;
 
   @ApiProperty({
-    example: 'Programa completo de preparación para el examen de certificación vascular.',
+    example:
+      'Programa completo de preparación para el examen de certificación vascular.',
     description: 'Descripción corta para listados',
     maxLength: 500,
   })
   @IsNotEmpty({ message: 'La descripción corta es obligatoria' })
   @IsString({ message: 'La descripción corta debe ser texto' })
-  @MaxLength(500, { message: 'La descripción corta no puede exceder 500 caracteres' })
+  @MaxLength(500, {
+    message: 'La descripción corta no puede exceder 500 caracteres',
+  })
   shortDescription: string;
 
   @ApiPropertyOptional({
@@ -262,7 +270,9 @@ export class CreateCourseDto {
   })
   @IsOptional()
   @IsString({ message: 'El tipo de certificado debe ser texto' })
-  @MaxLength(100, { message: 'El tipo de certificado no puede exceder 100 caracteres' })
+  @MaxLength(100, {
+    message: 'El tipo de certificado no puede exceder 100 caracteres',
+  })
   certificateType?: string;
 
   @ApiPropertyOptional({
@@ -289,7 +299,10 @@ export class CreateCourseDto {
   // ============================================
 
   @ApiPropertyOptional({
-    example: ['Dominar técnicas de Doppler', 'Identificar patologías vasculares'],
+    example: [
+      'Dominar técnicas de Doppler',
+      'Identificar patologías vasculares',
+    ],
     description: 'Objetivos de aprendizaje',
     type: [String],
   })

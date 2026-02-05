@@ -7,10 +7,7 @@ import { ContactAdminController } from './contact-admin.controller';
 import { EmailModule } from '../email/email.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ContactMessage]),
-    EmailModule,
-  ],
+  imports: [TypeOrmModule.forFeature([ContactMessage]), EmailModule],
   controllers: [ContactController, ContactAdminController],
   providers: [ContactService],
   exports: [ContactService],

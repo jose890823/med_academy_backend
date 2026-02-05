@@ -1,7 +1,18 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsEnum, IsUUID, IsString, IsInt, Min, Max } from 'class-validator';
+import {
+  IsOptional,
+  IsEnum,
+  IsUUID,
+  IsString,
+  IsInt,
+  Min,
+  Max,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { CertificateType, CertificateStatus } from '../entities/certificate.entity';
+import {
+  CertificateType,
+  CertificateStatus,
+} from '../entities/certificate.entity';
 
 /**
  * DTO para filtrar certificados

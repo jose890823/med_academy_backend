@@ -56,7 +56,9 @@ export class NotificationsAdminController {
     status: 200,
     description: 'Notificación omitida por preferencias del usuario',
   })
-  async create(@Body() dto: CreateNotificationDto): Promise<Notification | null> {
+  async create(
+    @Body() dto: CreateNotificationDto,
+  ): Promise<Notification | null> {
     return this.notificationsService.create(dto);
   }
 

@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsEnum, IsBoolean, IsInt, Min, Max, IsString } from 'class-validator';
+import {
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  IsInt,
+  Min,
+  Max,
+  IsString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { UserRole } from '../../auth/entities/user.entity';
 

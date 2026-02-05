@@ -124,7 +124,9 @@ export class NotificationEventsService {
       message: passed
         ? `Felicidades, obtuviste ${payload.score}% en "${payload.evaluation?.title || 'la evaluación'}".`
         : `Obtuviste ${payload.score}% en "${payload.evaluation?.title || 'la evaluación'}". Puedes intentar de nuevo.`,
-      priority: passed ? NotificationPriority.HIGH : NotificationPriority.NORMAL,
+      priority: passed
+        ? NotificationPriority.HIGH
+        : NotificationPriority.NORMAL,
       actionUrl: `/evaluations/${payload.attempt.evaluationId}/results`,
       actionText: 'Ver resultados',
       referenceId: payload.attempt.id,
@@ -230,16 +232,15 @@ export class NotificationEventsService {
   // ============================================
 
   @OnEvent('user.password.changed')
-  async handlePasswordChanged(payload: {
-    userId: string;
-  }): Promise<void> {
+  async handlePasswordChanged(payload: { userId: string }): Promise<void> {
     this.logger.debug('Evento user.password.changed recibido');
 
     await this.notificationsService.create({
       userId: payload.userId,
       type: NotificationType.PASSWORD_CHANGED,
       title: 'Contraseña actualizada',
-      message: 'Tu contraseña ha sido cambiada exitosamente. Si no fuiste tú, contacta soporte inmediatamente.',
+      message:
+        'Tu contraseña ha sido cambiada exitosamente. Si no fuiste tú, contacta soporte inmediatamente.',
       priority: NotificationPriority.HIGH,
       actionUrl: `/support`,
       actionText: 'Contactar soporte',

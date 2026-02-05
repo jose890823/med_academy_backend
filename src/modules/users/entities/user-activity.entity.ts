@@ -131,7 +131,8 @@ export class UserActivity {
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',
-    description: 'ID of the admin who performed the action (for admin activities)',
+    description:
+      'ID of the admin who performed the action (for admin activities)',
     required: false,
   })
   @Column({ type: 'uuid', nullable: true })

@@ -8,7 +8,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Referral, ReferralStatus, RewardType } from '../entities/referral.entity';
+import {
+  Referral,
+  ReferralStatus,
+  RewardType,
+} from '../entities/referral.entity';
 import { ReferralCodesService } from './referral-codes.service';
 import {
   ApplyReferralCodeDto,
@@ -41,7 +45,14 @@ export class ReferralsService {
    * Obtener todos los referidos con paginación
    */
   async findAll(query: ReferralQueryDto) {
-    const { page = 1, limit = 20, referrerId, referredId, status, referralCodeId } = query;
+    const {
+      page = 1,
+      limit = 20,
+      referrerId,
+      referredId,
+      status,
+      referralCodeId,
+    } = query;
     const skip = (page - 1) * limit;
 
     const queryBuilder = this.referralRepository
@@ -52,11 +63,15 @@ export class ReferralsService {
       .orderBy('referral.createdAt', 'DESC');
 
     if (referrerId) {
-      queryBuilder.andWhere('referral.referrerId = :referrerId', { referrerId });
+      queryBuilder.andWhere('referral.referrerId = :referrerId', {
+        referrerId,
+      });
     }
 
     if (referredId) {
-      queryBuilder.andWhere('referral.referredId = :referredId', { referredId });
+      queryBuilder.andWhere('referral.referredId = :referredId', {
+        referredId,
+      });
     }
 
     if (status) {
@@ -64,7 +79,9 @@ export class ReferralsService {
     }
 
     if (referralCodeId) {
-      queryBuilder.andWhere('referral.referralCodeId = :referralCodeId', { referralCodeId });
+      queryBuilder.andWhere('referral.referralCodeId = :referralCodeId', {
+        referralCodeId,
+      });
     }
 
     const [data, total] = await queryBuilder
@@ -179,7 +196,10 @@ export class ReferralsService {
     }
 
     // Validar el código
-    const validation = await this.referralCodesService.validateCode(code, referredUserId);
+    const validation = await this.referralCodesService.validateCode(
+      code,
+      referredUserId,
+    );
     if (!validation.valid || !validation.code) {
       throw new BadRequestException({
         code: ErrorCodes.REFERRAL_CODE_INVALID,
@@ -284,13 +304,18 @@ export class ReferralsService {
   /**
    * Completar referido por ID del usuario referido
    */
-  async completeByReferredUser(referredUserId: string, enrollmentId?: string): Promise<Referral | null> {
+  async completeByReferredUser(
+    referredUserId: string,
+    enrollmentId?: string,
+  ): Promise<Referral | null> {
     const referral = await this.referralRepository.findOne({
       where: { referredId: referredUserId, status: ReferralStatus.PENDING },
     });
 
     if (!referral) {
-      this.logger.debug(`No se encontró referido pendiente para usuario ${referredUserId}`);
+      this.logger.debug(
+        `No se encontró referido pendiente para usuario ${referredUserId}`,
+      );
       return null;
     }
 
@@ -304,7 +329,10 @@ export class ReferralsService {
   /**
    * Actualizar estado de referido (Admin)
    */
-  async updateStatus(id: string, dto: UpdateReferralStatusDto): Promise<Referral> {
+  async updateStatus(
+    id: string,
+    dto: UpdateReferralStatusDto,
+  ): Promise<Referral> {
     const referral = await this.findById(id);
 
     referral.status = dto.status;
@@ -328,10 +356,16 @@ export class ReferralsService {
   /**
    * Marcar recompensa como entregada
    */
-  async markRewardDelivered(id: string, dto: MarkRewardDeliveredDto): Promise<Referral> {
+  async markRewardDelivered(
+    id: string,
+    dto: MarkRewardDeliveredDto,
+  ): Promise<Referral> {
     const referral = await this.findById(id);
 
-    if (referral.status !== ReferralStatus.COMPLETED && referral.status !== ReferralStatus.REWARDED) {
+    if (
+      referral.status !== ReferralStatus.COMPLETED &&
+      referral.status !== ReferralStatus.REWARDED
+    ) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
         message: 'El referido debe estar completado para entregar recompensas',
@@ -362,7 +396,9 @@ export class ReferralsService {
     }
 
     const saved = await this.referralRepository.save(referral);
-    this.logger.log(`Recompensa entregada para referido ${id} a ${dto.rewardTo}`);
+    this.logger.log(
+      `Recompensa entregada para referido ${id} a ${dto.rewardTo}`,
+    );
 
     // Emitir evento
     this.eventEmitter.emit('referral.rewarded', {
@@ -388,7 +424,9 @@ export class ReferralsService {
 
     referral.status = ReferralStatus.CANCELLED;
     referral.notes = reason
-      ? (referral.notes ? `${referral.notes}\nCancelado: ${reason}` : `Cancelado: ${reason}`)
+      ? referral.notes
+        ? `${referral.notes}\nCancelado: ${reason}`
+        : `Cancelado: ${reason}`
       : referral.notes;
 
     const saved = await this.referralRepository.save(referral);
@@ -414,18 +452,31 @@ export class ReferralsService {
       cancelledReferrals,
     ] = await Promise.all([
       this.referralRepository.count(),
-      this.referralRepository.count({ where: { status: ReferralStatus.PENDING } }),
-      this.referralRepository.count({ where: { status: ReferralStatus.COMPLETED } }),
-      this.referralRepository.count({ where: { status: ReferralStatus.REWARDED } }),
-      this.referralRepository.count({ where: { status: ReferralStatus.EXPIRED } }),
-      this.referralRepository.count({ where: { status: ReferralStatus.CANCELLED } }),
+      this.referralRepository.count({
+        where: { status: ReferralStatus.PENDING },
+      }),
+      this.referralRepository.count({
+        where: { status: ReferralStatus.COMPLETED },
+      }),
+      this.referralRepository.count({
+        where: { status: ReferralStatus.REWARDED },
+      }),
+      this.referralRepository.count({
+        where: { status: ReferralStatus.EXPIRED },
+      }),
+      this.referralRepository.count({
+        where: { status: ReferralStatus.CANCELLED },
+      }),
     ]);
 
     // Calcular totales de recompensas
     const rewardStats = await this.referralRepository
       .createQueryBuilder('referral')
       .select('SUM(referral.referrerRewardValue)', 'totalReferrerRewards')
-      .addSelect('SUM(CASE WHEN referral.referrerRewarded = true THEN referral.referrerRewardValue ELSE 0 END)', 'paidReferrerRewards')
+      .addSelect(
+        'SUM(CASE WHEN referral.referrerRewarded = true THEN referral.referrerRewardValue ELSE 0 END)',
+        'paidReferrerRewards',
+      )
       .where('referral.status IN (:...statuses)', {
         statuses: [ReferralStatus.COMPLETED, ReferralStatus.REWARDED],
       })
@@ -440,13 +491,19 @@ export class ReferralsService {
         expired: expiredReferrals,
         cancelled: cancelledReferrals,
       },
-      conversionRate: totalReferrals > 0
-        ? ((completedReferrals + rewardedReferrals) / totalReferrals * 100).toFixed(2)
-        : '0',
+      conversionRate:
+        totalReferrals > 0
+          ? (
+              ((completedReferrals + rewardedReferrals) / totalReferrals) *
+              100
+            ).toFixed(2)
+          : '0',
       rewards: {
         totalOwed: Number(rewardStats?.totalReferrerRewards || 0),
         totalPaid: Number(rewardStats?.paidReferrerRewards || 0),
-        pending: Number(rewardStats?.totalReferrerRewards || 0) - Number(rewardStats?.paidReferrerRewards || 0),
+        pending:
+          Number(rewardStats?.totalReferrerRewards || 0) -
+          Number(rewardStats?.paidReferrerRewards || 0),
       },
     };
   }
@@ -471,7 +528,10 @@ export class ReferralsService {
         'SUM(CASE WHEN referral.referrerRewarded = true THEN referral.referrerRewardValue ELSE 0 END)',
         'totalEarnings',
       )
-      .setParameter('completed', [ReferralStatus.COMPLETED, ReferralStatus.REWARDED])
+      .setParameter('completed', [
+        ReferralStatus.COMPLETED,
+        ReferralStatus.REWARDED,
+      ])
       .groupBy('referral.referrerId')
       .addGroupBy('referrer.id')
       .orderBy('totalReferrals', 'DESC')

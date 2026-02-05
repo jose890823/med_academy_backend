@@ -50,7 +50,8 @@ export class ReviewsAdminController {
   @Get()
   @ApiOperation({
     summary: 'Listar todos los reviews',
-    description: 'Lista todos los reviews con filtros (incluye todos los estados)',
+    description:
+      'Lista todos los reviews con filtros (incluye todos los estados)',
   })
   @ApiResponse({
     status: 200,
@@ -85,9 +86,7 @@ export class ReviewsAdminController {
     description: 'Review encontrado',
     type: Review,
   })
-  async findById(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Review> {
+  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<Review> {
     return this.reviewsService.findById(id);
   }
 

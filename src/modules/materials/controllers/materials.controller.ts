@@ -42,7 +42,8 @@ export class MaterialsController {
   @Public()
   @ApiOperation({
     summary: 'Materiales públicos de un curso',
-    description: 'Obtiene los materiales públicos de un curso (sin autenticación)',
+    description:
+      'Obtiene los materiales públicos de un curso (sin autenticación)',
   })
   @ApiParam({ name: 'courseId', description: 'UUID del curso' })
   @ApiResponse({
@@ -65,7 +66,8 @@ export class MaterialsController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Materiales de un módulo',
-    description: 'Obtiene los materiales de un módulo (requiere estar inscrito)',
+    description:
+      'Obtiene los materiales de un módulo (requiere estar inscrito)',
   })
   @ApiParam({ name: 'moduleId', description: 'UUID del módulo' })
   @ApiResponse({
@@ -90,7 +92,8 @@ export class MaterialsController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Materiales de un curso',
-    description: 'Obtiene todos los materiales de un curso (requiere estar inscrito)',
+    description:
+      'Obtiene todos los materiales de un curso (requiere estar inscrito)',
   })
   @ApiParam({ name: 'courseId', description: 'UUID del curso' })
   @ApiResponse({

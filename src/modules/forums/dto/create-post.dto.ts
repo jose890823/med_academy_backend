@@ -20,7 +20,8 @@ export class CreatePostDto {
   discussionId: string;
 
   @ApiProperty({
-    example: 'Excelente pregunta! Los artefactos de reverberación se caracterizan por...',
+    example:
+      'Excelente pregunta! Los artefactos de reverberación se caracterizan por...',
     description: 'Contenido del post (markdown soportado)',
     minLength: 10,
   })

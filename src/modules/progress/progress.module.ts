@@ -18,10 +18,7 @@ import {
 } from './services';
 
 // Controllers
-import {
-  ProgressController,
-  ProgressAdminController,
-} from './controllers';
+import { ProgressController, ProgressAdminController } from './controllers';
 
 @Module({
   imports: [
@@ -32,10 +29,7 @@ import {
       ActivityLog,
     ]),
   ],
-  controllers: [
-    ProgressController,
-    ProgressAdminController,
-  ],
+  controllers: [ProgressController, ProgressAdminController],
   providers: [
     EnrollmentProgressService,
     ModuleProgressService,

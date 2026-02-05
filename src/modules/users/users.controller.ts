@@ -161,7 +161,8 @@ export class UsersController {
   @Post('verify-phone/send-otp')
   @ApiOperation({
     summary: 'Send phone verification OTP',
-    description: 'Send a 6-digit OTP code to the specified phone number via SMS',
+    description:
+      'Send a 6-digit OTP code to the specified phone number via SMS',
   })
   @ApiResponse({
     status: 200,

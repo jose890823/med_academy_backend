@@ -62,7 +62,9 @@ export class Discussion {
   @Index()
   slug: string;
 
-  @ApiProperty({ description: 'Contenido del primer post (descripción del tema)' })
+  @ApiProperty({
+    description: 'Contenido del primer post (descripción del tema)',
+  })
   @Column({ type: 'text' })
   content: string;
 
@@ -98,7 +100,10 @@ export class Discussion {
   @Column({ type: 'boolean', default: false })
   isPinned: boolean;
 
-  @ApiProperty({ description: 'Si está marcada como resuelta (para preguntas)', default: false })
+  @ApiProperty({
+    description: 'Si está marcada como resuelta (para preguntas)',
+    default: false,
+  })
   @Column({ type: 'boolean', default: false })
   isResolved: boolean;
 

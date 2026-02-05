@@ -16,13 +16,13 @@ import { WorkshopSession } from './workshop-session.entity';
  * Estado de la inscripción
  */
 export enum RegistrationStatus {
-  PENDING = 'pending',           // Pendiente de pago
-  CONFIRMED = 'confirmed',       // Confirmada y pagada
-  WAITLIST = 'waitlist',         // En lista de espera
-  CANCELLED = 'cancelled',       // Cancelada por el usuario
-  REFUNDED = 'refunded',         // Reembolsada
-  NO_SHOW = 'no_show',           // No se presentó
-  ATTENDED = 'attended',         // Asistió al workshop
+  PENDING = 'pending', // Pendiente de pago
+  CONFIRMED = 'confirmed', // Confirmada y pagada
+  WAITLIST = 'waitlist', // En lista de espera
+  CANCELLED = 'cancelled', // Cancelada por el usuario
+  REFUNDED = 'refunded', // Reembolsada
+  NO_SHOW = 'no_show', // No se presentó
+  ATTENDED = 'attended', // Asistió al workshop
 }
 
 /**
@@ -55,7 +55,9 @@ export class WorkshopRegistration {
   // RELACIONES
   // ============================================
 
-  @ManyToOne(() => WorkshopSession, (session) => session.registrations, { onDelete: 'CASCADE' })
+  @ManyToOne(() => WorkshopSession, (session) => session.registrations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'sessionId' })
   session: WorkshopSession;
 
@@ -78,7 +80,11 @@ export class WorkshopRegistration {
     description: 'Estado de la inscripción',
     enum: RegistrationStatus,
   })
-  @Column({ type: 'enum', enum: RegistrationStatus, default: RegistrationStatus.PENDING })
+  @Column({
+    type: 'enum',
+    enum: RegistrationStatus,
+    default: RegistrationStatus.PENDING,
+  })
   status: RegistrationStatus;
 
   @ApiProperty({
@@ -86,7 +92,11 @@ export class WorkshopRegistration {
     description: 'Estado del pago',
     enum: RegistrationPaymentStatus,
   })
-  @Column({ type: 'enum', enum: RegistrationPaymentStatus, default: RegistrationPaymentStatus.PENDING })
+  @Column({
+    type: 'enum',
+    enum: RegistrationPaymentStatus,
+    default: RegistrationPaymentStatus.PENDING,
+  })
   paymentStatus: RegistrationPaymentStatus;
 
   // ============================================

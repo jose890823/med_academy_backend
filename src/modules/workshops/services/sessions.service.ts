@@ -6,7 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan, LessThan } from 'typeorm';
-import { WorkshopSession, SessionStatus } from '../entities/workshop-session.entity';
+import {
+  WorkshopSession,
+  SessionStatus,
+} from '../entities/workshop-session.entity';
 import { WorkshopsService } from './workshops.service';
 import { CreateSessionDto, UpdateSessionDto } from '../dto';
 import { ErrorCodes } from '../../../common/dto';
@@ -36,7 +39,9 @@ export class SessionsService {
 
     const saved = await this.sessionRepository.save(session);
 
-    this.logger.log(`Sesión creada para workshop ${dto.workshopId}: ${saved.id}`);
+    this.logger.log(
+      `Sesión creada para workshop ${dto.workshopId}: ${saved.id}`,
+    );
     return saved;
   }
 
@@ -118,7 +123,10 @@ export class SessionsService {
   /**
    * Actualizar estado de la sesión
    */
-  async updateStatus(id: string, status: SessionStatus): Promise<WorkshopSession> {
+  async updateStatus(
+    id: string,
+    status: SessionStatus,
+  ): Promise<WorkshopSession> {
     const session = await this.findById(id);
     session.status = status;
     const updated = await this.sessionRepository.save(session);
@@ -253,7 +261,8 @@ export class SessionsService {
     if (session.currentParticipants > 0) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'No se puede eliminar una sesión con participantes registrados',
+        message:
+          'No se puede eliminar una sesión con participantes registrados',
       });
     }
 

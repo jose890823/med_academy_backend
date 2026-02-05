@@ -8,28 +8,15 @@ import { Material } from './entities';
 import { MaterialsService } from './services';
 
 // Controllers
-import {
-  MaterialsController,
-  MaterialsAdminController,
-} from './controllers';
+import { MaterialsController, MaterialsAdminController } from './controllers';
 
 // Auth Module (para guards)
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Material]),
-    forwardRef(() => AuthModule),
-  ],
-  controllers: [
-    MaterialsController,
-    MaterialsAdminController,
-  ],
-  providers: [
-    MaterialsService,
-  ],
-  exports: [
-    MaterialsService,
-  ],
+  imports: [TypeOrmModule.forFeature([Material]), forwardRef(() => AuthModule)],
+  controllers: [MaterialsController, MaterialsAdminController],
+  providers: [MaterialsService],
+  exports: [MaterialsService],
 })
 export class MaterialsModule {}

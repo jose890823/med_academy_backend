@@ -48,17 +48,12 @@ import { AuthModule } from '../auth/auth.module';
     }),
     forwardRef(() => AuthModule),
   ],
-  controllers: [
-    NotificationsController,
-    NotificationsAdminController,
-  ],
+  controllers: [NotificationsController, NotificationsAdminController],
   providers: [
     NotificationsService,
     NotificationEventsService,
     NotificationProcessor,
   ],
-  exports: [
-    NotificationsService,
-  ],
+  exports: [NotificationsService],
 })
 export class NotificationsModule {}

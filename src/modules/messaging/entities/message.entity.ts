@@ -187,7 +187,8 @@ export class Message {
    */
   getPreview(maxLength: number = 100): string {
     if (this.type === MessageType.IMAGE) return '📷 Imagen';
-    if (this.type === MessageType.FILE) return `📎 ${this.attachmentName || 'Archivo'}`;
+    if (this.type === MessageType.FILE)
+      return `📎 ${this.attachmentName || 'Archivo'}`;
     if (this.type === MessageType.SYSTEM) return this.content;
 
     return this.content.length > maxLength

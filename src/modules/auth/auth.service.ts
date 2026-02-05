@@ -62,7 +62,9 @@ export class AuthService {
         '⚠️  EmailService no disponible - OTPs se mostrarán solo en logs',
       );
     }
-    this.logger.log('✅ Security services (LoginAttempt, ActiveSession) integrados');
+    this.logger.log(
+      '✅ Security services (LoginAttempt, ActiveSession) integrados',
+    );
   }
 
   /**
@@ -85,7 +87,9 @@ export class AuthService {
 
       // Si el usuario está soft-deleted, eliminarlo permanentemente
       // para permitir el nuevo registro con el mismo email
-      this.logger.log(`🗑️ Removing soft-deleted user with email ${email} to allow new registration`);
+      this.logger.log(
+        `🗑️ Removing soft-deleted user with email ${email} to allow new registration`,
+      );
       await this.userRepository.remove(existingUser);
     }
 
@@ -128,12 +132,18 @@ export class AuthService {
           ),
         });
         if (emailResult.success) {
-          this.logger.log(`✅ OTP enviado exitosamente a ${email} (messageId: ${emailResult.messageId})`);
+          this.logger.log(
+            `✅ OTP enviado exitosamente a ${email} (messageId: ${emailResult.messageId})`,
+          );
         } else {
-          this.logger.warn(`⚠️ OTP no enviado a ${email}: ${emailResult.error}`);
+          this.logger.warn(
+            `⚠️ OTP no enviado a ${email}: ${emailResult.error}`,
+          );
         }
       } catch (error) {
-        this.logger.error(`❌ Error enviando OTP por email a ${email}: ${error.message}`);
+        this.logger.error(
+          `❌ Error enviando OTP por email a ${email}: ${error.message}`,
+        );
         // No lanzamos error, el sistema sigue funcionando
       }
     } else {
@@ -261,9 +271,13 @@ export class AuthService {
           ),
         });
         if (emailResult.success) {
-          this.logger.log(`✅ OTP reenviado exitosamente a ${email} (messageId: ${emailResult.messageId})`);
+          this.logger.log(
+            `✅ OTP reenviado exitosamente a ${email} (messageId: ${emailResult.messageId})`,
+          );
         } else {
-          this.logger.warn(`⚠️ OTP no reenviado a ${email}: ${emailResult.error}`);
+          this.logger.warn(
+            `⚠️ OTP no reenviado a ${email}: ${emailResult.error}`,
+          );
         }
       } catch (error) {
         this.logger.error(
@@ -297,7 +311,9 @@ export class AuthService {
         email,
         ip,
         ua,
-        canAttempt.waitSeconds ? LoginFailureReason.RATE_LIMITED : LoginFailureReason.IP_BLOCKED,
+        canAttempt.waitSeconds
+          ? LoginFailureReason.RATE_LIMITED
+          : LoginFailureReason.IP_BLOCKED,
       );
 
       if (canAttempt.waitSeconds) {
@@ -308,7 +324,8 @@ export class AuthService {
         });
       }
       throw new ForbiddenException({
-        message: 'Tu IP ha sido bloqueada temporalmente por actividad sospechosa.',
+        message:
+          'Tu IP ha sido bloqueada temporalmente por actividad sospechosa.',
         code: 'IP_BLOCKED',
       });
     }
@@ -368,7 +385,8 @@ export class AuthService {
       // Advertir si está cerca del bloqueo
       if (result.shouldBlock) {
         throw new UnauthorizedException({
-          message: 'Credenciales inválidas. Tu IP ha sido bloqueada por múltiples intentos fallidos.',
+          message:
+            'Credenciales inválidas. Tu IP ha sido bloqueada por múltiples intentos fallidos.',
           code: 'BLOCKED',
         });
       }
@@ -393,7 +411,12 @@ export class AuthService {
     await this.loginAttemptService.recordSuccess(email, ip, ua, user.id);
 
     // Crear sesión activa
-    await this.activeSessionService.createSession(user.id, refreshToken, ip, ua);
+    await this.activeSessionService.createSession(
+      user.id,
+      refreshToken,
+      ip,
+      ua,
+    );
 
     this.logger.log(`✅ Login exitoso para usuario: ${email}`);
 
@@ -426,7 +449,12 @@ export class AuthService {
    * REFRESH: Generar nuevos tokens (rotation)
    * Integrado con sistema de sesiones activas
    */
-  async refresh(refreshToken: string, userId: string, ipAddress?: string, userAgent?: string) {
+  async refresh(
+    refreshToken: string,
+    userId: string,
+    ipAddress?: string,
+    userAgent?: string,
+  ) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
     if (!user || !user.isActive) {
@@ -470,7 +498,12 @@ export class AuthService {
     // Crear nueva sesión con el nuevo refresh token
     const ip = ipAddress || '0.0.0.0';
     const ua = userAgent || null;
-    await this.activeSessionService.createSession(user.id, newRefreshToken, ip, ua);
+    await this.activeSessionService.createSession(
+      user.id,
+      newRefreshToken,
+      ip,
+      ua,
+    );
 
     this.logger.log(`🔄 Tokens renovados para usuario: ${user.email}`);
 
@@ -484,7 +517,12 @@ export class AuthService {
    * LOGOUT: Eliminar refresh token y revocar sesión
    * Integrado con sistema de sesiones activas
    */
-  async logout(userId: string, refreshToken?: string, ipAddress?: string, userAgent?: string) {
+  async logout(
+    userId: string,
+    refreshToken?: string,
+    ipAddress?: string,
+    userAgent?: string,
+  ) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
     if (!user) {
@@ -528,7 +566,8 @@ export class AuthService {
     }
 
     // Revocar todas las sesiones activas
-    const revokedCount = await this.activeSessionService.revokeAllUserSessions(userId);
+    const revokedCount =
+      await this.activeSessionService.revokeAllUserSessions(userId);
 
     // Eliminar refresh token del usuario
     user.refreshToken = null;
@@ -544,7 +583,9 @@ export class AuthService {
       userAgent,
     });
 
-    this.logger.log(`👋 Todas las sesiones cerradas para usuario: ${user.email}`);
+    this.logger.log(
+      `👋 Todas las sesiones cerradas para usuario: ${user.email}`,
+    );
 
     return {
       message: `Logout exitoso. ${revokedCount} sesiones cerradas.`,
@@ -563,7 +604,10 @@ export class AuthService {
    * REVOKE SESSION: Revocar una sesión específica por ID
    */
   async revokeSession(userId: string, sessionId: string) {
-    const revoked = await this.activeSessionService.revokeSessionById(sessionId, userId);
+    const revoked = await this.activeSessionService.revokeSessionById(
+      sessionId,
+      userId,
+    );
     if (!revoked) {
       throw new NotFoundException('Sesión no encontrada');
     }
@@ -599,7 +643,9 @@ export class AuthService {
     await this.userRepository.save(user);
 
     // Construir URL de reseteo
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'https://dev.echomeddx.com';
+    const frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') ||
+      'https://dev.echomeddx.com';
     const resetUrl = `${frontendUrl}/auth/reset-password?token=${resetToken}`;
 
     // Enviar email con link de reseteo
@@ -612,7 +658,9 @@ export class AuthService {
         });
         this.logger.log(`📧 Email de reset password enviado a ${email}`);
       } catch (error) {
-        this.logger.error(`Error enviando email de reset password: ${error.message}`);
+        this.logger.error(
+          `Error enviando email de reset password: ${error.message}`,
+        );
         // No lanzamos error, el sistema sigue funcionando
       }
     } else {
@@ -911,7 +959,8 @@ export class AuthService {
       10,
     );
     return Math.floor(
-      Math.pow(10, otpLength - 1) + Math.random() * 9 * Math.pow(10, otpLength - 1),
+      Math.pow(10, otpLength - 1) +
+        Math.random() * 9 * Math.pow(10, otpLength - 1),
     ).toString();
   }
 
@@ -955,7 +1004,9 @@ export class AuthService {
     };
 
     return this.jwtService.signAsync(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET') || 'default-refresh-secret',
+      secret:
+        this.configService.get<string>('JWT_REFRESH_SECRET') ||
+        'default-refresh-secret',
       expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION') || '7d',
     });
   }
@@ -976,7 +1027,9 @@ export class AuthService {
   private generateResetToken(): string {
     // Generar token aleatorio seguro
     const randomBytes = Array.from({ length: 32 }, () =>
-      Math.floor(Math.random() * 256).toString(16).padStart(2, '0'),
+      Math.floor(Math.random() * 256)
+        .toString(16)
+        .padStart(2, '0'),
     ).join('');
     return randomBytes;
   }

@@ -77,7 +77,10 @@ export class PostsService {
 
     // Actualizar contadores y última actividad
     await this.discussionsService.incrementPostCount(dto.discussionId);
-    await this.discussionsService.updateLastActivity(dto.discussionId, authorId);
+    await this.discussionsService.updateLastActivity(
+      dto.discussionId,
+      authorId,
+    );
 
     // Incrementar contador de respuestas del padre
     if (parent) {
@@ -88,7 +91,9 @@ export class PostsService {
     // Auto-suscribir al autor
     await this.discussionsService.subscribe(dto.discussionId, authorId);
 
-    this.logger.log(`Post creado: ${saved.id} en discusión ${dto.discussionId}`);
+    this.logger.log(
+      `Post creado: ${saved.id} en discusión ${dto.discussionId}`,
+    );
 
     // Emitir evento para notificaciones
     this.eventEmitter.emit('forum.post.created', {
@@ -107,7 +112,10 @@ export class PostsService {
   /**
    * Listar posts de una discusión
    */
-  async findByDiscussion(discussionId: string, query: PostQueryDto): Promise<{
+  async findByDiscussion(
+    discussionId: string,
+    query: PostQueryDto,
+  ): Promise<{
     data: Post[];
     pagination: {
       page: number;
@@ -259,12 +267,11 @@ export class PostsService {
   /**
    * Aceptar como respuesta (solo autor de la discusión)
    */
-  async acceptAsAnswer(
-    id: string,
-    userId: string,
-  ): Promise<Post> {
+  async acceptAsAnswer(id: string, userId: string): Promise<Post> {
     const post = await this.findById(id);
-    const discussion = await this.discussionsService.findById(post.discussionId);
+    const discussion = await this.discussionsService.findById(
+      post.discussionId,
+    );
 
     if (discussion.authorId !== userId) {
       throw new ForbiddenException({
@@ -370,7 +377,11 @@ export class PostsService {
   /**
    * Eliminar post (soft delete)
    */
-  async delete(id: string, userId: string, isAdmin: boolean = false): Promise<void> {
+  async delete(
+    id: string,
+    userId: string,
+    isAdmin: boolean = false,
+  ): Promise<void> {
     const post = await this.findById(id);
 
     if (!isAdmin && post.authorId !== userId) {

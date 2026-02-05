@@ -24,15 +24,8 @@ import { AuthModule } from '../auth/auth.module';
     EventEmitterModule.forRoot(),
     forwardRef(() => AuthModule),
   ],
-  controllers: [
-    CertificatesController,
-    CertificatesAdminController,
-  ],
-  providers: [
-    CertificatesService,
-  ],
-  exports: [
-    CertificatesService,
-  ],
+  controllers: [CertificatesController, CertificatesAdminController],
+  providers: [CertificatesService],
+  exports: [CertificatesService],
 })
 export class CertificatesModule {}

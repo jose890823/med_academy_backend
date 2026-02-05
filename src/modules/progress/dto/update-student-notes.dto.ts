@@ -20,7 +20,8 @@ export class UpdateStudentNotesDto {
   moduleId: string;
 
   @ApiProperty({
-    example: 'Revisar fórmula de velocidad en el minuto 15:30. Importante para el examen.',
+    example:
+      'Revisar fórmula de velocidad en el minuto 15:30. Importante para el examen.',
     description: 'Notas del estudiante',
     required: false,
   })

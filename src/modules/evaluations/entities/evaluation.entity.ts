@@ -194,7 +194,10 @@ export class Evaluation {
    * Verifica si es un examen (midterm o final)
    */
   get isExam(): boolean {
-    return this.type === EvaluationType.MIDTERM || this.type === EvaluationType.FINAL_EXAM;
+    return (
+      this.type === EvaluationType.MIDTERM ||
+      this.type === EvaluationType.FINAL_EXAM
+    );
   }
 
   /**

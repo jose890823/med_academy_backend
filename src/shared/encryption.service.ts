@@ -16,10 +16,7 @@ export class EncryptionService {
       'echomeddx_default_encryption_key_32_chars_long!!';
 
     // Ensure the key is exactly 32 bytes (256 bits) for AES-256
-    this.encryptionKey = crypto
-      .createHash('sha256')
-      .update(keyString)
-      .digest();
+    this.encryptionKey = crypto.createHash('sha256').update(keyString).digest();
 
     this.logger.log('🔐 EncryptionService initialized with AES-256-CBC');
   }

@@ -37,10 +37,7 @@ export class ContactController {
     status: 400,
     description: 'Limite de mensajes alcanzado (1 por dia)',
   })
-  async create(
-    @Body() dto: CreateContactMessageDto,
-    @Req() req: Request,
-  ) {
+  async create(@Body() dto: CreateContactMessageDto, @Req() req: Request) {
     const ipAddress =
       req.headers['x-forwarded-for']?.toString().split(',')[0] ||
       req.socket?.remoteAddress ||

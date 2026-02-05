@@ -23,22 +23,10 @@ import { InstructorsAdminController } from './controllers/instructors-admin.cont
  */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      InstructorProfile,
-      User,
-      Course,
-      Review,
-    ]),
+    TypeOrmModule.forFeature([InstructorProfile, User, Course, Review]),
   ],
-  controllers: [
-    InstructorsController,
-    InstructorsAdminController,
-  ],
-  providers: [
-    InstructorsService,
-  ],
-  exports: [
-    InstructorsService,
-  ],
+  controllers: [InstructorsController, InstructorsAdminController],
+  providers: [InstructorsService],
+  exports: [InstructorsService],
 })
 export class InstructorsModule {}

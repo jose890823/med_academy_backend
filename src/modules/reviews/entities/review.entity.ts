@@ -17,10 +17,10 @@ import { User } from '../../auth/entities/user.entity';
  * Estado de la review
  */
 export enum ReviewStatus {
-  PENDING = 'pending',       // Pendiente de moderación
-  APPROVED = 'approved',     // Aprobada y visible
-  REJECTED = 'rejected',     // Rechazada por moderación
-  HIDDEN = 'hidden',         // Oculta por el usuario o admin
+  PENDING = 'pending', // Pendiente de moderación
+  APPROVED = 'approved', // Aprobada y visible
+  REJECTED = 'rejected', // Rechazada por moderación
+  HIDDEN = 'hidden', // Oculta por el usuario o admin
 }
 
 /**

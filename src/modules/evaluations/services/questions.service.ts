@@ -36,7 +36,8 @@ export class QuestionsService {
     ) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'Las preguntas de opción múltiple deben tener al menos 2 opciones',
+        message:
+          'Las preguntas de opción múltiple deben tener al menos 2 opciones',
       });
     }
 
@@ -55,7 +56,8 @@ export class QuestionsService {
       ) {
         throw new BadRequestException({
           code: ErrorCodes.VALIDATION_ERROR,
-          message: 'Las preguntas de opción múltiple deben tener exactamente una respuesta correcta',
+          message:
+            'Las preguntas de opción múltiple deben tener exactamente una respuesta correcta',
         });
       }
     }
@@ -64,14 +66,17 @@ export class QuestionsService {
     if (dto.questionType === QuestionType.TRUE_FALSE && !dto.options) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'Las preguntas de verdadero/falso deben tener opciones definidas',
+        message:
+          'Las preguntas de verdadero/falso deben tener opciones definidas',
       });
     }
 
     const question = this.questionRepository.create(dto);
     const saved = await this.questionRepository.save(question);
 
-    this.logger.log(`Pregunta creada: ${saved.id} (Evaluación: ${dto.evaluationId})`);
+    this.logger.log(
+      `Pregunta creada: ${saved.id} (Evaluación: ${dto.evaluationId})`,
+    );
     return saved;
   }
 
@@ -128,7 +133,8 @@ export class QuestionsService {
 
     // Si se cambia el tipo, validar opciones
     const newType = dto.questionType || question.questionType;
-    const newOptions = dto.options !== undefined ? dto.options : question.options;
+    const newOptions =
+      dto.options !== undefined ? dto.options : question.options;
 
     if (
       (newType === QuestionType.MULTIPLE_CHOICE ||
@@ -137,7 +143,8 @@ export class QuestionsService {
     ) {
       throw new BadRequestException({
         code: ErrorCodes.VALIDATION_ERROR,
-        message: 'Las preguntas de opción múltiple deben tener al menos 2 opciones',
+        message:
+          'Las preguntas de opción múltiple deben tener al menos 2 opciones',
       });
     }
 
@@ -161,7 +168,10 @@ export class QuestionsService {
   /**
    * Reordenar preguntas de una evaluación
    */
-  async reorder(evaluationId: string, questionIds: string[]): Promise<Question[]> {
+  async reorder(
+    evaluationId: string,
+    questionIds: string[],
+  ): Promise<Question[]> {
     const questions = await this.findByEvaluation(evaluationId);
 
     // Validar que todos los IDs existen

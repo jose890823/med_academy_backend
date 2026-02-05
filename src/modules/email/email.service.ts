@@ -34,8 +34,11 @@ export class EmailService {
   private readonly brandName: string;
 
   constructor(private configService: ConfigService) {
-    this.defaultFrom = this.configService.get<string>('EMAIL_FROM') || 'noreply@publishsparks.com';
-    this.brandName = this.configService.get<string>('BRAND_NAME') || 'PublishSparks';
+    this.defaultFrom =
+      this.configService.get<string>('EMAIL_FROM') ||
+      'noreply@publishsparks.com';
+    this.brandName =
+      this.configService.get<string>('BRAND_NAME') || 'PublishSparks';
     this.initialize();
   }
 
@@ -85,7 +88,9 @@ export class EmailService {
 
     // Sin proveedor configurado
     this.provider = 'none';
-    this.logger.warn('⚠️ EmailService en modo simulado - Configura RESEND_API_KEY o GMAIL_USER/GMAIL_APP_PASSWORD');
+    this.logger.warn(
+      '⚠️ EmailService en modo simulado - Configura RESEND_API_KEY o GMAIL_USER/GMAIL_APP_PASSWORD',
+    );
   }
 
   /**
@@ -204,7 +209,9 @@ export class EmailService {
   /**
    * Envía email de reseteo de contraseña
    */
-  async sendPasswordResetEmail(dto: SendPasswordResetEmailDto): Promise<EmailResult> {
+  async sendPasswordResetEmail(
+    dto: SendPasswordResetEmailDto,
+  ): Promise<EmailResult> {
     if (this.provider === 'none') {
       this.logger.log(`📧 [SIMULADO] Reset password para ${dto.to}`);
       return { success: true, messageId: 'simulated' };
@@ -226,7 +233,11 @@ export class EmailService {
   /**
    * Método para testing - verifica conectividad
    */
-  async testConnection(): Promise<{ success: boolean; provider: string; message: string }> {
+  async testConnection(): Promise<{
+    success: boolean;
+    provider: string;
+    message: string;
+  }> {
     if (this.provider === 'none') {
       return {
         success: false,

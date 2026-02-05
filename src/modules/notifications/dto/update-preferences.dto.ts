@@ -1,5 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsBoolean, IsString, IsIn, Matches } from 'class-validator';
+import {
+  IsOptional,
+  IsBoolean,
+  IsString,
+  IsIn,
+  Matches,
+} from 'class-validator';
 
 /**
  * DTO para actualizar preferencias de notificación

@@ -161,7 +161,9 @@ export class StripeService {
       throw new Error('Stripe no está disponible');
     }
 
-    this.logger.log(`Creating payment intent for ${params.amount} ${params.currency}`);
+    this.logger.log(
+      `Creating payment intent for ${params.amount} ${params.currency}`,
+    );
 
     return this.stripe!.paymentIntents.create({
       amount: Math.round(params.amount * 100), // Convert to cents
@@ -199,7 +201,9 @@ export class StripeService {
       throw new Error('Stripe no está disponible');
     }
 
-    this.logger.log(`Creating refund for payment intent ${params.paymentIntentId}`);
+    this.logger.log(
+      `Creating refund for payment intent ${params.paymentIntentId}`,
+    );
 
     return this.stripe!.refunds.create({
       payment_intent: params.paymentIntentId,
@@ -242,7 +246,9 @@ export class StripeService {
       throw new Error('Stripe no está disponible');
     }
 
-    return this.stripe!.customers.retrieve(customerId) as Promise<Stripe.Customer>;
+    return this.stripe!.customers.retrieve(
+      customerId,
+    ) as Promise<Stripe.Customer>;
   }
 
   /**

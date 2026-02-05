@@ -1,7 +1,21 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsInt, IsEnum, IsString, IsBoolean, IsUUID, Min, Max } from 'class-validator';
+import {
+  IsOptional,
+  IsInt,
+  IsEnum,
+  IsString,
+  IsBoolean,
+  IsUUID,
+  Min,
+  Max,
+} from 'class-validator';
 import { Type, Transform } from 'class-transformer';
-import { CourseStatus, CourseModality, CourseLevel, CourseLanguage } from '../entities/course.entity';
+import {
+  CourseStatus,
+  CourseModality,
+  CourseLevel,
+  CourseLanguage,
+} from '../entities/course.entity';
 
 /**
  * DTO para filtrar y paginar cursos

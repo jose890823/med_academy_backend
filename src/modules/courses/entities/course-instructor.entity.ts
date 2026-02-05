@@ -55,7 +55,9 @@ export class CourseInstructor {
   // RELACIONES
   // ============================================
 
-  @ManyToOne(() => Course, (course) => course.instructors, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Course, (course) => course.instructors, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'courseId' })
   course: Course;
 

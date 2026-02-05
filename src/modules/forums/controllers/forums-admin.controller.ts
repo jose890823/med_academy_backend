@@ -54,7 +54,8 @@ export class ForumsAdminController {
   @Get('discussions')
   @ApiOperation({
     summary: 'Listar todas las discusiones',
-    description: 'Lista todas las discusiones con filtros (incluye todos los estados)',
+    description:
+      'Lista todas las discusiones con filtros (incluye todos los estados)',
   })
   @ApiResponse({
     status: 200,

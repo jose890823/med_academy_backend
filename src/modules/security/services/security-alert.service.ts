@@ -57,7 +57,10 @@ export class SecurityAlertService {
   async findActive(): Promise<SecurityAlert[]> {
     return this.securityAlertRepository.find({
       where: {
-        status: In([SecurityAlertStatus.ACTIVE, SecurityAlertStatus.INVESTIGATING]),
+        status: In([
+          SecurityAlertStatus.ACTIVE,
+          SecurityAlertStatus.INVESTIGATING,
+        ]),
       },
       relations: ['relatedUser', 'assignedTo'],
       order: {
@@ -87,10 +90,13 @@ export class SecurityAlertService {
     limit?: number;
     offset?: number;
   }): Promise<{ data: SecurityAlert[]; total: number }> {
-    const queryBuilder = this.securityAlertRepository.createQueryBuilder('alert');
+    const queryBuilder =
+      this.securityAlertRepository.createQueryBuilder('alert');
 
     if (options?.status) {
-      queryBuilder.andWhere('alert.status = :status', { status: options.status });
+      queryBuilder.andWhere('alert.status = :status', {
+        status: options.status,
+      });
     }
 
     if (options?.severity) {
@@ -135,7 +141,10 @@ export class SecurityAlertService {
 
     alert.status = status;
 
-    if (status === SecurityAlertStatus.RESOLVED || status === SecurityAlertStatus.DISMISSED) {
+    if (
+      status === SecurityAlertStatus.RESOLVED ||
+      status === SecurityAlertStatus.DISMISSED
+    ) {
       alert.resolvedAt = new Date();
       alert.resolvedById = updatedById;
       alert.resolution = resolution || null;
@@ -150,7 +159,10 @@ export class SecurityAlertService {
   /**
    * Asignar alerta a un admin
    */
-  async assign(id: string, assignedToId: string): Promise<SecurityAlert | null> {
+  async assign(
+    id: string,
+    assignedToId: string,
+  ): Promise<SecurityAlert | null> {
     const alert = await this.findById(id);
     if (!alert) return null;
 
@@ -166,10 +178,15 @@ export class SecurityAlertService {
   /**
    * Contar alertas activas por severidad
    */
-  async countActiveBySeverity(): Promise<Record<SecurityAlertSeverity, number>> {
+  async countActiveBySeverity(): Promise<
+    Record<SecurityAlertSeverity, number>
+  > {
     const alerts = await this.securityAlertRepository.find({
       where: {
-        status: In([SecurityAlertStatus.ACTIVE, SecurityAlertStatus.INVESTIGATING]),
+        status: In([
+          SecurityAlertStatus.ACTIVE,
+          SecurityAlertStatus.INVESTIGATING,
+        ]),
       },
     });
 
@@ -230,8 +247,11 @@ export class SecurityAlertService {
           a.status === SecurityAlertStatus.ACTIVE ||
           a.status === SecurityAlertStatus.INVESTIGATING,
       ).length,
-      resolved: alerts.filter((a) => a.status === SecurityAlertStatus.RESOLVED).length,
-      dismissed: alerts.filter((a) => a.status === SecurityAlertStatus.DISMISSED).length,
+      resolved: alerts.filter((a) => a.status === SecurityAlertStatus.RESOLVED)
+        .length,
+      dismissed: alerts.filter(
+        (a) => a.status === SecurityAlertStatus.DISMISSED,
+      ).length,
       byType,
       bySeverity,
       avgResolutionTimeHours:

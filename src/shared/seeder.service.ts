@@ -20,7 +20,9 @@ export class SeederService implements OnApplicationBootstrap {
     // Verificar si las tablas existen
     const tablesReady = await this.ensureTablesExist();
     if (!tablesReady) {
-      this.logger.warn('No se pudo preparar la base de datos. Seeders omitidos.');
+      this.logger.warn(
+        'No se pudo preparar la base de datos. Seeders omitidos.',
+      );
       return;
     }
 
@@ -36,14 +38,19 @@ export class SeederService implements OnApplicationBootstrap {
       const tableExists = await this.checkTableExists('users');
 
       if (!tableExists) {
-        this.logger.log('Tablas no encontradas. Sincronizando esquema de base de datos...');
+        this.logger.log(
+          'Tablas no encontradas. Sincronizando esquema de base de datos...',
+        );
         await this.dataSource.synchronize(false);
         this.logger.log('Esquema sincronizado correctamente.');
       }
 
       return true;
     } catch (error) {
-      this.logger.error('Error verificando/sincronizando tablas:', error.message);
+      this.logger.error(
+        'Error verificando/sincronizando tablas:',
+        error.message,
+      );
       return false;
     }
   }

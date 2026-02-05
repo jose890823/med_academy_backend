@@ -2,10 +2,16 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
-import { Enrollment, EnrollmentStatus } from '../../enrollments/entities/enrollment.entity';
+import {
+  Enrollment,
+  EnrollmentStatus,
+} from '../../enrollments/entities/enrollment.entity';
 import { Payment, PaymentStatus } from '../../payments/entities/payment.entity';
 import { Certificate } from '../../certificates/entities/certificate.entity';
-import { EvaluationAttempt, AttemptStatus } from '../../evaluations/entities/evaluation-attempt.entity';
+import {
+  EvaluationAttempt,
+  AttemptStatus,
+} from '../../evaluations/entities/evaluation-attempt.entity';
 import { Course, CourseStatus } from '../../courses/entities/course.entity';
 import {
   AnalyticsQueryDto,
@@ -48,11 +54,16 @@ export class AnalyticsService {
   /**
    * Obtener métricas del dashboard
    */
-  async getDashboardMetrics(query: AnalyticsQueryDto): Promise<DashboardMetricsDto> {
+  async getDashboardMetrics(
+    query: AnalyticsQueryDto,
+  ): Promise<DashboardMetricsDto> {
     const { startDate, endDate } = this.getDateRange(query);
-    const { startDate: prevStartDate, endDate: prevEndDate } = this.getPreviousPeriodRange(startDate, endDate);
+    const { startDate: prevStartDate, endDate: prevEndDate } =
+      this.getPreviousPeriodRange(startDate, endDate);
 
-    this.logger.debug(`Calculando métricas: ${startDate.toISOString()} - ${endDate.toISOString()}`);
+    this.logger.debug(
+      `Calculando métricas: ${startDate.toISOString()} - ${endDate.toISOString()}`,
+    );
 
     // Calcular todas las métricas en paralelo
     const [
@@ -66,7 +77,12 @@ export class AnalyticsService {
       this.getUserMetrics(startDate, endDate, prevStartDate, prevEndDate),
       this.getEnrollmentMetrics(startDate, endDate, prevStartDate, prevEndDate),
       this.getRevenueMetrics(startDate, endDate, prevStartDate, prevEndDate),
-      this.getCertificateMetrics(startDate, endDate, prevStartDate, prevEndDate),
+      this.getCertificateMetrics(
+        startDate,
+        endDate,
+        prevStartDate,
+        prevEndDate,
+      ),
       this.getEvaluationMetrics(startDate, endDate, prevStartDate, prevEndDate),
       this.getWorkshopMetrics(startDate, endDate, prevStartDate, prevEndDate),
     ]);
@@ -98,7 +114,9 @@ export class AnalyticsService {
     newUsers: MetricWithChange;
   }> {
     // Total usuarios
-    const totalUsers = await this.userRepository.count({ where: { isActive: true } });
+    const totalUsers = await this.userRepository.count({
+      where: { isActive: true },
+    });
     const prevTotalUsers = await this.userRepository.count({
       where: {
         isActive: true,
@@ -173,7 +191,10 @@ export class AnalyticsService {
     return {
       activeEnrollments: this.createMetric(activeEnrollments),
       newEnrollments: this.createMetric(newEnrollments, prevNewEnrollments),
-      completedEnrollments: this.createMetric(completedEnrollments, prevCompletedEnrollments),
+      completedEnrollments: this.createMetric(
+        completedEnrollments,
+        prevCompletedEnrollments,
+      ),
     };
   }
 
@@ -197,7 +218,10 @@ export class AnalyticsService {
       .select('SUM(payment.amount)', 'total')
       .addSelect('COUNT(*)', 'count')
       .where('payment.status = :status', { status: PaymentStatus.COMPLETED })
-      .andWhere('payment.paidAt BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .andWhere('payment.paidAt BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
       .getRawOne();
 
     const totalRevenue = parseFloat(revenueResult?.total || '0');
@@ -210,17 +234,24 @@ export class AnalyticsService {
       .select('SUM(payment.amount)', 'total')
       .addSelect('COUNT(*)', 'count')
       .where('payment.status = :status', { status: PaymentStatus.COMPLETED })
-      .andWhere('payment.paidAt BETWEEN :start AND :end', { start: prevStartDate, end: prevEndDate })
+      .andWhere('payment.paidAt BETWEEN :start AND :end', {
+        start: prevStartDate,
+        end: prevEndDate,
+      })
       .getRawOne();
 
     const prevTotalRevenue = parseFloat(prevRevenueResult?.total || '0');
     const prevPaymentsCount = parseInt(prevRevenueResult?.count || '0', 10);
-    const prevAverageTicket = prevPaymentsCount > 0 ? prevTotalRevenue / prevPaymentsCount : 0;
+    const prevAverageTicket =
+      prevPaymentsCount > 0 ? prevTotalRevenue / prevPaymentsCount : 0;
 
     return {
       totalRevenue: this.createMetric(totalRevenue, prevTotalRevenue),
       paymentsCount: this.createMetric(paymentsCount, prevPaymentsCount),
-      averageTicket: this.createMetric(Math.round(averageTicket * 100) / 100, Math.round(prevAverageTicket * 100) / 100),
+      averageTicket: this.createMetric(
+        Math.round(averageTicket * 100) / 100,
+        Math.round(prevAverageTicket * 100) / 100,
+      ),
     };
   }
 
@@ -249,7 +280,10 @@ export class AnalyticsService {
     const totalCertificates = await this.certificateRepository.count();
 
     return {
-      certificatesIssued: this.createMetric(certificatesIssued, prevCertificatesIssued),
+      certificatesIssued: this.createMetric(
+        certificatesIssued,
+        prevCertificatesIssued,
+      ),
       totalCertificates: this.createMetric(totalCertificates),
     };
   }
@@ -284,24 +318,41 @@ export class AnalyticsService {
     // Tasa de aprobación
     const passRateResult = await this.attemptRepository
       .createQueryBuilder('attempt')
-      .select('AVG(CASE WHEN attempt.passed = true THEN 100 ELSE 0 END)', 'passRate')
+      .select(
+        'AVG(CASE WHEN attempt.passed = true THEN 100 ELSE 0 END)',
+        'passRate',
+      )
       .where('attempt.status = :status', { status: AttemptStatus.GRADED })
-      .andWhere('attempt.gradedAt BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .andWhere('attempt.gradedAt BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
       .getRawOne();
 
-    const averagePassRate = Math.round(parseFloat(passRateResult?.passRate || '0') * 10) / 10;
+    const averagePassRate =
+      Math.round(parseFloat(passRateResult?.passRate || '0') * 10) / 10;
 
     const prevPassRateResult = await this.attemptRepository
       .createQueryBuilder('attempt')
-      .select('AVG(CASE WHEN attempt.passed = true THEN 100 ELSE 0 END)', 'passRate')
+      .select(
+        'AVG(CASE WHEN attempt.passed = true THEN 100 ELSE 0 END)',
+        'passRate',
+      )
       .where('attempt.status = :status', { status: AttemptStatus.GRADED })
-      .andWhere('attempt.gradedAt BETWEEN :start AND :end', { start: prevStartDate, end: prevEndDate })
+      .andWhere('attempt.gradedAt BETWEEN :start AND :end', {
+        start: prevStartDate,
+        end: prevEndDate,
+      })
       .getRawOne();
 
-    const prevAveragePassRate = Math.round(parseFloat(prevPassRateResult?.passRate || '0') * 10) / 10;
+    const prevAveragePassRate =
+      Math.round(parseFloat(prevPassRateResult?.passRate || '0') * 10) / 10;
 
     return {
-      evaluationsCompleted: this.createMetric(evaluationsCompleted, prevEvaluationsCompleted),
+      evaluationsCompleted: this.createMetric(
+        evaluationsCompleted,
+        prevEvaluationsCompleted,
+      ),
       averagePassRate: this.createMetric(averagePassRate, prevAveragePassRate),
     };
   }
@@ -375,7 +426,10 @@ export class AnalyticsService {
       .createQueryBuilder('enrollment')
       .select(`TO_CHAR(enrollment.createdAt, '${dateFormat}')`, 'date')
       .addSelect('COUNT(*)', 'value')
-      .where('enrollment.createdAt BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .where('enrollment.createdAt BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
       .groupBy(`TO_CHAR(enrollment.createdAt, '${dateFormat}')`)
       .orderBy('date', 'ASC')
       .getRawMany();
@@ -398,7 +452,10 @@ export class AnalyticsService {
       .select(`TO_CHAR(payment.paidAt, '${dateFormat}')`, 'date')
       .addSelect('SUM(payment.amount)', 'value')
       .where('payment.status = :status', { status: PaymentStatus.COMPLETED })
-      .andWhere('payment.paidAt BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .andWhere('payment.paidAt BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
       .groupBy(`TO_CHAR(payment.paidAt, '${dateFormat}')`)
       .orderBy('date', 'ASC')
       .getRawMany();
@@ -420,7 +477,10 @@ export class AnalyticsService {
       .createQueryBuilder('user')
       .select(`TO_CHAR(user.createdAt, '${dateFormat}')`, 'date')
       .addSelect('COUNT(*)', 'value')
-      .where('user.createdAt BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .where('user.createdAt BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
       .groupBy(`TO_CHAR(user.createdAt, '${dateFormat}')`)
       .orderBy('date', 'ASC')
       .getRawMany();
@@ -442,7 +502,10 @@ export class AnalyticsService {
       .createQueryBuilder('certificate')
       .select(`TO_CHAR(certificate.issuedAt, '${dateFormat}')`, 'date')
       .addSelect('COUNT(*)', 'value')
-      .where('certificate.issuedAt BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .where('certificate.issuedAt BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
       .groupBy(`TO_CHAR(certificate.issuedAt, '${dateFormat}')`)
       .orderBy('date', 'ASC')
       .getRawMany();
@@ -474,7 +537,14 @@ export class AnalyticsService {
       .getRawMany();
 
     const total = result.reduce((sum, r) => sum + parseInt(r.count, 10), 0);
-    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+    const colors = [
+      '#3B82F6',
+      '#10B981',
+      '#F59E0B',
+      '#EF4444',
+      '#8B5CF6',
+      '#EC4899',
+    ];
 
     return result.map((r, i) => ({
       name: r.name,
@@ -505,9 +575,14 @@ export class AnalyticsService {
         .where('cohort.courseId = :courseId', { courseId: course.id })
         .getMany();
 
-      const active = enrollments.filter((e) => e.status === EnrollmentStatus.ACTIVE).length;
-      const completed = enrollments.filter((e) => e.status === EnrollmentStatus.COMPLETED).length;
-      const completionRate = enrollments.length > 0 ? (completed / enrollments.length) * 100 : 0;
+      const active = enrollments.filter(
+        (e) => e.status === EnrollmentStatus.ACTIVE,
+      ).length;
+      const completed = enrollments.filter(
+        (e) => e.status === EnrollmentStatus.COMPLETED,
+      ).length;
+      const completionRate =
+        enrollments.length > 0 ? (completed / enrollments.length) * 100 : 0;
 
       // Ingresos del curso
       const revenueResult = await this.paymentRepository
@@ -516,7 +591,9 @@ export class AnalyticsService {
         .innerJoin('payment.enrollment', 'enrollment')
         .innerJoin('enrollment.cohort', 'cohort')
         .where('cohort.courseId = :courseId', { courseId: course.id })
-        .andWhere('payment.status = :status', { status: PaymentStatus.COMPLETED })
+        .andWhere('payment.status = :status', {
+          status: PaymentStatus.COMPLETED,
+        })
         .getRawOne();
 
       analytics.push({
@@ -574,7 +651,10 @@ export class AnalyticsService {
   /**
    * Obtener rango de fechas según el período
    */
-  private getDateRange(query: AnalyticsQueryDto): { startDate: Date; endDate: Date } {
+  private getDateRange(query: AnalyticsQueryDto): {
+    startDate: Date;
+    endDate: Date;
+  } {
     const now = new Date();
     let startDate: Date;
     let endDate: Date = new Date(now);
@@ -660,14 +740,18 @@ export class AnalyticsService {
   /**
    * Crear métrica con cambio
    */
-  private createMetric(value: number, previousValue?: number): MetricWithChange {
+  private createMetric(
+    value: number,
+    previousValue?: number,
+  ): MetricWithChange {
     const metric: MetricWithChange = { value };
 
     if (previousValue !== undefined) {
       metric.previousValue = previousValue;
 
       if (previousValue > 0) {
-        metric.changePercent = Math.round(((value - previousValue) / previousValue) * 1000) / 10;
+        metric.changePercent =
+          Math.round(((value - previousValue) / previousValue) * 1000) / 10;
       } else if (value > 0) {
         metric.changePercent = 100;
       } else {

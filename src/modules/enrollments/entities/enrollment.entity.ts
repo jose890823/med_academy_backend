@@ -124,7 +124,11 @@ export class Enrollment {
     description: 'Estado de la inscripción',
     enum: EnrollmentStatus,
   })
-  @Column({ type: 'enum', enum: EnrollmentStatus, default: EnrollmentStatus.PENDING })
+  @Column({
+    type: 'enum',
+    enum: EnrollmentStatus,
+    default: EnrollmentStatus.PENDING,
+  })
   status: EnrollmentStatus;
 
   // ============================================

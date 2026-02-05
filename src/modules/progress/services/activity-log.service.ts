@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import {
@@ -207,7 +204,7 @@ export class ActivityLogService {
       .createQueryBuilder('activity')
       .where('activity.userId = :userId', { userId })
       .andWhere('activity.createdAt >= :startDate', { startDate })
-      .select("DATE(activity.createdAt) as date")
+      .select('DATE(activity.createdAt) as date')
       .addSelect('COUNT(*) as count')
       .groupBy('DATE(activity.createdAt)')
       .orderBy('date', 'ASC')

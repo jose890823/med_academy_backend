@@ -43,7 +43,8 @@ export class CohortsController {
   @Public()
   @ApiOperation({
     summary: 'Obtener convocatorias abiertas de un curso',
-    description: 'Retorna las convocatorias abiertas para inscripción de un curso',
+    description:
+      'Retorna las convocatorias abiertas para inscripción de un curso',
   })
   @ApiParam({ name: 'courseId', description: 'UUID del curso' })
   @ApiResponse({
@@ -128,7 +129,10 @@ export class CohortsAdminController {
     type: Cohort,
   })
   @ApiResponse({ status: 404, description: 'Curso no encontrado' })
-  @ApiResponse({ status: 409, description: 'Ya existe una convocatoria con este código' })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe una convocatoria con este código',
+  })
   async create(@Body() dto: CreateCohortDto): Promise<Cohort> {
     return this.cohortsService.create(dto);
   }
@@ -145,7 +149,10 @@ export class CohortsAdminController {
     type: Cohort,
   })
   @ApiResponse({ status: 404, description: 'Convocatoria no encontrada' })
-  @ApiResponse({ status: 409, description: 'Ya existe una convocatoria con este código' })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe una convocatoria con este código',
+  })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateCohortDto,
@@ -180,7 +187,10 @@ export class CohortsAdminController {
     description: 'Elimina una convocatoria',
   })
   @ApiParam({ name: 'id', description: 'UUID de la convocatoria' })
-  @ApiResponse({ status: 204, description: 'Convocatoria eliminada exitosamente' })
+  @ApiResponse({
+    status: 204,
+    description: 'Convocatoria eliminada exitosamente',
+  })
   @ApiResponse({ status: 404, description: 'Convocatoria no encontrada' })
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.cohortsService.delete(id);

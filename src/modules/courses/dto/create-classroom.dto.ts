@@ -71,7 +71,9 @@ export class CreateClassroomDto {
   })
   @IsOptional()
   @IsString({ message: 'El ID de la reunión debe ser texto' })
-  @MaxLength(50, { message: 'El ID de la reunión no puede exceder 50 caracteres' })
+  @MaxLength(50, {
+    message: 'El ID de la reunión no puede exceder 50 caracteres',
+  })
   meetingId?: string;
 
   @ApiPropertyOptional({
@@ -81,7 +83,9 @@ export class CreateClassroomDto {
   })
   @IsOptional()
   @IsString({ message: 'La contraseña de la reunión debe ser texto' })
-  @MaxLength(50, { message: 'La contraseña de la reunión no puede exceder 50 caracteres' })
+  @MaxLength(50, {
+    message: 'La contraseña de la reunión no puede exceder 50 caracteres',
+  })
   meetingPassword?: string;
 
   // ============================================

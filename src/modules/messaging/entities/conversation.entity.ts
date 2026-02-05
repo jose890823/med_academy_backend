@@ -130,11 +130,17 @@ export class Conversation {
   @Column({ type: 'int', default: 0 })
   messageCount: number;
 
-  @ApiProperty({ description: 'Mensajes no leídos por participante 1', default: 0 })
+  @ApiProperty({
+    description: 'Mensajes no leídos por participante 1',
+    default: 0,
+  })
   @Column({ type: 'int', default: 0 })
   unreadCountParticipant1: number;
 
-  @ApiProperty({ description: 'Mensajes no leídos por participante 2', default: 0 })
+  @ApiProperty({
+    description: 'Mensajes no leídos por participante 2',
+    default: 0,
+  })
   @Column({ type: 'int', default: 0 })
   unreadCountParticipant2: number;
 

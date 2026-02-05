@@ -37,18 +37,8 @@ import { ForumsAdminController } from './controllers/forums-admin.controller';
       Enrollment,
     ]),
   ],
-  controllers: [
-    DiscussionsController,
-    PostsController,
-    ForumsAdminController,
-  ],
-  providers: [
-    DiscussionsService,
-    PostsService,
-  ],
-  exports: [
-    DiscussionsService,
-    PostsService,
-  ],
+  controllers: [DiscussionsController, PostsController, ForumsAdminController],
+  providers: [DiscussionsService, PostsService],
+  exports: [DiscussionsService, PostsService],
 })
 export class ForumsModule {}

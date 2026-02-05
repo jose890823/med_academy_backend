@@ -16,7 +16,11 @@ import {
   InitialPaymentStatus,
   PaymentMethod,
 } from './entities/subscription.entity';
-import { Payment, PaymentStatus, PaymentProvider } from './entities/payment.entity';
+import {
+  Payment,
+  PaymentStatus,
+  PaymentProvider,
+} from './entities/payment.entity';
 import { StripeService } from './stripe.service';
 import { User } from '../auth/entities/user.entity';
 import { CreateCheckoutSessionDto, CancelSubscriptionDto } from './dto';
@@ -93,7 +97,8 @@ export class SubscriptionsService {
       metadata: dto.metadata,
     });
 
-    const savedSubscription = await this.subscriptionRepository.save(subscription);
+    const savedSubscription =
+      await this.subscriptionRepository.save(subscription);
 
     // Build line items for Stripe Checkout
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
@@ -159,31 +164,31 @@ export class SubscriptionsService {
 
     switch (event.type) {
       case 'checkout.session.completed':
-        await this.handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+        await this.handleCheckoutCompleted(event.data.object);
         break;
 
       case 'payment_intent.succeeded':
-        await this.handlePaymentSucceeded(event.data.object as Stripe.PaymentIntent);
+        await this.handlePaymentSucceeded(event.data.object);
         break;
 
       case 'payment_intent.payment_failed':
-        await this.handlePaymentFailed(event.data.object as Stripe.PaymentIntent);
+        await this.handlePaymentFailed(event.data.object);
         break;
 
       case 'invoice.payment_succeeded':
-        await this.handleInvoicePaymentSucceeded(event.data.object as Stripe.Invoice);
+        await this.handleInvoicePaymentSucceeded(event.data.object);
         break;
 
       case 'invoice.payment_failed':
-        await this.handleInvoicePaymentFailed(event.data.object as Stripe.Invoice);
+        await this.handleInvoicePaymentFailed(event.data.object);
         break;
 
       case 'customer.subscription.updated':
-        await this.handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
+        await this.handleSubscriptionUpdated(event.data.object);
         break;
 
       case 'customer.subscription.deleted':
-        await this.handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+        await this.handleSubscriptionDeleted(event.data.object);
         break;
 
       default:
@@ -194,7 +199,9 @@ export class SubscriptionsService {
   /**
    * Handle checkout.session.completed
    */
-  private async handleCheckoutCompleted(session: Stripe.Checkout.Session): Promise<void> {
+  private async handleCheckoutCompleted(
+    session: Stripe.Checkout.Session,
+  ): Promise<void> {
     this.logger.log(`Checkout completed: ${session.id}`);
 
     const subscriptionId = session.metadata?.subscriptionId;
@@ -228,7 +235,8 @@ export class SubscriptionsService {
         session.payment_intent as string,
       );
       if (paymentIntent.payment_method) {
-        subscription.stripePaymentMethodId = paymentIntent.payment_method as string;
+        subscription.stripePaymentMethodId =
+          paymentIntent.payment_method as string;
       }
     }
 
@@ -247,7 +255,9 @@ export class SubscriptionsService {
   /**
    * Handle payment_intent.succeeded
    */
-  private async handlePaymentSucceeded(paymentIntent: Stripe.PaymentIntent): Promise<void> {
+  private async handlePaymentSucceeded(
+    paymentIntent: Stripe.PaymentIntent,
+  ): Promise<void> {
     this.logger.log(`Payment succeeded: ${paymentIntent.id}`);
     // Payment handling is mostly done in checkout.session.completed
   }
@@ -255,7 +265,9 @@ export class SubscriptionsService {
   /**
    * Handle payment_intent.payment_failed
    */
-  private async handlePaymentFailed(paymentIntent: Stripe.PaymentIntent): Promise<void> {
+  private async handlePaymentFailed(
+    paymentIntent: Stripe.PaymentIntent,
+  ): Promise<void> {
     this.logger.log(`Payment failed: ${paymentIntent.id}`);
 
     const subscriptionId = paymentIntent.metadata?.subscriptionId;
@@ -286,7 +298,9 @@ export class SubscriptionsService {
   /**
    * Handle invoice.payment_succeeded (for recurring payments)
    */
-  private async handleInvoicePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
+  private async handleInvoicePaymentSucceeded(
+    invoice: Stripe.Invoice,
+  ): Promise<void> {
     this.logger.log(`Invoice payment succeeded: ${invoice.id}`);
 
     const subscriptionId = (invoice as any).subscription;
@@ -294,14 +308,17 @@ export class SubscriptionsService {
       return;
     }
 
-    const stripeSubId = typeof subscriptionId === 'string' ? subscriptionId : subscriptionId.id;
+    const stripeSubId =
+      typeof subscriptionId === 'string' ? subscriptionId : subscriptionId.id;
     const subscription = await this.subscriptionRepository.findOne({
       where: { stripeSubscriptionId: stripeSubId },
     });
 
     if (subscription) {
       if (invoice.lines?.data?.[0]?.period?.end) {
-        subscription.nextBillingDate = new Date(invoice.lines.data[0].period.end * 1000);
+        subscription.nextBillingDate = new Date(
+          invoice.lines.data[0].period.end * 1000,
+        );
       }
       subscription.status = SubscriptionStatus.ACTIVE;
       await this.subscriptionRepository.save(subscription);
@@ -311,7 +328,9 @@ export class SubscriptionsService {
   /**
    * Handle invoice.payment_failed
    */
-  private async handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
+  private async handleInvoicePaymentFailed(
+    invoice: Stripe.Invoice,
+  ): Promise<void> {
     this.logger.log(`Invoice payment failed: ${invoice.id}`);
 
     const subscriptionId = (invoice as any).subscription;
@@ -319,7 +338,8 @@ export class SubscriptionsService {
       return;
     }
 
-    const stripeSubId = typeof subscriptionId === 'string' ? subscriptionId : subscriptionId.id;
+    const stripeSubId =
+      typeof subscriptionId === 'string' ? subscriptionId : subscriptionId.id;
     const subscription = await this.subscriptionRepository.findOne({
       where: { stripeSubscriptionId: stripeSubId },
     });
@@ -338,7 +358,9 @@ export class SubscriptionsService {
   /**
    * Handle customer.subscription.updated
    */
-  private async handleSubscriptionUpdated(stripeSubscription: Stripe.Subscription): Promise<void> {
+  private async handleSubscriptionUpdated(
+    stripeSubscription: Stripe.Subscription,
+  ): Promise<void> {
     this.logger.log(`Subscription updated: ${stripeSubscription.id}`);
 
     const subscription = await this.subscriptionRepository.findOne({
@@ -376,7 +398,9 @@ export class SubscriptionsService {
   /**
    * Handle customer.subscription.deleted
    */
-  private async handleSubscriptionDeleted(stripeSubscription: Stripe.Subscription): Promise<void> {
+  private async handleSubscriptionDeleted(
+    stripeSubscription: Stripe.Subscription,
+  ): Promise<void> {
     this.logger.log(`Subscription deleted: ${stripeSubscription.id}`);
 
     const subscription = await this.subscriptionRepository.findOne({
@@ -513,11 +537,15 @@ export class SubscriptionsService {
       .orderBy('subscription.createdAt', 'DESC');
 
     if (options?.status) {
-      queryBuilder.andWhere('subscription.status = :status', { status: options.status });
+      queryBuilder.andWhere('subscription.status = :status', {
+        status: options.status,
+      });
     }
 
     if (options?.planType) {
-      queryBuilder.andWhere('subscription.planType = :planType', { planType: options.planType });
+      queryBuilder.andWhere('subscription.planType = :planType', {
+        planType: options.planType,
+      });
     }
 
     const [subscriptions, total] = await queryBuilder
@@ -683,7 +711,7 @@ export class SubscriptionsService {
 
     const now = new Date();
     const trialDaysRemaining = Math.ceil(
-      (trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+      (trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (trialDaysRemaining > 0) {
@@ -754,7 +782,8 @@ export class SubscriptionsService {
     const planDescriptions: Record<SubscriptionPlan, string> = {
       [SubscriptionPlan.FREE]: '1 idea por dia',
       [SubscriptionPlan.CREATOR]: '3 ideas por dia generadas con IA',
-      [SubscriptionPlan.PRO]: '10 ideas por dia generadas con IA + soporte prioritario',
+      [SubscriptionPlan.PRO]:
+        '10 ideas por dia generadas con IA + soporte prioritario',
     };
 
     const price = planPrices[plan];
@@ -788,7 +817,8 @@ export class SubscriptionsService {
       metadata: { product: 'publishsparks', plan },
     });
 
-    const savedSubscription = await this.subscriptionRepository.save(subscription);
+    const savedSubscription =
+      await this.subscriptionRepository.save(subscription);
 
     // Create Checkout Session para suscripción recurrente
     const session = await this.stripeService.createCheckoutSession({
@@ -832,7 +862,9 @@ export class SubscriptionsService {
     savedSubscription.stripeCheckoutSessionId = session.id;
     await this.subscriptionRepository.save(savedSubscription);
 
-    this.logger.log(`PublishSparks checkout created: ${session.id} for plan ${plan}`);
+    this.logger.log(
+      `PublishSparks checkout created: ${session.id} for plan ${plan}`,
+    );
 
     return {
       sessionId: session.id,
@@ -960,7 +992,8 @@ export class SubscriptionsService {
             session.payment_intent as string,
           );
           if (paymentIntent.payment_method) {
-            subscription.stripePaymentMethodId = paymentIntent.payment_method as string;
+            subscription.stripePaymentMethodId =
+              paymentIntent.payment_method as string;
           }
         } catch (e) {
           this.logger.warn('Could not retrieve payment intent');

@@ -100,7 +100,9 @@ export class Classroom {
   // RELACIONES
   // ============================================
 
-  @ManyToOne(() => Cohort, (cohort) => cohort.classrooms, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Cohort, (cohort) => cohort.classrooms, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'cohortId' })
   cohort: Cohort;
 

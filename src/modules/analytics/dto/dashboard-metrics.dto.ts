@@ -7,13 +7,20 @@ export class MetricWithChange {
   @ApiProperty({ example: 150, description: 'Valor actual' })
   value: number;
 
-  @ApiPropertyOptional({ example: 120, description: 'Valor del período anterior' })
+  @ApiPropertyOptional({
+    example: 120,
+    description: 'Valor del período anterior',
+  })
   previousValue?: number;
 
   @ApiPropertyOptional({ example: 25, description: 'Porcentaje de cambio' })
   changePercent?: number;
 
-  @ApiPropertyOptional({ example: 'up', description: 'Dirección del cambio', enum: ['up', 'down', 'same'] })
+  @ApiPropertyOptional({
+    example: 'up',
+    description: 'Dirección del cambio',
+    enum: ['up', 'down', 'same'],
+  })
   trend?: 'up' | 'down' | 'same';
 }
 
@@ -119,7 +126,10 @@ export class TrendDataDto {
   @ApiProperty({ description: 'Datos de la serie', type: [TrendDataPoint] })
   data: TrendDataPoint[];
 
-  @ApiProperty({ example: 'Inscripciones', description: 'Nombre de la métrica' })
+  @ApiProperty({
+    example: 'Inscripciones',
+    description: 'Nombre de la métrica',
+  })
   metric: string;
 
   @ApiProperty({ example: 'daily', description: 'Granularidad' })
@@ -130,7 +140,10 @@ export class TrendDataDto {
  * Distribución por categoría
  */
 export class CategoryDistributionDto {
-  @ApiProperty({ example: 'Vascular Sonography', description: 'Nombre de la categoría' })
+  @ApiProperty({
+    example: 'Vascular Sonography',
+    description: 'Nombre de la categoría',
+  })
   name: string;
 
   @ApiProperty({ example: 45, description: 'Cantidad' })
@@ -139,7 +152,10 @@ export class CategoryDistributionDto {
   @ApiProperty({ example: 35.5, description: 'Porcentaje del total' })
   percentage: number;
 
-  @ApiPropertyOptional({ example: '#3B82F6', description: 'Color para gráficos' })
+  @ApiPropertyOptional({
+    example: '#3B82F6',
+    description: 'Color para gráficos',
+  })
   color?: string;
 }
 

@@ -9,7 +9,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Not, IsNull } from 'typeorm';
 import { Review, ReviewStatus } from '../entities/review.entity';
-import { Enrollment, EnrollmentStatus } from '../../enrollments/entities/enrollment.entity';
+import {
+  Enrollment,
+  EnrollmentStatus,
+} from '../../enrollments/entities/enrollment.entity';
 import {
   CreateReviewDto,
   UpdateReviewDto,
@@ -64,7 +67,8 @@ export class ReviewsService {
     if (!enrollment) {
       throw new ForbiddenException({
         code: ErrorCodes.REVIEW_NOT_ALLOWED,
-        message: 'Debes estar inscrito o haber completado el curso para dejar un review',
+        message:
+          'Debes estar inscrito o haber completado el curso para dejar un review',
       });
     }
 
@@ -80,7 +84,9 @@ export class ReviewsService {
 
     const saved = await this.reviewRepository.save(review);
 
-    this.logger.log(`Review creado: ${saved.id} (Curso: ${dto.courseId}, Rating: ${dto.rating})`);
+    this.logger.log(
+      `Review creado: ${saved.id} (Curso: ${dto.courseId}, Rating: ${dto.rating})`,
+    );
     return saved;
   }
 
@@ -140,7 +146,9 @@ export class ReviewsService {
       queryBuilder.andWhere('review.status = :status', { status });
     } else {
       // Por defecto, solo mostrar aprobados
-      queryBuilder.andWhere('review.status = :status', { status: ReviewStatus.APPROVED });
+      queryBuilder.andWhere('review.status = :status', {
+        status: ReviewStatus.APPROVED,
+      });
     }
 
     if (rating) {
@@ -152,7 +160,9 @@ export class ReviewsService {
     }
 
     if (verified !== undefined) {
-      queryBuilder.andWhere('review.isVerifiedPurchase = :verified', { verified });
+      queryBuilder.andWhere('review.isVerifiedPurchase = :verified', {
+        verified,
+      });
     }
 
     if (featured !== undefined) {
@@ -265,7 +275,13 @@ export class ReviewsService {
       .groupBy('review.rating')
       .getRawMany();
 
-    const ratingDistribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    const ratingDistribution: Record<number, number> = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    };
     for (const d of distribution) {
       ratingDistribution[d.rating] = parseInt(d.count, 10);
     }
@@ -284,7 +300,11 @@ export class ReviewsService {
   /**
    * Actualizar review (solo el autor puede)
    */
-  async update(id: string, dto: UpdateReviewDto, studentId: string): Promise<Review> {
+  async update(
+    id: string,
+    dto: UpdateReviewDto,
+    studentId: string,
+  ): Promise<Review> {
     const review = await this.findById(id);
 
     if (review.studentId !== studentId) {
@@ -377,7 +397,9 @@ export class ReviewsService {
 
     const updated = await this.reviewRepository.save(review);
 
-    this.logger.log(`Review ${review.isFeatured ? 'destacado' : 'quitado de destacados'}: ${id}`);
+    this.logger.log(
+      `Review ${review.isFeatured ? 'destacado' : 'quitado de destacados'}: ${id}`,
+    );
     return updated;
   }
 
@@ -399,7 +421,11 @@ export class ReviewsService {
   /**
    * Eliminar review (solo el autor o admin)
    */
-  async delete(id: string, userId: string, isAdmin: boolean = false): Promise<void> {
+  async delete(
+    id: string,
+    userId: string,
+    isAdmin: boolean = false,
+  ): Promise<void> {
     const review = await this.findById(id);
 
     if (!isAdmin && review.studentId !== userId) {

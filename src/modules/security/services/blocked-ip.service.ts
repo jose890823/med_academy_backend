@@ -38,13 +38,19 @@ export class BlockedIpService {
       const now = new Date();
       blockedIps.forEach((blocked) => {
         // Solo agregar si no ha expirado
-        if (blocked.permanent || !blocked.expiresAt || blocked.expiresAt > now) {
+        if (
+          blocked.permanent ||
+          !blocked.expiresAt ||
+          blocked.expiresAt > now
+        ) {
           this.blockedIpsCache.add(blocked.ipAddress);
         }
       });
 
       this.lastCacheUpdate = now;
-      this.logger.debug(`Cache de IPs bloqueadas actualizado: ${this.blockedIpsCache.size} IPs`);
+      this.logger.debug(
+        `Cache de IPs bloqueadas actualizado: ${this.blockedIpsCache.size} IPs`,
+      );
     } catch (error) {
       this.logger.error('Error actualizando cache de IPs bloqueadas', error);
     }
@@ -148,7 +154,10 @@ export class BlockedIpService {
       method: 'POST',
       description: `IP bloqueada manualmente: ${reason}`,
       userId: adminUserId,
-      metadata: { permanent: options?.permanent, durationMinutes: options?.durationMinutes },
+      metadata: {
+        permanent: options?.permanent,
+        durationMinutes: options?.durationMinutes,
+      },
     });
 
     this.logger.warn(`IP ${ipAddress} bloqueada por admin: ${reason}`);
@@ -279,8 +288,12 @@ export class BlockedIpService {
     });
 
     const permanent = active.filter((b) => b.permanent);
-    const autoBlocked = active.filter((b) => b.blockedBy === BlockedByType.SYSTEM);
-    const manualBlocked = active.filter((b) => b.blockedBy === BlockedByType.ADMIN);
+    const autoBlocked = active.filter(
+      (b) => b.blockedBy === BlockedByType.SYSTEM,
+    );
+    const manualBlocked = active.filter(
+      (b) => b.blockedBy === BlockedByType.ADMIN,
+    );
 
     return {
       totalActive: active.length,

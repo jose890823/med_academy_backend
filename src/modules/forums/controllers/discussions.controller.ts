@@ -47,7 +47,8 @@ export class DiscussionsController {
   @Public()
   @ApiOperation({
     summary: 'Listar discusiones',
-    description: 'Lista discusiones con filtros (foro general y de cursos públicos)',
+    description:
+      'Lista discusiones con filtros (foro general y de cursos públicos)',
   })
   @ApiResponse({
     status: 200,
@@ -79,7 +80,8 @@ export class DiscussionsController {
   @Public()
   @ApiOperation({
     summary: 'Obtener discusión por ID',
-    description: 'Obtiene una discusión específica (incrementa contador de vistas)',
+    description:
+      'Obtiene una discusión específica (incrementa contador de vistas)',
   })
   @ApiParam({ name: 'id', description: 'UUID de la discusión' })
   @ApiResponse({
@@ -87,9 +89,7 @@ export class DiscussionsController {
     description: 'Discusión encontrada',
     type: Discussion,
   })
-  async findById(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Discussion> {
+  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<Discussion> {
     return this.discussionsService.findById(id, true);
   }
 
@@ -105,9 +105,7 @@ export class DiscussionsController {
     description: 'Discusión encontrada',
     type: Discussion,
   })
-  async findBySlug(
-    @Param('slug') slug: string,
-  ): Promise<Discussion> {
+  async findBySlug(@Param('slug') slug: string): Promise<Discussion> {
     return this.discussionsService.findBySlug(slug);
   }
 
@@ -128,7 +126,10 @@ export class DiscussionsController {
     description: 'Discusión creada',
     type: Discussion,
   })
-  @ApiResponse({ status: 403, description: 'No tienes acceso al foro del curso' })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes acceso al foro del curso',
+  })
   async create(
     @Body() dto: CreateDiscussionDto,
     @CurrentUser() user: User,
@@ -277,7 +278,10 @@ export class DiscussionsController {
   })
   @ApiParam({ name: 'id', description: 'UUID de la discusión' })
   @ApiResponse({ status: 204, description: 'Discusión eliminada' })
-  @ApiResponse({ status: 403, description: 'No puedes eliminar esta discusión' })
+  @ApiResponse({
+    status: 403,
+    description: 'No puedes eliminar esta discusión',
+  })
   async delete(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: User,

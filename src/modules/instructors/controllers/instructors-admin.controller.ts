@@ -97,7 +97,10 @@ export class InstructorsAdminController {
     type: InstructorProfile,
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  @ApiResponse({ status: 409, description: 'Usuario ya tiene perfil de instructor' })
+  @ApiResponse({
+    status: 409,
+    description: 'Usuario ya tiene perfil de instructor',
+  })
   async create(
     @Body() dto: CreateInstructorProfileDto,
   ): Promise<InstructorProfile> {
@@ -146,7 +149,8 @@ export class InstructorsAdminController {
   @Patch(':id/stats')
   @ApiOperation({
     summary: 'Actualizar estadísticas',
-    description: 'Recalcula las estadísticas del instructor (cursos, estudiantes, reviews)',
+    description:
+      'Recalcula las estadísticas del instructor (cursos, estudiantes, reviews)',
   })
   @ApiParam({ name: 'id', description: 'UUID del perfil' })
   @ApiResponse({
@@ -174,9 +178,7 @@ export class InstructorsAdminController {
   })
   @ApiParam({ name: 'id', description: 'UUID del perfil' })
   @ApiResponse({ status: 204, description: 'Perfil eliminado' })
-  async delete(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.instructorsService.delete(id);
   }
 }

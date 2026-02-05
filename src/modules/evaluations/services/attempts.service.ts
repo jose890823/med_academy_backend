@@ -8,7 +8,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { EvaluationAttempt, AttemptStatus } from '../entities/evaluation-attempt.entity';
+import {
+  EvaluationAttempt,
+  AttemptStatus,
+} from '../entities/evaluation-attempt.entity';
 import { Answer } from '../entities/answer.entity';
 import { Question, QuestionType } from '../entities/question.entity';
 import {
@@ -156,7 +159,10 @@ export class AttemptsService {
   /**
    * Enviar todas las respuestas y finalizar el intento
    */
-  async submitAttempt(attemptId: string, dto: SubmitAnswersDto): Promise<EvaluationAttempt> {
+  async submitAttempt(
+    attemptId: string,
+    dto: SubmitAnswersDto,
+  ): Promise<EvaluationAttempt> {
     const attempt = await this.findById(attemptId);
 
     if (!attempt.canSubmit) {
@@ -198,7 +204,9 @@ export class AttemptsService {
         answer.question.questionType === QuestionType.MULTIPLE_CHOICE ||
         answer.question.questionType === QuestionType.TRUE_FALSE
       ) {
-        const isCorrect = answer.question.isAnswerCorrect(answer.selectedOptionId || '');
+        const isCorrect = answer.question.isAnswerCorrect(
+          answer.selectedOptionId || '',
+        );
         answer.isCorrect = isCorrect;
         answer.pointsEarned = isCorrect ? answer.question.points : 0;
         await this.answerRepository.save(answer);
@@ -251,7 +259,9 @@ export class AttemptsService {
     );
 
     // Obtener evaluación para calcular si aprobó
-    const evaluation = await this.evaluationsService.findById(attempt.evaluationId);
+    const evaluation = await this.evaluationsService.findById(
+      attempt.evaluationId,
+    );
     const percentage = (totalScore / attempt.totalPoints) * 100;
     const passed = totalScore >= evaluation.passingScore;
 
@@ -314,7 +324,9 @@ export class AttemptsService {
     }
 
     // Obtener evaluación para calcular si aprobó
-    const evaluation = await this.evaluationsService.findById(attempt.evaluationId);
+    const evaluation = await this.evaluationsService.findById(
+      attempt.evaluationId,
+    );
     const percentage = (dto.score / attempt.totalPoints) * 100;
     const passed = dto.score >= evaluation.passingScore;
 
@@ -384,11 +396,15 @@ export class AttemptsService {
 
     // Filtros
     if (enrollmentId) {
-      queryBuilder.andWhere('attempt.enrollmentId = :enrollmentId', { enrollmentId });
+      queryBuilder.andWhere('attempt.enrollmentId = :enrollmentId', {
+        enrollmentId,
+      });
     }
 
     if (evaluationId) {
-      queryBuilder.andWhere('attempt.evaluationId = :evaluationId', { evaluationId });
+      queryBuilder.andWhere('attempt.evaluationId = :evaluationId', {
+        evaluationId,
+      });
     }
 
     if (status) {
@@ -441,7 +457,9 @@ export class AttemptsService {
   /**
    * Obtener intentos pendientes de calificar
    */
-  async findPendingGrading(evaluationId?: string): Promise<EvaluationAttempt[]> {
+  async findPendingGrading(
+    evaluationId?: string,
+  ): Promise<EvaluationAttempt[]> {
     const where: any = { status: AttemptStatus.SUBMITTED };
     if (evaluationId) {
       where.evaluationId = evaluationId;

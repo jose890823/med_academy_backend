@@ -59,7 +59,8 @@ export class ClassroomsAdminController {
   @Get('cohort/:cohortId/available')
   @ApiOperation({
     summary: 'Obtener aulas con cupo disponible',
-    description: 'Retorna las aulas activas con cupo disponible de una convocatoria',
+    description:
+      'Retorna las aulas activas con cupo disponible de una convocatoria',
   })
   @ApiParam({ name: 'cohortId', description: 'UUID de la convocatoria' })
   @ApiResponse({
@@ -136,7 +137,9 @@ export class ClassroomsAdminController {
     type: Classroom,
   })
   @ApiResponse({ status: 404, description: 'Aula no encontrada' })
-  async toggleActive(@Param('id', ParseUUIDPipe) id: string): Promise<Classroom> {
+  async toggleActive(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Classroom> {
     return this.classroomsService.toggleActive(id);
   }
 
@@ -148,7 +151,10 @@ export class ClassroomsAdminController {
   })
   @ApiParam({ name: 'id', description: 'UUID del aula' })
   @ApiResponse({ status: 204, description: 'Aula eliminada exitosamente' })
-  @ApiResponse({ status: 400, description: 'No se puede eliminar un aula con estudiantes' })
+  @ApiResponse({
+    status: 400,
+    description: 'No se puede eliminar un aula con estudiantes',
+  })
   @ApiResponse({ status: 404, description: 'Aula no encontrada' })
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.classroomsService.delete(id);
