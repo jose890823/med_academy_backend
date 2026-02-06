@@ -584,17 +584,9 @@ export class AnalyticsService {
       const completionRate =
         enrollments.length > 0 ? (completed / enrollments.length) * 100 : 0;
 
-      // Ingresos del curso
-      const revenueResult = await this.paymentRepository
-        .createQueryBuilder('payment')
-        .select('SUM(payment.amount)', 'total')
-        .innerJoin('payment.enrollment', 'enrollment')
-        .innerJoin('enrollment.cohort', 'cohort')
-        .where('cohort.courseId = :courseId', { courseId: course.id })
-        .andWhere('payment.status = :status', {
-          status: PaymentStatus.COMPLETED,
-        })
-        .getRawOne();
+      // Ingresos del curso (Payment no tiene relación directa con enrollment)
+      // TODO: Implementar cuando se añada enrollmentId a Payment entity
+      const revenueResult = { total: '0' };
 
       analytics.push({
         courseId: course.id,
@@ -625,12 +617,12 @@ export class AnalyticsService {
       .addSelect('student.firstName', 'firstName')
       .addSelect('student.lastName', 'lastName')
       .addSelect('student.email', 'email')
-      .addSelect('COUNT(certificate.id)', 'certificatesEarned')
+      .addSelect('COUNT(certificate.id)', 'certificates_earned')
       .groupBy('student.id')
       .addGroupBy('student.firstName')
       .addGroupBy('student.lastName')
       .addGroupBy('student.email')
-      .orderBy('certificatesEarned', 'DESC')
+      .orderBy('"certificates_earned"', 'DESC')
       .limit(limit)
       .getRawMany();
 
@@ -638,8 +630,8 @@ export class AnalyticsService {
       studentId: r.studentId,
       studentName: `${r.firstName} ${r.lastName}`,
       email: r.email,
-      coursesCompleted: parseInt(r.certificatesEarned, 10), // Aproximación
-      certificatesEarned: parseInt(r.certificatesEarned, 10),
+      coursesCompleted: parseInt(r.certificates_earned, 10), // Aproximación
+      certificatesEarned: parseInt(r.certificates_earned, 10),
       averageScore: 0, // Se calculará con más datos
     }));
   }

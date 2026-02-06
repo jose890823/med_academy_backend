@@ -32,7 +32,7 @@ import {
 import { StorageConfig } from '../entities/storage-config.entity';
 
 @ApiTags('Admin - Storage')
-@Controller('api/v1/admin/storage')
+@Controller('v1/admin/storage')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
 @ApiBearerAuth()

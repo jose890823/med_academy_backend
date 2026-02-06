@@ -4,7 +4,7 @@ import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
 /**
  * DTO para emitir un certificado
  */
-export class IssueCertificateDto {
+export class EnrollmentIssueCertificateDto {
   @ApiProperty({
     example: 'https://certificates.ultrasoundmedacademy.com/abc123.pdf',
     description: 'URL del certificado generado',

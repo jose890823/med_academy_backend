@@ -32,7 +32,7 @@ import {
   UpdateEnrollmentDto,
   EnrollmentQueryDto,
   AssignClassroomDto,
-  IssueCertificateDto,
+  EnrollmentIssueCertificateDto,
 } from '../dto';
 import { Enrollment, EnrollmentStatus } from '../entities/enrollment.entity';
 
@@ -403,7 +403,7 @@ export class EnrollmentsAdminController {
   @ApiResponse({ status: 404, description: 'Inscripción no encontrada' })
   async issueCertificate(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: IssueCertificateDto,
+    @Body() dto: EnrollmentIssueCertificateDto,
   ): Promise<Enrollment> {
     return this.enrollmentsService.issueCertificate(id, dto);
   }

@@ -12,7 +12,7 @@ import {
   TreeChildren,
   TreeParent,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { User } from '../../auth/entities/user.entity';
 import { Discussion } from './discussion.entity';
 
@@ -102,7 +102,7 @@ export class Post {
   // RELACIONES
   // ============================================
 
-  @ApiProperty({ description: 'Discusión a la que pertenece' })
+  @ApiHideProperty()
   @ManyToOne(() => Discussion, (discussion) => discussion.posts, {
     onDelete: 'CASCADE',
   })
@@ -120,14 +120,14 @@ export class Post {
   @Column({ type: 'uuid' })
   authorId: string;
 
-  @ApiProperty({ description: 'Post padre (para respuestas anidadas)' })
+  @ApiHideProperty()
   @TreeParent()
   parent: Post | null;
 
   @Column({ type: 'uuid', nullable: true })
   parentId: string | null;
 
-  @ApiProperty({ description: 'Respuestas hijas' })
+  @ApiHideProperty()
   @TreeChildren()
   children: Post[];
 

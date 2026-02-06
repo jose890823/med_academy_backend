@@ -9,7 +9,7 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, ApiHideProperty } from '@nestjs/swagger';
 import { User } from '../../auth/entities/user.entity';
 import { Conversation } from './conversation.entity';
 
@@ -114,7 +114,7 @@ export class Message {
   // RELACIONES
   // ============================================
 
-  @ApiProperty({ description: 'Conversación a la que pertenece' })
+  @ApiHideProperty()
   @ManyToOne(() => Conversation, (conversation) => conversation.messages, {
     onDelete: 'CASCADE',
   })

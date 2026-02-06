@@ -17,7 +17,7 @@ import {
   UpdateEnrollmentDto,
   EnrollmentQueryDto,
   AssignClassroomDto,
-  IssueCertificateDto,
+  EnrollmentIssueCertificateDto,
 } from '../dto';
 import { ErrorCodes } from '../../../common/dto';
 import { CohortsService } from '../../courses/services/cohorts.service';
@@ -465,7 +465,7 @@ export class EnrollmentsService {
    */
   async issueCertificate(
     id: string,
-    dto: IssueCertificateDto,
+    dto: EnrollmentIssueCertificateDto,
   ): Promise<Enrollment> {
     const enrollment = await this.findById(id);
 
