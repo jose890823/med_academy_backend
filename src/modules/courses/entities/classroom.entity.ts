@@ -8,8 +8,10 @@ import {
   OneToMany,
   JoinColumn,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 import { Cohort } from './cohort.entity';
 import { ClassroomInstructor } from './classroom-instructor.entity';
 
@@ -27,6 +29,21 @@ export class Classroom {
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'CLA-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Classroom');
+    }
+  }
 
   @ApiProperty({
     example: 'Aula A',

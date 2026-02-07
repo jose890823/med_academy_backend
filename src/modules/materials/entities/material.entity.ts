@@ -7,8 +7,10 @@ import {
   ManyToOne,
   JoinColumn,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 import { CourseModule } from '../../courses/entities/course-module.entity';
 import { Course } from '../../courses/entities/course.entity';
 import { User } from '../../auth/entities/user.entity';
@@ -68,6 +70,21 @@ export class Material {
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'MAT-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Material');
+    }
+  }
 
   // ============================================
   // INFORMACIÓN BÁSICA

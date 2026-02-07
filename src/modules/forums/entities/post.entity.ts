@@ -11,10 +11,12 @@ import {
   Tree,
   TreeChildren,
   TreeParent,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import { User } from '../../auth/entities/user.entity';
 import { Discussion } from './discussion.entity';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 
 /**
  * Estados de un post
@@ -38,6 +40,21 @@ export class Post {
   @ApiProperty({ description: 'ID único del post' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'PST-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Post');
+    }
+  }
 
   // ============================================
   // CONTENIDO

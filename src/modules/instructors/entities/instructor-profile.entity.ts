@@ -7,8 +7,10 @@ import {
   OneToOne,
   JoinColumn,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 import { User } from '../../auth/entities/user.entity';
 
 /**
@@ -50,6 +52,21 @@ export class InstructorProfile {
   @ApiProperty({ description: 'ID único del perfil' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'INS-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('InstructorProfile');
+    }
+  }
 
   // ============================================
   // INFORMACIÓN BÁSICA

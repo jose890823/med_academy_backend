@@ -8,10 +8,12 @@ import {
   OneToMany,
   JoinColumn,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Course } from '../../courses/entities/course.entity';
 import { CourseModule } from '../../courses/entities/course-module.entity';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 
 /**
  * Tipo de evaluación
@@ -39,6 +41,21 @@ export class Evaluation {
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'EVL-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Evaluation');
+    }
+  }
 
   // ============================================
   // RELACIONES

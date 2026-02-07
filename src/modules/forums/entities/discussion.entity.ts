@@ -9,11 +9,13 @@ import {
   OneToMany,
   JoinColumn,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../auth/entities/user.entity';
 import { Course } from '../../courses/entities/course.entity';
 import { Post } from './post.entity';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 
 /**
  * Estados de una discusión
@@ -48,6 +50,21 @@ export class Discussion {
   @ApiProperty({ description: 'ID único de la discusión' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'DSC-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Discussion');
+    }
+  }
 
   // ============================================
   // CONTENIDO

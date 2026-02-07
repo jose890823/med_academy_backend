@@ -7,8 +7,10 @@ import {
   ManyToOne,
   JoinColumn,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 import { User } from '../../auth/entities/user.entity';
 import { Cohort } from '../../courses/entities/cohort.entity';
 import { Classroom } from '../../courses/entities/classroom.entity';
@@ -51,6 +53,21 @@ export class Enrollment {
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'ENR-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Enrollment');
+    }
+  }
 
   // ============================================
   // RELACIONES

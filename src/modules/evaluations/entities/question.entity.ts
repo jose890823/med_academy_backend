@@ -7,9 +7,11 @@ import {
   ManyToOne,
   JoinColumn,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Evaluation } from './evaluation.entity';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 
 /**
  * Tipo de pregunta
@@ -43,6 +45,21 @@ export class Question {
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'QST-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Question');
+    }
+  }
 
   // ============================================
   // RELACIONES

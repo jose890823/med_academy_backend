@@ -9,11 +9,13 @@ import {
   JoinColumn,
   Index,
   Unique,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../auth/entities/user.entity';
 import { Course } from '../../courses/entities/course.entity';
 import { Message } from './message.entity';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 
 /**
  * Estados de una conversación
@@ -45,6 +47,21 @@ export class Conversation {
   @ApiProperty({ description: 'ID único de la conversación' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'CNV-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Conversation');
+    }
+  }
 
   // ============================================
   // TIPO Y CONTEXTO

@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   OneToMany,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 import { Course } from './course.entity';
 
 /**
@@ -24,6 +26,21 @@ export class Category {
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'CAT-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Category');
+    }
+  }
 
   @ApiProperty({
     example: 'Vascular Sonography',

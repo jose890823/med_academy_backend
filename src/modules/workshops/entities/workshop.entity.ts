@@ -9,8 +9,10 @@ import {
   OneToMany,
   JoinColumn,
   Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 import { Category } from '../../courses/entities/category.entity';
 import { User } from '../../auth/entities/user.entity';
 import { WorkshopSession } from './workshop-session.entity';
@@ -72,6 +74,21 @@ export class Workshop {
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'WKS-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Workshop');
+    }
+  }
 
   @ApiProperty({
     example: 'vascular-hands-on-workshop',

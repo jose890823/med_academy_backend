@@ -7,10 +7,13 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  Index,
+  BeforeInsert,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../auth/entities/user.entity';
 import { Payment } from './payment.entity';
+import { generateSystemCode } from '../../../common/utils/system-code-generator.util';
 
 export enum SubscriptionPlan {
   FREE = 'free',
@@ -83,6 +86,21 @@ export class Subscription {
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ApiProperty({
+    example: 'SUB-260206-A3K7',
+    description: 'Codigo unico legible del sistema',
+  })
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
+  @Index()
+  systemCode: string;
+
+  @BeforeInsert()
+  generateSystemCode() {
+    if (!this.systemCode) {
+      this.systemCode = generateSystemCode('Subscription');
+    }
+  }
 
   // ============================================
   // RELACIONES
