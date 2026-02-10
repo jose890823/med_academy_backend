@@ -245,11 +245,12 @@ export class EnrollmentProgressService {
    * Obtener estadísticas de un estudiante
    */
   async getStudentStats(studentId: string): Promise<{
-    totalEnrollments: number;
+    enrolledCourses: number;
     completedCourses: number;
     inProgressCourses: number;
-    totalTimeSpent: number;
-    averageProgress: number;
+    certificates: number;
+    averageScore: number;
+    totalStudyHours: number;
   }> {
     const stats = await this.progressRepository
       .createQueryBuilder('progress')
@@ -259,8 +260,9 @@ export class EnrollmentProgressService {
         'COUNT(progress.id) as "totalEnrollments"',
         'SUM(CASE WHEN progress.status = :completed THEN 1 ELSE 0 END) as "completedCourses"',
         'SUM(CASE WHEN progress.status = :inProgress THEN 1 ELSE 0 END) as "inProgressCourses"',
+        'SUM(CASE WHEN enrollment."certificateIssuedAt" IS NOT NULL THEN 1 ELSE 0 END) as "certificates"',
         'SUM(progress.totalTimeSpentMinutes) as "totalTimeSpent"',
-        'AVG(progress.overallPercentage) as "averageProgress"',
+        'AVG(progress.averageScore) as "averageScore"',
       ])
       .setParameters({
         completed: ProgressStatus.COMPLETED,
@@ -268,12 +270,15 @@ export class EnrollmentProgressService {
       })
       .getRawOne();
 
+    const totalMinutes = parseInt(stats?.totalTimeSpent || '0');
+
     return {
-      totalEnrollments: parseInt(stats?.totalEnrollments || '0'),
+      enrolledCourses: parseInt(stats?.totalEnrollments || '0'),
       completedCourses: parseInt(stats?.completedCourses || '0'),
       inProgressCourses: parseInt(stats?.inProgressCourses || '0'),
-      totalTimeSpent: parseInt(stats?.totalTimeSpent || '0'),
-      averageProgress: parseFloat(stats?.averageProgress || '0'),
+      certificates: parseInt(stats?.certificates || '0'),
+      averageScore: parseFloat(parseFloat(stats?.averageScore || '0').toFixed(1)),
+      totalStudyHours: parseFloat((totalMinutes / 60).toFixed(1)),
     };
   }
 
@@ -283,18 +288,33 @@ export class EnrollmentProgressService {
   async getRecentCourses(
     studentId: string,
     limit = 5,
-  ): Promise<EnrollmentProgress[]> {
-    return this.progressRepository.find({
-      where: {
-        enrollment: { studentId },
-      },
-      relations: [
-        'enrollment',
-        'enrollment.cohort',
-        'enrollment.cohort.course',
-      ],
-      order: { lastAccessedAt: 'DESC' },
-      take: limit,
-    });
+  ): Promise<
+    {
+      enrollmentId: string;
+      courseTitle: string;
+      cohortName: string;
+      progress: number;
+      lastAccessedAt: Date | null;
+      thumbnailUrl: string | null;
+    }[]
+  > {
+    const progressList = await this.progressRepository
+      .createQueryBuilder('progress')
+      .innerJoinAndSelect('progress.enrollment', 'enrollment')
+      .innerJoinAndSelect('enrollment.cohort', 'cohort')
+      .innerJoinAndSelect('cohort.course', 'course')
+      .where('enrollment.studentId = :studentId', { studentId })
+      .orderBy('progress.lastAccessedAt', 'DESC', 'NULLS LAST')
+      .take(limit)
+      .getMany();
+
+    return progressList.map((p) => ({
+      enrollmentId: p.enrollmentId,
+      courseTitle: p.enrollment?.cohort?.course?.title || '',
+      cohortName: p.enrollment?.cohort?.name || '',
+      progress: parseFloat(String(p.overallPercentage || 0)),
+      lastAccessedAt: p.lastAccessedAt,
+      thumbnailUrl: p.enrollment?.cohort?.course?.thumbnail || null,
+    }));
   }
 }

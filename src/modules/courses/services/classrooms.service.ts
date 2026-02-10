@@ -42,7 +42,7 @@ export class ClassroomsService {
   async findByCohort(cohortId: string): Promise<Classroom[]> {
     return this.classroomRepository.find({
       where: { cohortId },
-      relations: ['instructors', 'instructors.user'],
+      relations: ['instructors', 'instructors.instructor'],
       order: { name: 'ASC' },
     });
   }
@@ -53,7 +53,7 @@ export class ClassroomsService {
   async findActiveByCohort(cohortId: string): Promise<Classroom[]> {
     return this.classroomRepository.find({
       where: { cohortId, isActive: true },
-      relations: ['instructors', 'instructors.user'],
+      relations: ['instructors', 'instructors.instructor'],
       order: { name: 'ASC' },
     });
   }
@@ -65,7 +65,7 @@ export class ClassroomsService {
   async findById(id: string): Promise<Classroom> {
     const classroom = await this.classroomRepository.findOne({
       where: { id },
-      relations: ['cohort', 'cohort.course', 'instructors', 'instructors.user'],
+      relations: ['cohort', 'cohort.course', 'instructors', 'instructors.instructor'],
     });
 
     if (!classroom) {

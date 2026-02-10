@@ -70,12 +70,11 @@ export class ProgressAdminController {
   @ApiResponse({
     status: 200,
     description: 'Lista de cursos con progreso',
-    type: [EnrollmentProgress],
   })
   async getStudentCourses(
     @Param('studentId', ParseUUIDPipe) studentId: string,
     @Query('limit') limit?: number,
-  ): Promise<EnrollmentProgress[]> {
+  ) {
     return this.enrollmentProgressService.getRecentCourses(
       studentId,
       limit || 50,

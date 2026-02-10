@@ -94,12 +94,11 @@ export class ProgressController {
   @ApiResponse({
     status: 200,
     description: 'Lista de cursos recientes',
-    type: [EnrollmentProgress],
   })
   async getRecentCourses(
     @CurrentUser() user: User,
     @Query('limit') limit?: number,
-  ): Promise<EnrollmentProgress[]> {
+  ) {
     return this.enrollmentProgressService.getRecentCourses(user.id, limit || 5);
   }
 

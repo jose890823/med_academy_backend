@@ -178,26 +178,55 @@ export class AttemptsService {
     }
 
     // Auto-calificar preguntas de opción múltiple y verdadero/falso
-    await this.autoGradeAnswers(attemptId);
+    const allAutoGraded = await this.autoGradeAnswers(attemptId);
 
-    // Actualizar estado del intento
-    attempt.status = AttemptStatus.SUBMITTED;
     attempt.submittedAt = new Date();
 
-    const updated = await this.attemptRepository.save(attempt);
+    if (allAutoGraded) {
+      // Todas las preguntas fueron auto-calificadas → calcular score y marcar como graded
+      const answers = await this.answerRepository.find({
+        where: { attemptId },
+      });
+      const totalScore = answers.reduce(
+        (sum, a) => sum + Number(a.pointsEarned || 0),
+        0,
+      );
+      const evaluation = await this.evaluationsService.findById(
+        attempt.evaluationId,
+      );
+      const percentage = (totalScore / attempt.totalPoints) * 100;
+      const passed = totalScore >= evaluation.passingScore;
 
-    this.logger.log(`Intento enviado: ${attemptId}`);
+      attempt.score = totalScore;
+      attempt.percentage = percentage;
+      attempt.passed = passed;
+      attempt.status = AttemptStatus.GRADED;
+      attempt.gradedAt = new Date();
+
+      this.logger.log(
+        `Intento auto-calificado: ${attemptId} - Score: ${totalScore}/${attempt.totalPoints} (${passed ? 'Aprobado' : 'Reprobado'})`,
+      );
+    } else {
+      // Hay preguntas que requieren calificación manual
+      attempt.status = AttemptStatus.SUBMITTED;
+      this.logger.log(`Intento enviado (pendiente de calificación manual): ${attemptId}`);
+    }
+
+    const updated = await this.attemptRepository.save(attempt);
     return updated;
   }
 
   /**
    * Auto-calificar respuestas de opción múltiple y V/F
+   * @returns true si TODAS las preguntas fueron auto-calificadas
    */
-  private async autoGradeAnswers(attemptId: string): Promise<void> {
+  private async autoGradeAnswers(attemptId: string): Promise<boolean> {
     const answers = await this.answerRepository.find({
       where: { attemptId },
       relations: ['question'],
     });
+
+    let allAutoGraded = true;
 
     for (const answer of answers) {
       if (
@@ -210,8 +239,12 @@ export class AttemptsService {
         answer.isCorrect = isCorrect;
         answer.pointsEarned = isCorrect ? answer.question.points : 0;
         await this.answerRepository.save(answer);
+      } else {
+        allAutoGraded = false;
       }
     }
+
+    return allAutoGraded;
   }
 
   /**
@@ -392,6 +425,7 @@ export class AttemptsService {
       .createQueryBuilder('attempt')
       .leftJoinAndSelect('attempt.evaluation', 'evaluation')
       .leftJoinAndSelect('attempt.enrollment', 'enrollment')
+      .leftJoinAndSelect('enrollment.student', 'student')
       .leftJoinAndSelect('attempt.gradedBy', 'gradedBy');
 
     // Filtros
@@ -479,7 +513,7 @@ export class AttemptsService {
   async findById(id: string): Promise<EvaluationAttempt> {
     const attempt = await this.attemptRepository.findOne({
       where: { id },
-      relations: ['evaluation', 'enrollment', 'gradedBy'],
+      relations: ['evaluation', 'enrollment', 'enrollment.student', 'gradedBy'],
     });
 
     if (!attempt) {

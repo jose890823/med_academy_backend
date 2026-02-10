@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToOne,
   JoinColumn,
   Index,
   BeforeInsert,
@@ -14,6 +15,7 @@ import { generateSystemCode } from '../../../common/utils/system-code-generator.
 import { User } from '../../auth/entities/user.entity';
 import { Cohort } from '../../courses/entities/cohort.entity';
 import { Classroom } from '../../courses/entities/classroom.entity';
+import { EnrollmentProgress } from '../../progress/entities/enrollment-progress.entity';
 
 /**
  * Estado de pago de la inscripción
@@ -93,6 +95,9 @@ export class Enrollment {
 
   @Column({ type: 'uuid', nullable: true })
   classroomId: string | null;
+
+  @OneToOne(() => EnrollmentProgress, (progress) => progress.enrollment)
+  progress: EnrollmentProgress | null;
 
   // ============================================
   // FECHAS DE ACCESO

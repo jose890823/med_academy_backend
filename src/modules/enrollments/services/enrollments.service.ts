@@ -216,7 +216,7 @@ export class EnrollmentsService {
   async findByStudent(studentId: string): Promise<Enrollment[]> {
     return this.enrollmentRepository.find({
       where: { studentId },
-      relations: ['cohort', 'cohort.course', 'classroom'],
+      relations: ['cohort', 'cohort.course', 'classroom', 'progress'],
       order: { createdAt: 'DESC' },
     });
   }
@@ -227,7 +227,7 @@ export class EnrollmentsService {
   async findActiveByStudent(studentId: string): Promise<Enrollment[]> {
     return this.enrollmentRepository.find({
       where: { studentId, status: EnrollmentStatus.ACTIVE },
-      relations: ['cohort', 'cohort.course', 'classroom'],
+      relations: ['cohort', 'cohort.course', 'classroom', 'progress'],
       order: { accessStartDate: 'ASC' },
     });
   }
@@ -261,7 +261,7 @@ export class EnrollmentsService {
   async findById(id: string): Promise<Enrollment> {
     const enrollment = await this.enrollmentRepository.findOne({
       where: { id },
-      relations: ['student', 'cohort', 'cohort.course', 'classroom'],
+      relations: ['student', 'cohort', 'cohort.course', 'cohort.course.modules', 'classroom'],
     });
 
     if (!enrollment) {
