@@ -151,9 +151,13 @@ describe('AuthController', () => {
 
       authService.login.mockResolvedValue(expectedResponse);
 
-      const result = await controller.login(loginDto);
+      const result = await controller.login(loginDto, '127.0.0.1', 'test-agent');
 
-      expect(authService.login).toHaveBeenCalledWith(loginDto);
+      expect(authService.login).toHaveBeenCalledWith(
+        loginDto,
+        '127.0.0.1',
+        'test-agent',
+      );
       expect(result).toEqual(expectedResponse);
     });
 
@@ -166,7 +170,7 @@ describe('AuthController', () => {
 
       authService.login.mockResolvedValue(expectedResponse);
 
-      const result = await controller.login(loginDto);
+      const result = await controller.login(loginDto, '127.0.0.1', 'test-agent');
 
       expect(result).toHaveProperty('accessToken');
       expect(result).toHaveProperty('refreshToken');
@@ -188,11 +192,13 @@ describe('AuthController', () => {
 
       authService.refresh.mockResolvedValue(expectedResponse);
 
-      const result = await controller.refresh(refreshTokenDto, userId);
+      const result = await controller.refresh(refreshTokenDto, userId, '127.0.0.1', 'test-agent');
 
       expect(authService.refresh).toHaveBeenCalledWith(
         refreshTokenDto.refreshToken,
         userId,
+        '127.0.0.1',
+        'test-agent',
       );
       expect(result).toEqual(expectedResponse);
     });
@@ -205,7 +211,7 @@ describe('AuthController', () => {
 
       authService.refresh.mockResolvedValue(expectedResponse);
 
-      const result = await controller.refresh(refreshTokenDto, userId);
+      const result = await controller.refresh(refreshTokenDto, userId, '127.0.0.1', 'test-agent');
 
       expect(result).toHaveProperty('accessToken');
       expect(result).toHaveProperty('refreshToken');
@@ -222,9 +228,14 @@ describe('AuthController', () => {
 
       authService.logout.mockResolvedValue(expectedResponse);
 
-      const result = await controller.logout(userId);
+      const result = await controller.logout(userId, undefined, '127.0.0.1', 'test-agent');
 
-      expect(authService.logout).toHaveBeenCalledWith(userId);
+      expect(authService.logout).toHaveBeenCalledWith(
+        userId,
+        undefined,
+        '127.0.0.1',
+        'test-agent',
+      );
       expect(result).toEqual(expectedResponse);
     });
   });

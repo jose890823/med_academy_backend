@@ -18,6 +18,9 @@ import { ResendOtpDto } from './dto/resend-otp.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UserActivityService } from '../users/services/user-activity.service';
+import { LoginAttemptService } from '../security/services/login-attempt.service';
+import { ActiveSessionService } from '../security/services/active-session.service';
 
 // Mock bcrypt module
 jest.mock('bcrypt', () => ({
@@ -102,6 +105,37 @@ describe('AuthService', () => {
           provide: ConfigService,
           useValue: mockConfigService,
         },
+        {
+          provide: UserActivityService,
+          useValue: {
+            logActivity: jest.fn(),
+          },
+        },
+        {
+          provide: LoginAttemptService,
+          useValue: {
+            recordAttempt: jest.fn(),
+            recordSuccess: jest.fn(),
+            recordFailure: jest.fn().mockResolvedValue({ shouldBlock: false }),
+            canAttemptLogin: jest.fn().mockResolvedValue({ allowed: true }),
+            isBlocked: jest.fn().mockResolvedValue(false),
+            getRecentAttempts: jest.fn().mockResolvedValue([]),
+          },
+        },
+        {
+          provide: ActiveSessionService,
+          useValue: {
+            createSession: jest.fn().mockResolvedValue({ id: 'session-1' }),
+            revokeSession: jest.fn(),
+            revokeAllSessions: jest.fn(),
+            getUserSessions: jest.fn().mockResolvedValue([]),
+            updateActivity: jest.fn(),
+          },
+        },
+        {
+          provide: 'EmailService',
+          useValue: null,
+        },
       ],
     }).compile();
 
@@ -145,6 +179,7 @@ describe('AuthService', () => {
 
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { email: registerDto.email },
+        withDeleted: true,
       });
       expect(result).toHaveProperty('user');
       expect(result).toHaveProperty('message');

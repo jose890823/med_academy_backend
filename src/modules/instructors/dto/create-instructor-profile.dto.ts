@@ -13,6 +13,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { Type } from 'class-transformer';
 import {
   InstructorSpecialty,
@@ -63,7 +64,9 @@ export class WorkExperienceDto {
   endYear?: number | null;
 
   @ApiProperty({ example: true })
-  current: boolean;
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  current?: boolean;
 }
 
 /**

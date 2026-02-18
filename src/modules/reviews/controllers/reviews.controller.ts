@@ -39,6 +39,24 @@ export class ReviewsController {
   // REVIEWS PÚBLICOS
   // ============================================
 
+  @Get('featured')
+  @Public()
+  @ApiOperation({
+    summary: 'Reviews destacados',
+    description: 'Obtiene reviews destacados y aprobados de todos los cursos',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Reviews destacados',
+  })
+  async getFeaturedReviews(@Query() query: ReviewQueryDto) {
+    return this.reviewsService.findAll({
+      ...query,
+      featured: true,
+      sortBy: query.sortBy || 'helpfulCount',
+    });
+  }
+
   @Get('course/:courseId')
   @Public()
   @ApiOperation({

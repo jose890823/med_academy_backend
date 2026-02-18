@@ -7,3 +7,4 @@ export * from './update-enrollment.dto';
 export * from './enrollment-query.dto';
 export * from './assign-classroom.dto';
 export * from './issue-certificate.dto';
+export * from './self-enroll.dto';

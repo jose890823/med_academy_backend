@@ -5,7 +5,7 @@ interface WelcomeTemplateData {
 }
 
 export function getWelcomeEmailTemplate(data: WelcomeTemplateData): string {
-  const brandName = data.brandName || 'PublishSparks';
+  const brandName = data.brandName || 'Ultrasound MedAcademy';
   const fullName = data.lastName
     ? `${data.firstName} ${data.lastName}`
     : data.firstName;
@@ -16,7 +16,7 @@ export function getWelcomeEmailTemplate(data: WelcomeTemplateData): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bienvenido</title>
+  <title>Bienvenido a ${brandName}</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f4f4; padding: 20px 0;">
@@ -25,35 +25,38 @@ export function getWelcomeEmailTemplate(data: WelcomeTemplateData): string {
         <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
 
           <tr>
-            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 600;">
-                ¡Bienvenido!
+            <td style="background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); padding: 40px 30px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">
+                Welcome to ${brandName}!
               </h1>
+              <p style="margin: 10px 0 0; color: rgba(255,255,255,0.9); font-size: 16px;">
+                Your journey in diagnostic medical sonography starts here
+              </p>
             </td>
           </tr>
 
           <tr>
             <td style="padding: 40px 30px;">
               <p style="margin: 0 0 20px; color: #333333; font-size: 18px; line-height: 1.5;">
-                Hola <strong>${fullName}</strong>,
+                Hello <strong>${fullName}</strong>,
               </p>
 
               <p style="margin: 0 0 20px; color: #555555; font-size: 16px; line-height: 1.6;">
-                ¡Gracias por unirte a <strong>${brandName}</strong>!
+                Thank you for joining <strong>${brandName}</strong>! We are excited to have you as part of our community of sonography professionals.
               </p>
 
               <p style="margin: 0 0 30px; color: #555555; font-size: 15px; line-height: 1.6;">
-                Ahora puedes acceder a ideas diarias para crear contenido sin mostrar tu cara. Ya no te quedarás en blanco pensando qué publicar.
+                Our platform offers comprehensive courses, hands-on training, and certification preparation programs designed to advance your career in medical ultrasound.
               </p>
 
               <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
                 <p style="margin: 0 0 10px; color: #333333; font-size: 15px; font-weight: 600;">
-                  ¿Qué sigue?
+                  What's next?
                 </p>
                 <ul style="margin: 0; padding-left: 20px; color: #555555; font-size: 14px; line-height: 1.8;">
-                  <li>Elige tu nicho favorito</li>
-                  <li>Revisa tu idea del día</li>
-                  <li>Copia, publica y crece</li>
+                  <li>Explore our catalog of courses and specialties</li>
+                  <li>Enroll in your first course or certification program</li>
+                  <li>Prepare for ARDMS, ARRT, CCI, and other certifications</li>
                 </ul>
               </div>
             </td>
@@ -65,7 +68,7 @@ export function getWelcomeEmailTemplate(data: WelcomeTemplateData): string {
                 <strong>${brandName}</strong>
               </p>
               <p style="margin: 0; color: #adb5bd; font-size: 12px;">
-                Tu copiloto de contenido
+                Advancing careers in diagnostic medical sonography
               </p>
             </td>
           </tr>

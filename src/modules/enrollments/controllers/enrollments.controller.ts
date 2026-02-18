@@ -33,6 +33,7 @@ import {
   EnrollmentQueryDto,
   AssignClassroomDto,
   EnrollmentIssueCertificateDto,
+  SelfEnrollDto,
 } from '../dto';
 import { Enrollment, EnrollmentStatus } from '../entities/enrollment.entity';
 
@@ -46,6 +47,37 @@ import { Enrollment, EnrollmentStatus } from '../entities/enrollment.entity';
 @ApiBearerAuth()
 export class EnrollmentsController {
   constructor(private readonly enrollmentsService: EnrollmentsService) {}
+
+  // ============================================
+  // AUTO-INSCRIPCIÓN
+  // ============================================
+
+  @Post('self-enroll')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Auto-inscripción en un curso',
+    description:
+      'Permite al estudiante inscribirse en un cohort abierto. Crea una inscripción con estado PENDING que requiere pago para activarse.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Inscripción creada exitosamente (pendiente de pago)',
+    type: Enrollment,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Convocatoria cerrada o sin cupo',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya estás inscrito en esta convocatoria',
+  })
+  async selfEnroll(
+    @CurrentUser() user: User,
+    @Body() dto: SelfEnrollDto,
+  ): Promise<Enrollment> {
+    return this.enrollmentsService.selfEnroll(user.id, dto);
+  }
 
   // ============================================
   // MIS INSCRIPCIONES (ESTUDIANTE AUTENTICADO)

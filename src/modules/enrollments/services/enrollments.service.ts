@@ -18,10 +18,12 @@ import {
   EnrollmentQueryDto,
   AssignClassroomDto,
   EnrollmentIssueCertificateDto,
+  SelfEnrollDto,
 } from '../dto';
 import { ErrorCodes } from '../../../common/dto';
 import { CohortsService } from '../../courses/services/cohorts.service';
 import { ClassroomsService } from '../../courses/services/classrooms.service';
+import { ReferralCodesService } from '../../referrals/services/referral-codes.service';
 
 @Injectable()
 export class EnrollmentsService {
@@ -32,6 +34,7 @@ export class EnrollmentsService {
     private readonly enrollmentRepository: Repository<Enrollment>,
     private readonly cohortsService: CohortsService,
     private readonly classroomsService: ClassroomsService,
+    private readonly referralCodesService: ReferralCodesService,
   ) {}
 
   /**
@@ -108,6 +111,84 @@ export class EnrollmentsService {
 
     this.logger.log(
       `Inscripción creada: ${saved.id} (Estudiante: ${dto.studentId}, Convocatoria: ${dto.cohortId})`,
+    );
+    return saved;
+  }
+
+  /**
+   * Auto-inscripción de un estudiante en un cohort abierto
+   * @throws ConflictException si ya está inscrito en el curso
+   * @throws NotFoundException si el cohort no existe
+   * @throws BadRequestException si el cohort no está abierto o no hay cupo
+   */
+  async selfEnroll(
+    studentId: string,
+    dto: SelfEnrollDto,
+  ): Promise<Enrollment> {
+    // Verificar que la convocatoria existe y está abierta
+    const cohort = await this.cohortsService.findById(dto.cohortId);
+
+    if (!cohort.isEnrollmentOpen) {
+      throw new BadRequestException({
+        code: ErrorCodes.COHORT_CLOSED,
+        message: 'Las inscripciones para esta convocatoria no están abiertas',
+      });
+    }
+
+    if (!cohort.hasAvailableSpots) {
+      throw new BadRequestException({
+        code: ErrorCodes.COHORT_FULL,
+        message: 'La convocatoria no tiene cupos disponibles',
+      });
+    }
+
+    // Verificar que el estudiante no tenga ya una inscripción activa en este cohort
+    const existing = await this.enrollmentRepository.findOne({
+      where: { studentId, cohortId: dto.cohortId },
+    });
+
+    if (existing) {
+      throw new ConflictException({
+        code: ErrorCodes.ENROLL_ALREADY_EXISTS,
+        message: 'Ya estás inscrito en esta convocatoria',
+      });
+    }
+
+    // Validar código de referido si se proporciona
+    let discountApplied = 0;
+    let referralId: string | undefined;
+
+    if (dto.referralCode) {
+      const referralResult = await this.referralCodesService.validateCode(
+        dto.referralCode,
+        studentId,
+      );
+
+      if (referralResult.valid && referralResult.discount) {
+        discountApplied = referralResult.discount;
+        referralId = referralResult.code?.id;
+      }
+    }
+
+    // Crear la inscripción con estado PENDING
+    const enrollment = this.enrollmentRepository.create({
+      studentId,
+      cohortId: dto.cohortId,
+      accessStartDate: cohort.startDate,
+      accessEndDate: null,
+      status: EnrollmentStatus.PENDING,
+      paymentStatus: PaymentStatus.PENDING,
+      discountApplied,
+      referralId,
+    });
+
+    const saved = await this.enrollmentRepository.save(enrollment);
+
+    // Incrementar contador de estudiantes en la convocatoria
+    await this.cohortsService.incrementStudentCount(dto.cohortId);
+
+    this.logger.log(
+      `Auto-inscripción creada: ${saved.id} (Estudiante: ${studentId}, Convocatoria: ${dto.cohortId})`,
     );
     return saved;
   }

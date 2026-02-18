@@ -8,6 +8,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,11 +17,15 @@ import {
   ApiBearerAuth,
   ApiParam,
 } from '@nestjs/swagger';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { User } from '../../auth/entities/user.entity';
 import { Public } from '../../auth/decorators/public.decorator';
 import { MaterialsService } from '../services/materials.service';
+import { EnrollmentsService } from '../../enrollments/services/enrollments.service';
+import { CourseModule as CourseModuleEntity } from '../../courses/entities/course-module.entity';
 import { Material } from '../entities/material.entity';
 import { MaterialQueryDto } from '../dto';
 import { ErrorCodes } from '../../../common/dto';
@@ -32,7 +37,34 @@ import { ErrorCodes } from '../../../common/dto';
 @ApiTags('Materials')
 @Controller('v1/materials')
 export class MaterialsController {
-  constructor(private readonly materialsService: MaterialsService) {}
+  constructor(
+    private readonly materialsService: MaterialsService,
+    private readonly enrollmentsService: EnrollmentsService,
+    @InjectRepository(CourseModuleEntity)
+    private readonly courseModuleRepository: Repository<CourseModuleEntity>,
+  ) {}
+
+  /**
+   * Verificar que el usuario tiene acceso al curso (inscrito o admin)
+   */
+  private async verifyAccess(
+    user: User,
+    courseId: string,
+  ): Promise<void> {
+    if (user.isAdmin()) return;
+
+    const hasAccess = await this.enrollmentsService.hasAccess(
+      user.id,
+      courseId,
+    );
+
+    if (!hasAccess) {
+      throw new ForbiddenException({
+        code: ErrorCodes.FORBIDDEN,
+        message: 'No estás inscrito en este curso',
+      });
+    }
+  }
 
   // ============================================
   // MATERIALES PÚBLICOS (sin auth)
@@ -75,11 +107,26 @@ export class MaterialsController {
     description: 'Lista de materiales del módulo',
     type: [Material],
   })
+  @ApiResponse({ status: 403, description: 'No inscrito en el curso' })
+  @ApiResponse({ status: 404, description: 'Módulo no encontrado' })
   async getModuleMaterials(
     @Param('moduleId', ParseUUIDPipe) moduleId: string,
     @CurrentUser() user: User,
   ): Promise<Material[]> {
-    // TODO: Validar que el usuario tiene acceso al módulo
+    // Resolver moduleId → courseId
+    const courseModule = await this.courseModuleRepository.findOne({
+      where: { id: moduleId },
+    });
+
+    if (!courseModule) {
+      throw new NotFoundException({
+        code: 'MODULE_NOT_FOUND',
+        message: 'El módulo no fue encontrado',
+      });
+    }
+
+    await this.verifyAccess(user, courseModule.courseId);
+
     return this.materialsService.findByModule(moduleId);
   }
 
@@ -101,11 +148,13 @@ export class MaterialsController {
     description: 'Lista de materiales del curso',
     type: [Material],
   })
+  @ApiResponse({ status: 403, description: 'No inscrito en el curso' })
   async getCourseMaterials(
     @Param('courseId', ParseUUIDPipe) courseId: string,
     @CurrentUser() user: User,
   ): Promise<Material[]> {
-    // TODO: Validar que el usuario tiene acceso al curso
+    await this.verifyAccess(user, courseId);
+
     return this.materialsService.findByCourse(courseId);
   }
 
@@ -126,6 +175,7 @@ export class MaterialsController {
     description: 'Material encontrado',
     type: Material,
   })
+  @ApiResponse({ status: 403, description: 'Sin acceso al material' })
   @ApiResponse({ status: 404, description: 'Material no encontrado' })
   async findById(
     @Param('id', ParseUUIDPipe) id: string,
@@ -133,13 +183,21 @@ export class MaterialsController {
   ): Promise<Material> {
     const material = await this.materialsService.findById(id);
 
-    // Si es público, retornar
+    // Si es público, retornar sin verificar
     if (material.isPublic) {
       return material;
     }
 
-    // TODO: Validar acceso basado en inscripción
-    // Por ahora, permitir a usuarios autenticados
+    // Material vinculado a un curso: verificar inscripción
+    if (material.courseId) {
+      await this.verifyAccess(user, material.courseId);
+    } else if (!user.isAdmin()) {
+      // Material sin curso y no público: solo admins
+      throw new ForbiddenException({
+        code: ErrorCodes.FORBIDDEN,
+        message: 'No tienes acceso a este material',
+      });
+    }
 
     return material;
   }
@@ -181,9 +239,16 @@ export class MaterialsController {
       });
     }
 
-    // Si es público, permitir
+    // Verificar acceso si no es público
     if (!material.isPublic) {
-      // TODO: Validar acceso basado en inscripción
+      if (material.courseId) {
+        await this.verifyAccess(user, material.courseId);
+      } else if (!user.isAdmin()) {
+        throw new ForbiddenException({
+          code: ErrorCodes.FORBIDDEN,
+          message: 'No tienes acceso a este material',
+        });
+      }
     }
 
     // Registrar la descarga
