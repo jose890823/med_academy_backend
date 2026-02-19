@@ -43,11 +43,15 @@ export class EnrollmentsService {
    * @throws NotFoundException si la convocatoria o aula no existe
    * @throws BadRequestException si la convocatoria no está abierta o no hay cupo
    */
-  async create(dto: CreateEnrollmentDto): Promise<Enrollment> {
-    // Verificar que la convocatoria existe y está abierta
+  async create(
+    dto: CreateEnrollmentDto,
+    options?: { skipDateValidation?: boolean },
+  ): Promise<Enrollment> {
+    // Verificar que la convocatoria existe
     const cohort = await this.cohortsService.findById(dto.cohortId);
 
-    if (!cohort.isEnrollmentOpen) {
+    // Para inscripciones admin, solo validar cupo (no fechas de inscripción)
+    if (!options?.skipDateValidation && !cohort.isEnrollmentOpen) {
       throw new BadRequestException({
         code: ErrorCodes.COHORT_CLOSED,
         message: 'Las inscripciones para esta convocatoria no están abiertas',
@@ -493,10 +497,14 @@ export class EnrollmentsService {
   /**
    * Activar inscripción (después de pago completado)
    */
-  async activate(id: string): Promise<Enrollment> {
+  async activate(
+    id: string,
+    options?: { skipPaymentCheck?: boolean },
+  ): Promise<Enrollment> {
     const enrollment = await this.findById(id);
 
     if (
+      !options?.skipPaymentCheck &&
       enrollment.paymentStatus !== PaymentStatus.COMPLETED &&
       enrollment.paymentStatus !== PaymentStatus.PARTIAL
     ) {

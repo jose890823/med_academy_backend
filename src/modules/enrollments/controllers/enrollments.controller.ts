@@ -287,7 +287,7 @@ export class EnrollmentsAdminController {
   })
   @ApiResponse({ status: 409, description: 'El estudiante ya está inscrito' })
   async create(@Body() dto: CreateEnrollmentDto): Promise<Enrollment> {
-    return this.enrollmentsService.create(dto);
+    return this.enrollmentsService.create(dto, { skipDateValidation: true });
   }
 
   @Put(':id')
@@ -347,7 +347,7 @@ export class EnrollmentsAdminController {
   @ApiResponse({ status: 400, description: 'Se requiere pago para activar' })
   @ApiResponse({ status: 404, description: 'Inscripción no encontrada' })
   async activate(@Param('id', ParseUUIDPipe) id: string): Promise<Enrollment> {
-    return this.enrollmentsService.activate(id);
+    return this.enrollmentsService.activate(id, { skipPaymentCheck: true });
   }
 
   @Patch(':id/cancel')

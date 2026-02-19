@@ -77,6 +77,7 @@ async function bootstrap() {
     'https://www.ultrasoundmedacademy.com',
     'https://admin.ultrasoundmedacademy.com',
     'https://app.ultrasoundmedacademy.com',
+    'https://campus.ultrasoundmedacademy.com',
   ];
 
   app.enableCors({

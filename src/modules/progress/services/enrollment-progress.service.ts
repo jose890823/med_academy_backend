@@ -5,6 +5,10 @@ import {
   EnrollmentProgress,
   ProgressStatus,
 } from '../entities/enrollment-progress.entity';
+import {
+  Enrollment,
+  EnrollmentStatus,
+} from '../../enrollments/entities/enrollment.entity';
 import { ErrorCodes } from '../../../common/dto';
 
 @Injectable()
@@ -37,10 +41,10 @@ export class EnrollmentProgressService {
   }
 
   /**
-   * Obtener progreso por enrollment ID
+   * Obtener progreso por enrollment ID (auto-crea si no existe)
    */
   async findByEnrollmentId(enrollmentId: string): Promise<EnrollmentProgress> {
-    const progress = await this.progressRepository.findOne({
+    let progress = await this.progressRepository.findOne({
       where: { enrollmentId },
       relations: [
         'enrollment',
@@ -50,13 +54,20 @@ export class EnrollmentProgressService {
     });
 
     if (!progress) {
-      throw new NotFoundException({
-        code: ErrorCodes.PROGRESS_NOT_FOUND,
-        message: 'El progreso de inscripción no fue encontrado',
+      // Auto-crear progreso si no existe
+      await this.getOrCreate(enrollmentId);
+      // Recargar con relaciones
+      progress = await this.progressRepository.findOne({
+        where: { enrollmentId },
+        relations: [
+          'enrollment',
+          'enrollment.cohort',
+          'enrollment.cohort.course',
+        ],
       });
     }
 
-    return progress;
+    return progress!;
   }
 
   /**
@@ -252,16 +263,22 @@ export class EnrollmentProgressService {
     averageScore: number;
     totalStudyHours: number;
   }> {
-    const stats = await this.progressRepository
-      .createQueryBuilder('progress')
-      .innerJoin('progress.enrollment', 'enrollment')
+    const enrollmentRepo =
+      this.progressRepository.manager.getRepository(Enrollment);
+
+    const stats = await enrollmentRepo
+      .createQueryBuilder('enrollment')
+      .leftJoin('enrollment.progress', 'progress')
       .where('enrollment.studentId = :studentId', { studentId })
+      .andWhere('enrollment.status IN (:...statuses)', {
+        statuses: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+      })
       .select([
-        'COUNT(progress.id) as "totalEnrollments"',
+        'COUNT(enrollment.id) as "totalEnrollments"',
         'SUM(CASE WHEN progress.status = :completed THEN 1 ELSE 0 END) as "completedCourses"',
         'SUM(CASE WHEN progress.status = :inProgress THEN 1 ELSE 0 END) as "inProgressCourses"',
         'SUM(CASE WHEN enrollment."certificateIssuedAt" IS NOT NULL THEN 1 ELSE 0 END) as "certificates"',
-        'SUM(progress.totalTimeSpentMinutes) as "totalTimeSpent"',
+        'COALESCE(SUM(progress.totalTimeSpentMinutes), 0) as "totalTimeSpent"',
         'AVG(progress.averageScore) as "averageScore"',
       ])
       .setParameters({
@@ -277,7 +294,9 @@ export class EnrollmentProgressService {
       completedCourses: parseInt(stats?.completedCourses || '0'),
       inProgressCourses: parseInt(stats?.inProgressCourses || '0'),
       certificates: parseInt(stats?.certificates || '0'),
-      averageScore: parseFloat(parseFloat(stats?.averageScore || '0').toFixed(1)),
+      averageScore: parseFloat(
+        parseFloat(stats?.averageScore || '0').toFixed(1),
+      ),
       totalStudyHours: parseFloat((totalMinutes / 60).toFixed(1)),
     };
   }
@@ -298,23 +317,30 @@ export class EnrollmentProgressService {
       thumbnailUrl: string | null;
     }[]
   > {
-    const progressList = await this.progressRepository
-      .createQueryBuilder('progress')
-      .innerJoinAndSelect('progress.enrollment', 'enrollment')
+    const enrollmentRepo =
+      this.progressRepository.manager.getRepository(Enrollment);
+
+    const enrollments = await enrollmentRepo
+      .createQueryBuilder('enrollment')
+      .leftJoinAndSelect('enrollment.progress', 'progress')
       .innerJoinAndSelect('enrollment.cohort', 'cohort')
       .innerJoinAndSelect('cohort.course', 'course')
       .where('enrollment.studentId = :studentId', { studentId })
+      .andWhere('enrollment.status IN (:...statuses)', {
+        statuses: [EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED],
+      })
       .orderBy('progress.lastAccessedAt', 'DESC', 'NULLS LAST')
+      .addOrderBy('enrollment.createdAt', 'DESC')
       .take(limit)
       .getMany();
 
-    return progressList.map((p) => ({
-      enrollmentId: p.enrollmentId,
-      courseTitle: p.enrollment?.cohort?.course?.title || '',
-      cohortName: p.enrollment?.cohort?.name || '',
-      progress: parseFloat(String(p.overallPercentage || 0)),
-      lastAccessedAt: p.lastAccessedAt,
-      thumbnailUrl: p.enrollment?.cohort?.course?.thumbnail || null,
+    return enrollments.map((e) => ({
+      enrollmentId: e.id,
+      courseTitle: e.cohort?.course?.title || '',
+      cohortName: e.cohort?.name || '',
+      progress: parseFloat(String(e.progress?.overallPercentage || 0)),
+      lastAccessedAt: e.progress?.lastAccessedAt || null,
+      thumbnailUrl: e.cohort?.course?.thumbnail || null,
     }));
   }
 }
